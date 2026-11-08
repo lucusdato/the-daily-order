@@ -99,7 +99,7 @@ function mNext(){
 
 /* ---------- the dock: always-visible order controls ---------- */
 function pipsHtml(r){
-  let h=''; for(let i=0;i<MAXTRY;i++){ const t=r.tries[i]; h+= t ? `<span class="pip2">${mSquares(t).map(s=>SQ[s]).join('')}</span>` : `<span class="pip2 empty"></span>`; }
+  let h=''; for(let i=0;i<MAXTRY;i++){ const t=r.tries[i]; h+= t ? (([a,b])=>`<span class="pip2" data-pu="${a}" data-pz="${b}">${SQ[a]}${SQ[b]}</span>`)(mSquares(t)) : `<span class="pip2 empty"></span>`; }
   return `<span class="pips2" aria-label="${r.tries.length} of ${MAXTRY} tries used">${h}</span>`;
 }
 function commitLabel(){
@@ -117,7 +117,7 @@ function renderDock(){
   if(!r.done){
     d.className='dock dk-play';
     d.innerHTML=`<div class="dk-row"><b class="dk-q">${m.qs||'Your order'}</b>${pipsHtml(r)}</div>
-      <div class="dk-tray">${m.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}">${toySvg({t:sprOf(U),side:U.s},34)}<b>${lab}</b></button>${m.cards[u]?`<button type="button" class="toyi" data-card="${m.cards[u]}" aria-label="${lab} troop card">i</button>`:''}</div>`; }).join('')}</div>
+      <div class="dk-tray">${m.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}">${toySvg({t:sprOf(U),side:U.s},40)}<b>${lab}</b></button>${m.cards[u]?`<button type="button" class="toyi" data-card="${m.cards[u]}" aria-label="${lab} troop card">i</button>`:''}</div>`; }).join('')}</div>
       <button type="button" class="commit"${MS.sel.u&&MS.sel.z?'':' disabled'}>${commitLabel()}</button>`;
   } else if(!r.seen){
     d.className='dock dk-res';
@@ -137,6 +137,13 @@ function mSyncSel(){
 }
 function mPickToy(u){ if(MS.busy||mres().done||SC.active) return; MS.sel.u = MS.sel.u===u?null:u; mPreview(); mSyncSel(); }
 function mPickZone(z){ if(MS.busy||mres().done||SC.active) return; MS.sel.z = MS.sel.z===z?null:z; mPreview(); mSyncSel(); if(window.sheetTo&&sheetOn()&&SHEET.pos!=='peek') sheetTo('peek'); }
+
+/* ---------- brief styles: three looks to compare ---------- */
+const BSTYLES=[['dispatch','Dispatch'],['board','Plotting board'],['notebook','Field notebook']];
+function bsGet(){ try{ const v=localStorage.getItem('pg-bs'); if(BSTYLES.some(b=>b[0]===v)) return v; }catch(e){} return 'dispatch'; }
+function bsApply(v){ v=v||bsGet(); BSTYLES.forEach(([k])=>document.body.classList.toggle('bs-'+k,k===v)); if(D.sc) document.body.dataset.side=D.sc.side||'g'; }
+function bsSwitch(){ const v=bsGet(); return `<div class="bsw" role="group" aria-label="Brief style"><span>Look</span>${BSTYLES.map(([k,l])=>`<button type="button" data-bs="${k}" aria-pressed="${k===v}">${l}</button>`).join('')}</div>`; }
+bsApply();
 
 /* ---------- the brief: METT-T, short ---------- */
 const METT=[['m','M','Mission'],['e','E','Enemy'],['t','T','Terrain'],['tr','T','Troops'],['ti','T','Time']];
@@ -164,8 +171,9 @@ function mCardPlay(){
   if(last){ const [su,sz]=mSquares(last);
     fbHtml=`<div class="mfb"><div class="mfb-h"><span class="sq">${SQ[su]}${SQ[sz]}</span><b>Try ${misses}: ${mToyLabel(last.u)} → ${mz(last.z)[1]}</b></div><p>${su==='g'?'<b>Right toy.</b> ':m.fbU[last.u]+' '}${sz==='g'?'<b>Right place.</b>':m.fbZ[last.z]}</p></div>`;
   }
-  const b=sc.brief;
+  const b=sc.brief; bsApply();
   card.innerHTML=`<div class="card-in mys">
+    ${bsSwitch()}
     ${fbHtml}
     <div class="kicker">${D.preview?'Preview':'Order #'+D.n} · ${sc.place} · ${sc.year}</div>
     <h2>${sc.name}</h2>
@@ -271,6 +279,7 @@ function mShare(){
 /* ---------- events ---------- */
 function mClick(e){
   if(state.mode!=='daily' || !D.sc || !D.sc.m) return;
+  const bs=e.target.closest('[data-bs]'); if(bs){ try{localStorage.setItem('pg-bs',bs.dataset.bs);}catch(err){} bsApply(bs.dataset.bs); card.querySelectorAll('[data-bs]').forEach(x=>x.setAttribute('aria-pressed',x===bs)); return; }
   const cb=e.target.closest('[data-card]'); if(cb){ showCard(cb.dataset.card); return; }
   const t=e.target.closest('[data-mt]'); if(t){ mPickToy(t.dataset.mt); return; }
   const og=e.target.closest('[data-gi]'); if(og){ const g=D.sc.m.ground[+og.dataset.gi]; if(window.sheetTo&&sheetOn()) sheetTo('peek'); setTimeout(()=>pulseAt(g[2][0],g[2][1],g[2][2],g[0]),250); return; }

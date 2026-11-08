@@ -9,10 +9,33 @@ const land = (d,c='#8fa765') => `<path d="${d}" fill="${c}"/><path d="${d}" fill
 const sea = d => `<path d="${d}" fill="#5d9bc0"/><path d="${d}" fill="url(#waves)"/><path d="${d}" fill="none" stroke="#e6d6a2" stroke-width="2.5" opacity=".7"/>`;
 const river = (d,w) => `<path d="${d}" fill="none" stroke="#3f7fa6" stroke-width="${w+3}" stroke-linecap="round" opacity=".55"/><path d="${d}" fill="none" stroke="#5d9bc0" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#9ccbe3" stroke-width="${(w*.35).toFixed(1)}" stroke-linecap="round" opacity=".55" stroke-dasharray="6 9"/>`;
 const road = d => `<path d="${d}" fill="none" stroke="#d8c596" stroke-width="5" stroke-linecap="round" opacity=".9"/><path d="${d}" fill="none" stroke="#a88c58" stroke-width="1" stroke-dasharray="4 4"/>`;
-function hill(cx,cy,rx,ry,n){
-  let s = `<ellipse cx="${cx}" cy="${cy+3}" rx="${rx}" ry="${ry}" fill="rgba(0,0,0,.14)"/>`;
-  for(let i=0;i<n;i++){const k=1-i/n*.72; s+=`<ellipse cx="${cx}" cy="${(cy-i*ry*.16).toFixed(1)}" rx="${(rx*k).toFixed(1)}" ry="${(ry*k).toFixed(1)}" fill="rgba(255,250,225,.12)" stroke="rgba(50,40,20,.3)" stroke-width=".8"/>`;}
-  return s;
+/* hills: a relief map hill, with cast shadow, stepped contours, hill shading and hachures */
+function smoothPath(P){
+  const n=P.length; let d=`M${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
+  for(let i=0;i<n;i++){ const p0=P[(i-1+n)%n],p1=P[i],p2=P[(i+1)%n],p3=P[(i+2)%n];
+    d+=` C${(p1[0]+(p2[0]-p0[0])/6).toFixed(1)} ${(p1[1]+(p2[1]-p0[1])/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])/6).toFixed(1)} ${(p2[1]-(p3[1]-p1[1])/6).toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`; }
+  return d+'Z';
+}
+function hillPts(cx,cy,rx,ry,ph,j,N=40){
+  const P=[]; for(let i=0;i<N;i++){ const a=i/N*Math.PI*2, r=1+Math.sin(2*a+ph[0])*.07*j+Math.sin(3*a+ph[1])*.06+Math.sin(5*a+ph[2])*.035*j;
+    P.push([cx+Math.cos(a)*rx*r, cy+Math.sin(a)*ry*r, a, r]); }
+  return P;
+}
+function hill(cx,cy,rx,ry,n=3){
+  const R=rng(Math.round(cx*7+cy*13)), ph=[R()*6.3,R()*6.3,R()*6.3], L=Math.max(4,n+2);
+  const cols=['#7f8c4c','#939d5a','#a8ad6a','#bcbb7c','#cdc68f','#dcd2a2'];
+  let s=`<g class="hill">`;
+  s+=`<path d="${smoothPath(hillPts(cx+rx*.07,cy+ry*.3,rx*1.02,ry*1.05,ph,1))}" fill="#2a2008" opacity=".22"/>`;
+  const P0=hillPts(cx,cy,rx,ry,ph,1);
+  /* hachures: short strokes running downhill, heavier on the shadow side */
+  P0.forEach(([x,y,a,r],i)=>{ const sh=Math.max(0,Math.cos(a-0.8)), len=4+sh*5+R()*2;
+    const nx=Math.cos(a)*ry, ny=Math.sin(a)*rx, k=Math.hypot(nx,ny)||1;
+    s+=`<path d="M${x.toFixed(1)} ${y.toFixed(1)} l${(nx/k*len).toFixed(1)} ${(ny/k*len).toFixed(1)}" stroke="#4a3a1c" stroke-width="${(.7+sh*.5).toFixed(2)}" stroke-linecap="round" opacity="${(.25+sh*.45).toFixed(2)}"/>`; });
+  for(let i=0;i<L;i++){
+    const k=1-i/L*.82, P=hillPts(cx-rx*.04*i/L, cy-ry*.34*i/L, rx*k, ry*k, ph, 1-i*.12), d=smoothPath(P);
+    s+=`<path d="${d}" fill="${cols[Math.min(i,cols.length-1)]}"/><path d="${d}" fill="url(#hshade)"/><path d="${d}" fill="none" stroke="#5a4320" stroke-width="${i?'.6':'1'}" opacity="${i?'.45':'.6'}"/>`;
+  }
+  return s+`</g>`;
 }
 const mtn = (x,y,s,cap='#cfc3a0') => `<path d="M${x-s} ${y} L${x-s*.12} ${y-s*1.05} L${x+s} ${y} Z" fill="#a39674"/><path d="M${x-s*.12} ${y-s*1.05} L${x+s} ${y} L${x+s*.15} ${y} Z" fill="#6f6448"/><path d="M${x-s*.12} ${y-s*1.05} L${x-s*.4} ${y-s*.72} L${x-s*.16} ${y-s*.78} L${x+s*.05} ${y-s*.66} L${x+s*.22} ${y-s*.8} Z" fill="${cap}"/>`;
 const tree = (x,y,s=1,c='#3b6b2b') => `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(2)})"><ellipse cx="0" cy="1" rx="6" ry="2" fill="rgba(0,0,0,.25)"/><rect x="-1.2" y="-7" width="2.4" height="8" rx="1" fill="#6b4a2b"/><circle cx="0" cy="-11" r="6.5" fill="${c}"/><circle cx="-2" cy="-13.2" r="2.6" fill="rgba(255,255,255,.18)"/></g>`;

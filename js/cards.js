@@ -53,7 +53,7 @@ function unlockCards(ids){ const nw=ids.filter(id=>CARDBY[id] && !OWNED.has(id))
 const STAT_L=['Speed','Punch','Protection','Range'];
 
 function toySvg(c,size=96){
-  return `<svg viewBox="-16 -32 32 38" width="${size}" height="${size*1.19}" aria-hidden="true"><ellipse cx="0" cy="1.5" rx="11" ry="3" fill="rgba(0,0,0,.25)"/><g transform="translate(0 ${/plane|stuka|bomber|jet/.test(c.t)?-8:0}) scale(${/ship|gal|carrier/.test(c.t)?.78:1.25})"><use href="#u-${c.t}" ${fillAttr({s:c.side})}/></g></svg>`;
+  return `<svg viewBox="-20 -46 40 52" width="${size}" height="${(size*1.3).toFixed(1)}" aria-hidden="true"><ellipse cx="0" cy="1.5" rx="11" ry="3" fill="rgba(0,0,0,.25)"/><g transform="translate(0 ${/plane|stuka|bomber|jet/.test(c.t)?-8:0}) scale(${/ship|gal|carrier/.test(c.t)?.78:1.25})"><use href="#u-${c.t}" ${fillAttr({s:c.side})}/></g></svg>`;
 }
 function cardFace(c,opts={}){
   const own=OWNED.has(c.id) || opts.peek;

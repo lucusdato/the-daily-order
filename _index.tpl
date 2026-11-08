@@ -19,7 +19,20 @@
 {{DEFS}}
     <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
     <pattern id="cloud" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="15" cy="18" r="12" fill="rgba(255,255,255,.28)"/><circle cx="44" cy="40" r="15" fill="rgba(255,255,255,.22)"/><circle cx="48" cy="10" r="7" fill="rgba(120,130,140,.12)"/><circle cx="12" cy="48" r="8" fill="rgba(120,130,140,.1)"/></pattern>
-    <g id="hand"><rect x="-8.4" y="-74" width="16.8" height="9" rx="2" fill="#3d5a80"/><rect x="-7" y="-67" width="14" height="40" rx="6.5" fill="#f2c9a1" stroke="#9a6b4b" stroke-width=".8"/><path d="M-6.6 -31 Q-10 -19 -4.4 -11 L-2.2 -12.4 Q-5.6 -20 -3 -29 Z" fill="#f2c9a1" stroke="#9a6b4b" stroke-width=".8"/><path d="M6.6 -31 Q10 -19 4.4 -11 L2.2 -12.4 Q5.6 -20 3 -29 Z" fill="#f2c9a1" stroke="#9a6b4b" stroke-width=".8"/></g>
+    <g id="hand" transform="translate(0 9) rotate(-6)">
+      <rect x="-9.5" y="-86" width="19" height="13" rx="3" fill="#4d5a2b" stroke="#25300f" stroke-width=".9"/><rect x="-9.5" y="-75" width="19" height="2" fill="#25300f" opacity=".5"/>
+      <rect x="-8.6" y="-73.5" width="17.2" height="5" rx="1.5" fill="#efe6cf" stroke="#8a7a58" stroke-width=".7"/>
+      <path d="M-7.6 -69 C-10.6 -60 -11.4 -48 -8.4 -38 C-6 -33 6 -33 8.6 -37.5 C11.2 -47 10.6 -60 7.6 -69 Z" fill="#e8b78e" stroke="#7d4f31" stroke-width=".9"/>
+      <path d="M8.4 -40 q4 2 3.2 6.5 q-1.6 3 -4.6 1.2" fill="#e8b78e" stroke="#7d4f31" stroke-width=".9"/>
+      <path d="M8 -34 q3.4 1.8 2.4 5.6 q-1.6 2.4 -4.2 .6" fill="#dfa982" stroke="#7d4f31" stroke-width=".9"/>
+      <path d="M5.2 -37 Q8.6 -26 2.4 -15.5" fill="none" stroke="#7d4f31" stroke-width="6.6" stroke-linecap="round"/>
+      <path d="M5.2 -37 Q8.6 -26 2.4 -15.5" fill="none" stroke="#e8b78e" stroke-width="4.8" stroke-linecap="round"/>
+      <path d="M-6.2 -40 Q-9.6 -27 -2.6 -16.5" fill="none" stroke="#7d4f31" stroke-width="7.2" stroke-linecap="round"/>
+      <path d="M-6.2 -40 Q-9.6 -27 -2.6 -16.5" fill="none" stroke="#efc29b" stroke-width="5.4" stroke-linecap="round"/>
+      <path d="M1.2 -17.6 l2 .9 M-1.6 -18.4 l-2 1" stroke="#fff3e2" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
+      <path d="M-4.5 -55 q4.5 2 9 0 M-4 -47 q4 1.6 8 0" fill="none" stroke="#7d4f31" stroke-width=".6" opacity=".5"/>
+      <path d="M-6.4 -66 C-8.6 -58 -9 -50 -7.4 -43" fill="none" stroke="#fff3e2" stroke-width="1.6" stroke-linecap="round" opacity=".35"/>
+    </g>
   </defs>
 </svg>
 

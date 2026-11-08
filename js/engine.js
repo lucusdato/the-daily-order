@@ -310,8 +310,10 @@ function strip(){
   xs.forEach(([x,sd,t],k)=>{ const lift=t==='plane'?-12:0, sc=/ship|gal/.test(t)?1.05:1.4; s+=`<g transform="translate(${x} 64)"><ellipse rx="9" ry="2.6" fill="rgba(0,0,0,.3)"/><g class="idle" style="animation-delay:${(k*.21).toFixed(2)}s"><g transform="translate(0 ${lift}) scale(${sd==='g'?sc:-sc} ${sc})"><use href="#u-${t}" ${fillAttr({s:sd})}/></g></g></g>`; });
   return s+'</svg>';
 }
-function thumb(b){
-  const H=b.H||400; let s=`<svg viewBox="0 0 400 ${H}" aria-hidden="true"><g filter="url(#aged)">${b.terrain()}</g><rect width="400" height="${H}" fill="url(#parch)"/>`;
+function thumb(b,sq){
+  const H=b.H||400; let vy=0;
+  if(sq && H>400){ const ys=b.units.map(u=>((b.m&&b.m.start&&b.m.start[u.id])||posAt(u,0))[1]); vy=Math.max(0,Math.min(H-400,ys.reduce((a,c)=>a+c,0)/ys.length-200)); }
+  let s=`<svg viewBox="0 ${vy.toFixed(0)} 400 ${sq?400:H}" aria-hidden="true"><g filter="url(#aged)">${b.terrain()}</g><rect width="400" height="${H}" fill="url(#parch)"/>`;
   b.units.forEach(u=>{ const p=(b.m&&b.m.start&&b.m.start[u.id])||posAt(u,0); if(p[2]==='off'||p[2]==='exit') return; const lift=u.t==='plane'?-15:0; OFF[u.n||1].forEach(o=>{ s+=`<g transform="translate(${p[0]+o[0]} ${p[1]+o[1]+lift}) scale(${b.face[u.s]*1.15} 1.15)"${p[2]==='hide'?' opacity=".45"':''}><use href="#u-${SPR(u.t,yearOf(b),u.name)}" ${fillAttr(u)}/></g>`; }); });
   return s+'</svg>';
 }

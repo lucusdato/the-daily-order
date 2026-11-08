@@ -693,6 +693,111 @@ button.og i{font-style:normal;color:var(--ox);font-weight:700;font-size:12px;whi
 #mzones .mz.sel text.mzl{fill:#7d2717}
 @media (min-width:900px) and (min-height:520px){ body.mys .dock:not([hidden]){padding-top:12px} }
 
+/* ====================== v8: cards, home thumb, brief styles ====================== */
+.tc-s{grid-template-columns:auto 1fr!important;gap:12px}
+.tc-s i{min-width:0;justify-content:flex-end}
+.tc-s em{flex:1 1 0;max-width:20px;min-width:8px}
+.tc-toy svg{overflow:visible}
+.tc{box-shadow:inset 0 0 0 3px #e6d2a0,4px 4px 0 #1f1a14!important}
+.toyi{top:4px!important;right:4px!important;width:20px!important;height:20px!important;font-size:11px!important}
+.dk-tray .toy{padding:4px 2px 6px!important}
+.dk-tray .toy.sel{transform:none!important}
+.dk-tray .toy svg{overflow:visible}
+@media (max-width:420px){ .dcard{grid-template-columns:92px 1fr!important;gap:12px!important} .dthumb{max-width:none!important} .dcard::after{display:none} }
+.dthumb{aspect-ratio:1;align-self:start}
+.dthumb svg{width:100%;height:100%;display:block}
+
+/* style switch */
+.bsw{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:-4px 0 -6px;font-size:11px}
+.bsw span{font-family:var(--f-hand);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.bsw button{font:inherit;font-size:11.5px;font-weight:700;border:0;background:transparent;color:#5a4a30;padding:4px 7px;border-radius:3px;cursor:pointer}
+.bsw button[aria-pressed="true"]{background:#2a1f14;color:#efe3c5}
+
+/* ---------- A: Dispatch, flat typed orders, no boxes ---------- */
+body.mys.bs-dispatch .card{background-image:none!important;background-color:#f2e8cd!important}
+body.mys.bs-dispatch .mys .sit{background:none;border:0;box-shadow:none;padding:0;font-size:15px}
+body.mys.bs-dispatch .mett{gap:0;border-top:1.5px solid #2a1f14}
+body.mys.bs-dispatch .mrow{background:none!important;box-shadow:none!important;border-radius:0!important;border-bottom:1px solid #cdb98c;padding:10px 0!important;grid-template-columns:22px 1fr!important}
+body.mys.bs-dispatch .ml{background:none!important;color:#2a1f14!important;font-size:21px!important;width:auto!important;height:auto!important;line-height:1;align-self:start}
+body.mys.bs-dispatch .mr-e .ml{color:#7d2717!important}
+body.mys.bs-dispatch .mk{display:block;font-family:var(--f-hand);font-weight:400!important;letter-spacing:.1em;color:#7a6a4a;margin-bottom:1px}
+body.mys.bs-dispatch .intel{background:none!important;border:0!important;border-radius:0!important;padding:6px 0 0!important;box-shadow:none!important}
+body.mys.bs-dispatch .intel .it{color:#7d2717;font-size:11px}
+body.mys.bs-dispatch .intel.ccard{padding:6px 0 0!important}
+body.mys.bs-dispatch .ogt{background:none!important;padding:0!important;color:#6b5530;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+body.mys.bs-dispatch .mfb{border-radius:0!important}
+body.mys.bs-dispatch .dock:not([hidden]){background:#f2e8cd;border-bottom:1.5px solid #2a1f14}
+body.mys.bs-dispatch .dk-tray .toy{background:transparent!important;box-shadow:inset 0 0 0 1px #b9a473!important;border-radius:3px!important}
+body.mys.bs-dispatch .dk-tray .toy.sel{background:#2a1f14!important;color:#efe3c5;box-shadow:none!important}
+body.mys.bs-dispatch .commit{border-radius:3px!important;box-shadow:none!important}
+
+/* ---------- B: Plotting board, a molded plastic case in your army's colour ---------- */
+body.mys.bs-board{--case:#55602f;--case-d:#3a4320;--case-dd:#283016;--case-l:#6f7b42;--txt:#eef0d8;--peg-hole:#1d230e}
+body.mys.bs-board[data-side="t"]{--case:#9b8456;--case-d:#77633b;--case-dd:#55462a;--case-l:#b49d6b;--txt:#fbf3dc;--peg-hole:#3a2f1b}
+body.mys.bs-board .sheet,body.mys.bs-board .card{background-color:var(--case)!important}
+body.mys.bs-board .card{background-image:radial-gradient(circle at 50% 50%,rgba(0,0,0,.28) 1.6px,transparent 2.2px)!important;background-size:16px 16px!important;color:var(--txt)}
+body.mys.bs-board .grab span{background:var(--case-dd)!important}
+body.mys.bs-board .kicker{color:#f1c661!important}
+body.mys.bs-board .card h2{color:var(--txt)!important;text-shadow:0 2px 0 var(--case-dd)}
+body.mys.bs-board .mys .who{color:var(--txt)}
+body.mys.bs-board .bsw span{color:var(--txt);opacity:.7}
+body.mys.bs-board .bsw button{color:var(--txt)}
+body.mys.bs-board .bsw button[aria-pressed="true"]{background:var(--txt);color:var(--case-dd)}
+body.mys.bs-board .mys .sit{background:var(--case-dd);color:var(--txt);border:0;border-radius:6px;box-shadow:inset 0 2px 5px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.12)}
+body.mys.bs-board .theq{color:var(--txt)}
+body.mys.bs-board .theq span{color:#f1c661}
+body.mys.bs-board .mrow{background:var(--case-d)!important;border-radius:6px!important;box-shadow:inset 0 2px 4px rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.1)!important;color:var(--txt)}
+body.mys.bs-board .mb p,body.mys.bs-board button.og{color:var(--txt)}
+body.mys.bs-board .ml{border-radius:50%!important;background:radial-gradient(circle at 35% 30%,#fff,#d9d6c6 60%,#a9a690)!important;color:#2a2a1a!important;box-shadow:0 2px 0 rgba(0,0,0,.45)}
+body.mys.bs-board .mr-e .ml{background:radial-gradient(circle at 35% 30%,#ff8a72,#c8321e 60%,#8d1f10)!important;color:#fff!important}
+body.mys.bs-board .mk{color:#f1c661}
+body.mys.bs-board .ogt{background:transparent!important;color:#f1c661;padding:0!important;text-transform:uppercase;font-size:11px;letter-spacing:.05em;font-weight:800}
+body.mys.bs-board button.og i{color:#f1c661}
+body.mys.bs-board .intel{background:none!important;border:0!important;border-radius:0!important;padding:6px 0 0 18px!important;position:relative;color:var(--txt);box-shadow:none!important}
+body.mys.bs-board .intel::before{content:"";position:absolute;left:2px;top:9px;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8a72,#c8321e 60%,#8d1f10);box-shadow:0 1.5px 0 rgba(0,0,0,.5)}
+body.mys.bs-board .intel .it{color:#ff9b84}
+body.mys.bs-board .intel.ccard em{color:var(--txt);opacity:.75}
+body.mys.bs-board .term{color:inherit}
+body.mys.bs-board .mlock{color:var(--txt);opacity:.75}
+body.mys.bs-board .mett-q{color:#f1c661!important}
+body.mys.bs-board .more summary{color:var(--txt)}
+body.mys.bs-board .more-in{color:var(--ink);background:#f3e8cb;border-radius:6px;padding:8px 10px}
+body.mys.bs-board .mfb{background:var(--case-dd)!important;border-radius:6px!important}
+body.mys.bs-board .dock:not([hidden]){background:linear-gradient(var(--case-l),var(--case));border-bottom:3px solid var(--case-dd);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+body.mys.bs-board .dk-q,body.mys.bs-board .dk-scene .cb-t,body.mys.bs-board .dk-scene .cb-b{color:var(--txt)!important;text-shadow:0 1px 0 var(--case-dd)}
+body.mys.bs-board .dk-scene .cb-n,body.mys.bs-board .dk-scene .cb-n i,body.mys.bs-board .dk-scene .cb-auto{color:#f1c661}
+body.mys.bs-board .pips2{gap:5px}
+body.mys.bs-board .pip2{min-width:0;width:26px;height:16px;border-radius:9px;background:var(--peg-hole);box-shadow:inset 0 2px 3px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.15);font-size:0;position:relative}
+body.mys.bs-board .pip2.empty{box-shadow:inset 0 2px 3px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.15)}
+body.mys.bs-board .pip2::before,body.mys.bs-board .pip2::after{content:"";position:absolute;top:3px;width:10px;height:10px;border-radius:50%;box-shadow:0 1.5px 0 rgba(0,0,0,.55)}
+body.mys.bs-board .pip2.empty::before,body.mys.bs-board .pip2.empty::after{display:none}
+body.mys.bs-board .pip2::before{left:2px}body.mys.bs-board .pip2::after{right:2px}
+body.mys.bs-board .pip2[data-pu="g"]::before,body.mys.bs-board .pip2[data-pz="g"]::after{background:radial-gradient(circle at 35% 30%,#ff8a72,#c8321e 60%,#8d1f10)}
+body.mys.bs-board .pip2[data-pu="y"]::before,body.mys.bs-board .pip2[data-pz="y"]::after{background:radial-gradient(circle at 35% 30%,#ffe9a0,#e0a72a 60%,#9a6c10)}
+body.mys.bs-board .pip2[data-pu="w"]::before,body.mys.bs-board .pip2[data-pz="w"]::after{background:radial-gradient(circle at 35% 30%,#fff,#dcd9cb 60%,#a7a492)}
+body.mys.bs-board .dk-tray .toy{background:var(--case-d)!important;color:var(--txt);box-shadow:inset 0 3px 6px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.15)!important;border-radius:8px!important}
+body.mys.bs-board .dk-tray .toy.sel{background:var(--case-d)!important;box-shadow:inset 0 3px 6px rgba(0,0,0,.6),0 0 0 3px #f1c661!important;color:#f1c661}
+body.mys.bs-board .toyi{background:var(--txt)!important;color:var(--case-dd)!important}
+body.mys.bs-board .commit{background:radial-gradient(120% 140% at 50% 0%,#e8513b,#b52a17 60%,#8a1d0e)!important;border-radius:22px!important;box-shadow:0 4px 0 #5a1208,inset 0 1px 0 rgba(255,255,255,.35)!important;color:#fff!important;font-family:var(--f-display)!important;letter-spacing:.04em}
+body.mys.bs-board .dock .commit:disabled{background:var(--case-dd)!important;color:var(--txt)!important;opacity:.7;box-shadow:inset 0 2px 4px rgba(0,0,0,.5)!important;font-family:var(--f-body)!important;letter-spacing:0}
+body.mys.bs-board .dk-ghost{background:var(--case-dd);color:var(--txt);border-radius:22px}
+
+/* ---------- C: Field notebook, ruled paper with a margin ---------- */
+body.mys.bs-notebook .card{background-color:#fbf7ea!important;background-image:linear-gradient(90deg,transparent 30px,#d9746466 30px,#d9746466 31.5px,transparent 31.5px),repeating-linear-gradient(transparent 0 25px,#9db6cf55 25px 26px)!important;background-attachment:local!important}
+body.mys.bs-notebook .card-in.mys{padding-left:22px}
+body.mys.bs-notebook .mys .sit{background:none;border:0;box-shadow:none;padding:0;font-size:15px;line-height:26px}
+body.mys.bs-notebook .mett{gap:2px}
+body.mys.bs-notebook .mrow{background:none!important;box-shadow:none!important;padding:6px 0!important;grid-template-columns:1fr!important;position:relative}
+body.mys.bs-notebook .ml{position:absolute;left:-34px;top:6px;background:none!important;color:#b8432b!important;font-family:var(--f-hand)!important;font-weight:400!important;font-size:18px!important}
+body.mys.bs-notebook .mk{font-family:var(--f-hand);font-weight:400!important;color:#b8432b;text-decoration:underline;text-underline-offset:3px}
+body.mys.bs-notebook .mb p{line-height:1.6}
+body.mys.bs-notebook .intel{background:none!important;border:0!important;padding:4px 0 0!important;box-shadow:none!important;font-family:var(--f-hand);font-size:14px}
+body.mys.bs-notebook .intel .it{background:#f6e27a;color:#2a1f14;padding:0 4px;transform:rotate(-2deg);display:inline-block}
+body.mys.bs-notebook .ogt{background:none!important;padding:0!important;font-family:var(--f-hand);color:#3b5f8a}
+body.mys.bs-notebook .dock:not([hidden]){background:#fbf7ea;border-bottom:1.5px solid #9db6cf}
+body.mys.bs-notebook .dk-tray .toy{background:#fff!important;box-shadow:1px 2px 0 #c9bfa2,inset 0 0 0 1px #ddd2b4!important;border-radius:2px!important}
+body.mys.bs-notebook .dk-tray .toy.sel{background:#f6e27a!important}
+
 </style>
 </head>
 <body>
@@ -702,7 +807,8 @@ button.og i{font-style:normal;color:var(--ox);font-weight:700;font-size:12px;whi
     <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9ad660"/><stop offset=".45" stop-color="#4f8f2a"/><stop offset="1" stop-color="#2d5a17"/></linearGradient>
     <linearGradient id="pt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e0aa"/><stop offset=".45" stop-color="#c9a062"/><stop offset="1" stop-color="#8a6430"/></linearGradient>
     <radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></radialGradient>
-    <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0 L0 0 0 25" fill="none" stroke="rgba(60,35,10,.13)" stroke-width=".5"/></pattern>
+    <radialGradient id="hshade" cx="34%" cy="26%" r="78%"><stop offset="45%" stop-color="#fff6d8" stop-opacity=".18"/><stop offset="70%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#2a1d08" stop-opacity=".38"/></radialGradient>
+<pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0 L0 0 0 25" fill="none" stroke="rgba(60,35,10,.13)" stroke-width=".5"/></pattern>
     <pattern id="speck" width="11" height="11" patternUnits="userSpaceOnUse"><circle cx="2" cy="3" r=".7" fill="rgba(255,255,255,.09)"/><circle cx="8" cy="8" r=".8" fill="rgba(0,0,0,.07)"/><circle cx="7" cy="2" r=".5" fill="rgba(0,0,0,.06)"/></pattern>
     <pattern id="waves" width="26" height="13" patternUnits="userSpaceOnUse"><path d="M0 9 Q6.5 5 13 9 T26 9" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".8"/></pattern>
     <pattern id="furrow" width="400" height="7" patternUnits="userSpaceOnUse"><path d="M0 3.5 H400" stroke="rgba(40,22,8,.24)" stroke-width="1.4"/><path d="M0 5.5 H400" stroke="rgba(255,230,190,.08)" stroke-width=".8"/></pattern>
@@ -753,7 +859,20 @@ button.og i{font-style:normal;color:var(--ox);font-weight:700;font-size:12px;whi
 
     <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
     <pattern id="cloud" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="15" cy="18" r="12" fill="rgba(255,255,255,.28)"/><circle cx="44" cy="40" r="15" fill="rgba(255,255,255,.22)"/><circle cx="48" cy="10" r="7" fill="rgba(120,130,140,.12)"/><circle cx="12" cy="48" r="8" fill="rgba(120,130,140,.1)"/></pattern>
-    <g id="hand"><rect x="-8.4" y="-74" width="16.8" height="9" rx="2" fill="#3d5a80"/><rect x="-7" y="-67" width="14" height="40" rx="6.5" fill="#f2c9a1" stroke="#9a6b4b" stroke-width=".8"/><path d="M-6.6 -31 Q-10 -19 -4.4 -11 L-2.2 -12.4 Q-5.6 -20 -3 -29 Z" fill="#f2c9a1" stroke="#9a6b4b" stroke-width=".8"/><path d="M6.6 -31 Q10 -19 4.4 -11 L2.2 -12.4 Q5.6 -20 3 -29 Z" fill="#f2c9a1" stroke="#9a6b4b" stroke-width=".8"/></g>
+    <g id="hand" transform="translate(0 9) rotate(-6)">
+      <rect x="-9.5" y="-86" width="19" height="13" rx="3" fill="#4d5a2b" stroke="#25300f" stroke-width=".9"/><rect x="-9.5" y="-75" width="19" height="2" fill="#25300f" opacity=".5"/>
+      <rect x="-8.6" y="-73.5" width="17.2" height="5" rx="1.5" fill="#efe6cf" stroke="#8a7a58" stroke-width=".7"/>
+      <path d="M-7.6 -69 C-10.6 -60 -11.4 -48 -8.4 -38 C-6 -33 6 -33 8.6 -37.5 C11.2 -47 10.6 -60 7.6 -69 Z" fill="#e8b78e" stroke="#7d4f31" stroke-width=".9"/>
+      <path d="M8.4 -40 q4 2 3.2 6.5 q-1.6 3 -4.6 1.2" fill="#e8b78e" stroke="#7d4f31" stroke-width=".9"/>
+      <path d="M8 -34 q3.4 1.8 2.4 5.6 q-1.6 2.4 -4.2 .6" fill="#dfa982" stroke="#7d4f31" stroke-width=".9"/>
+      <path d="M5.2 -37 Q8.6 -26 2.4 -15.5" fill="none" stroke="#7d4f31" stroke-width="6.6" stroke-linecap="round"/>
+      <path d="M5.2 -37 Q8.6 -26 2.4 -15.5" fill="none" stroke="#e8b78e" stroke-width="4.8" stroke-linecap="round"/>
+      <path d="M-6.2 -40 Q-9.6 -27 -2.6 -16.5" fill="none" stroke="#7d4f31" stroke-width="7.2" stroke-linecap="round"/>
+      <path d="M-6.2 -40 Q-9.6 -27 -2.6 -16.5" fill="none" stroke="#efc29b" stroke-width="5.4" stroke-linecap="round"/>
+      <path d="M1.2 -17.6 l2 .9 M-1.6 -18.4 l-2 1" stroke="#fff3e2" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
+      <path d="M-4.5 -55 q4.5 2 9 0 M-4 -47 q4 1.6 8 0" fill="none" stroke="#7d4f31" stroke-width=".6" opacity=".5"/>
+      <path d="M-6.4 -66 C-8.6 -58 -9 -50 -7.4 -43" fill="none" stroke="#fff3e2" stroke-width="1.6" stroke-linecap="round" opacity=".35"/>
+    </g>
   </defs>
 </svg>
 
