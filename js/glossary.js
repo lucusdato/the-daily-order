@@ -146,6 +146,6 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') hideGloss(); const
 (function(){
   let busy=false;
   const run=el=>{ if(busy) return; busy=true; try{ glossify(el); } finally{ busy=false; } };
-  ['card','utag'].forEach(id=>{ const el=document.getElementById(id); if(!el) return;
+  ['card','utag','dock'].forEach(id=>{ const el=document.getElementById(id); if(!el) return;
     new MutationObserver(()=>{ if(!busy){ hideGloss(); run(el); } }).observe(el,{childList:true}); });
 })();

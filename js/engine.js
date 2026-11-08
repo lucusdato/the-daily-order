@@ -213,11 +213,13 @@ function impacts(arrs){
 function showPh(i){ $('#board').querySelectorAll('.ph').forEach(e=>e.classList.toggle('on',e.dataset.show.split(' ').includes(String(i)))); }
 
 /* ---------- camera ---------- */
+const WH = () => (B&&B.H)||400;
+const FULL = () => [0,0,400,WH()];
 function setVB(v){ vb=v; $('#board').setAttribute('viewBox', v.map(n=>n.toFixed(1)).join(' ')); }
 function camTo(to,dur,delay){ let from=null; addTw({keep:true,cam:true,dur,delay,step:p=>{ if(!from) from=vb.slice(); const e=easeInOut(p); setVB(from.map((v,k)=>v+(to[k]-v)*e)); }}); }
 function camera(arrs,hold){
   tweens=tweens.filter(o=>!o.cam);
-  if(RM.matches||state.lens){ setVB([0,0,400,400]); return; }
+  if(RM.matches||state.lens||WH()!==400||document.body.classList.contains('mys')){ tweens=tweens.filter(o=>!o.cam); setVB(FULL()); return; }
   const pts=[]; visibleArrows(arrs).forEach(a=>{ for(let k=1;k<a.length;k+=2) pts.push([a[k],a[k+1]]); });
   if(!pts.length){ camTo([0,0,400,400],600,0); return; }
   const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
@@ -237,7 +239,7 @@ function display(cur,animate,arrs){
   if(animate) maxT=moveTo(cur); else snapTo(cur);
   drawArrows(state.curArrows);
   if(animate){ camera(state.curArrows,Math.min(3000,Math.max(700,maxT-650))); impacts(state.curArrows); }
-  else { tweens=tweens.filter(o=>!o.cam); setVB([0,0,400,400]); }
+  else { tweens=tweens.filter(o=>!o.cam); setVB(FULL()); }
 }
 
 /* ---------- theater (campaign map) ---------- */
@@ -281,12 +283,13 @@ function drawTheaterArrows(){
 /* ---------- board build ---------- */
 function buildBoard(b){
   const svg=$('#board');
-  const P=b.prologue, box=P?P.box:[0,0,400], [bx,by,bw]=box;
+  const P=b.prologue, box=P?P.box:[0,0,400], [bx,by,bw]=box, H=b.H||400;
+  const wrap=svg.closest('.board-wrap'); if(wrap) wrap.style.aspectRatio = H===400 ? '' : `400 / ${H}`;
   svg.innerHTML =
-    `<defs><mask id="fogMask" maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="400"><rect width="400" height="400" fill="white"/><g id="fogHoles" filter="url(#soft)"></g></mask></defs>`+
-    `<g id="field"${P?' style="display:none"':''}><g class="terr" filter="url(#aged)">${b.terrain()}</g><rect width="400" height="400" fill="url(#parch)" pointer-events="none"/><g id="arrows"></g>`+
-      `<g id="fogL"><rect width="400" height="400" fill="#dfe3dc" fill-opacity=".9" mask="url(#fogMask)"/><rect width="400" height="400" fill="url(#cloud)" mask="url(#fogMask)"/></g>`+
-      `<g id="units"></g><g id="fx" pointer-events="none"></g><g pointer-events="none">${b.over?b.over():''}</g><g id="lens"></g><g class="neat" pointer-events="none"><rect x="3.5" y="3.5" width="393" height="393" fill="none" stroke="#3b2a18" stroke-width="1.4"/><rect x="6.5" y="6.5" width="387" height="387" fill="none" stroke="#3b2a18" stroke-width=".5"/></g></g>`+
+    `<defs><mask id="fogMask" maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="${H}"><rect width="400" height="${H}" fill="white"/><g id="fogHoles" filter="url(#soft)"></g></mask></defs>`+
+    `<g id="field"${P?' style="display:none"':''}><g class="terr" filter="url(#aged)">${b.terrain()}</g><rect width="400" height="${H}" fill="url(#parch)" pointer-events="none"/><g id="arrows"></g>`+
+      `<g id="fogL"><rect width="400" height="${H}" fill="#dfe3dc" fill-opacity=".9" mask="url(#fogMask)"/><rect width="400" height="${H}" fill="url(#cloud)" mask="url(#fogMask)"/></g>`+
+      `<g id="units"></g><g id="fx" pointer-events="none"></g><g pointer-events="none">${b.over?b.over():''}</g><g id="lens"></g><g class="neat" pointer-events="none"><rect x="3.5" y="3.5" width="393" height="${H-7}" fill="none" stroke="#3b2a18" stroke-width="1.4"/><rect x="6.5" y="6.5" width="387" height="${H-13}" fill="none" stroke="#3b2a18" stroke-width=".5"/></g></g>`+
     (P?`<g id="theater">${P.theater()}<rect x="${bx}" y="${by}" width="${bw}" height="${bw}" fill="rgba(210,63,44,.12)" stroke="#d23f2c" stroke-width="2" stroke-dasharray="5 3" rx="2"/><text class="lbl" x="${bx+bw/2}" y="${by+bw+12}" font-size="10" text-anchor="middle">${b.name}</text><g id="tarrows"></g><g id="tunits"></g>${end()}</g>`:'');
   const ug=svg.querySelector('#units'), tg=svg.querySelector('#tunits');
   figs=[]; tfigs=[];
@@ -300,7 +303,7 @@ function buildBoard(b){
 
 /* ---------- views ---------- */
 const views=['home','battle','playbook','archive','cards'];
-function show(v){ views.forEach(x=>{$('#'+x).hidden=(x!==v);}); if(v==='battle' && window.sheetTo) requestAnimationFrame(()=>sheetTo('mid',false)); }
+function show(v){ views.forEach(x=>{$('#'+x).hidden=(x!==v);}); if(v!=='battle') document.body.classList.remove('mys'); if(v==='battle' && window.sheetTo) requestAnimationFrame(()=>sheetTo('mid',false)); }
 function strip(){
   let s=`<svg viewBox="0 0 400 74" aria-hidden="true"><rect x="0" y="58" width="400" height="16" rx="2" fill="#5a3a20"/><rect x="0" y="58" width="400" height="3" fill="#8a6230"/><rect x="0" y="71" width="400" height="3" fill="#2c1a0d"/>`;
   const xs=[[22,'g','hvy'],[52,'g','inf-blk'],[84,'g','cav-blk'],[118,'g','cmd-blk'],[152,'g','arm'],[188,'g','plane'],[226,'t','ship'],[262,'t','gal'],[296,'t','spr'],[326,'t','cav'],[356,'t','art'],[384,'t','inf']];
@@ -308,7 +311,7 @@ function strip(){
   return s+'</svg>';
 }
 function thumb(b){
-  let s=`<svg viewBox="0 0 400 400" aria-hidden="true"><g filter="url(#aged)">${b.terrain()}</g><rect width="400" height="400" fill="url(#parch)"/>`;
+  const H=b.H||400; let s=`<svg viewBox="0 0 400 ${H}" aria-hidden="true"><g filter="url(#aged)">${b.terrain()}</g><rect width="400" height="${H}" fill="url(#parch)"/>`;
   b.units.forEach(u=>{ const p=(b.m&&b.m.start&&b.m.start[u.id])||posAt(u,0); if(p[2]==='off'||p[2]==='exit') return; const lift=u.t==='plane'?-15:0; OFF[u.n||1].forEach(o=>{ s+=`<g transform="translate(${p[0]+o[0]} ${p[1]+o[1]+lift}) scale(${b.face[u.s]*1.15} 1.15)"${p[2]==='hide'?' opacity=".45"':''}><use href="#u-${SPR(u.t,yearOf(b),u.name)}" ${fillAttr(u)}/></g>`; }); });
   return s+'</svg>';
 }
@@ -336,7 +339,7 @@ $('#playbook').addEventListener('click',e=>{
 
 /* ---------- battle flow ---------- */
 function openBattle(b){
-  show('battle'); state.mode='battle';
+  show('battle'); state.mode='battle'; document.body.classList.remove('mys');
   B=b; tweens=[]; state.cur={i:-1}; state.curArrows=[]; state.pov='g'; state.lens=false;
   $('#bName').textContent=b.name;
   $('#bSub').innerHTML=`<span class="sw g"></span>${b.g.short} <span>vs</span> <span class="sw t"></span>${b.t.short} <span>· ${b.year}</span>`;
@@ -513,7 +516,7 @@ function renderLens(){
   hideBanner();
 }
 function selectFeature(k){
-  if(!state.lens){ state.lens=true; renderTools(); renderLens(); setVB([0,0,400,400]); }
+  if(!state.lens){ state.lens=true; renderTools(); renderLens(); setVB(FULL()); }
   figs.forEach(f=>f.g.classList.remove('sel'));
   document.querySelectorAll('#lens .pin').forEach(p=>p.classList.toggle('sel',+p.dataset.feat===k));
   const f=B.features[k];
@@ -542,7 +545,7 @@ $('#pov').addEventListener('click',e=>{
   if(state.cardMode==='phase') { const st=card.scrollTop; renderCard(state.phase); card.scrollTop=st; }
 });
 $('#tFog').addEventListener('click',()=>{ state.fog=!state.fog; renderTools(); refreshVis(); });
-$('#tLens').addEventListener('click',()=>{ state.lens=!state.lens; renderTools(); renderLens(); if(state.lens){ tweens=tweens.filter(o=>!o.cam); setVB([0,0,400,400]); } else selectUnit(null); });
+$('#tLens').addEventListener('click',()=>{ state.lens=!state.lens; renderTools(); renderLens(); if(state.lens){ tweens=tweens.filter(o=>!o.cam); setVB(FULL()); } else selectUnit(null); });
 document.addEventListener('keydown',e=>{
   if($('#battle').hidden) return;
   if(e.key==='ArrowRight') advance();

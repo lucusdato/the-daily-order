@@ -8,6 +8,24 @@
    deduce: the commander's estimate, fact and so-what, shown in the debrief. cards: unit to troop card. */
 
 PGD.mystery(1,{
+  H:600,
+  terrain(){
+    let s=felt('#93a463',600);
+    s+=river('M0 22 Q200 48 400 16',14);
+    s+=`<path d="M300 600 Q330 520 360 470 Q380 440 400 430" fill="none" stroke="#6f9ab4" stroke-width="3" opacity=".6"/>`;
+    s+=road('M120 600 Q178 410 200 214 Q212 100 232 0');
+    s+=hill(232,105,64,26,3)+hill(200,213,78,30,3);
+    s+=trees(101,40,[10,390,50,590],(x,y)=>(Math.abs(x-200)>95||y>470)&&!(y>380&&y<480&&Math.abs(x-200)<110),['#3b6b2b','#4b7a35','#557f3b']);
+    s+=label(112,58,'Broad River, a few miles back',10)+label(312,226,'First rise',10)+label(326,112,'Second rise',10)+label(150,540,'Road from the south',10,-66);
+    s+=compass(378,578);
+    return s+end(600);
+  },
+  features:[
+    {x:200,y:213,r:44,px:300,py:206,name:'The first rise',why:'A gentle slope across the road.'},
+    {x:232,y:105,r:40,px:326,py:96,name:'The second rise',why:'A second low hill behind the first.'},
+    {x:200,y:26,px:90,py:40,d:'M0 22 Q200 48 400 16',line:true,name:'The river behind you',why:'The Broad River, a few miles back.'},
+    {x:200,y:375,r:80,px:150,py:450,name:'Open pasture',why:'Open, gently rolling ground with few obstacles.'}],
+  qs:'Set the trap: which toy goes where?',
   sit:'January 1781. Tarleton\'s fast British force is a few hours behind you and will attack at dawn. How you set up tonight decides tomorrow.',
   mett:{
     m:'Defeat Tarleton\'s force, so the British cannot crush the American army in the South.',
@@ -15,10 +33,10 @@ PGD.mystery(1,{
     t:'Open pasture with two low rises, cut by a road from the south.',
     tr:'About 1,000: steady Continental regulars, militia who shoot well but have no bayonets, a small cavalry force.',
     ti:'Tonight to set up. He attacks at first light.'},
-  ground:[['Key terrain','The first rise, where a main line can stand.'],['Avenue of approach','The road from the south, straight across open pasture.'],['Obstacle','A river a few miles behind you. Nobody can run far.']],
+  ground:[['Key terrain','The first rise, where a main line can stand.',[200,142,46]],['Avenue of approach','The road from the south, straight across open pasture.',[172,300,34]],['Obstacle','A river behind you. Nobody can run far.',[200,16,30]]],
   q:'Tarleton always charges. Which toy, placed where, turns that charge into a trap?',
   toys:[['a_militia','Militia'],['a_cont','Continentals'],['a_cav','Cavalry']],
-  zones:[['skirm','Out in the open pasture',196,262,26],['front','Just in front of the first rise',204,188,22],['rise1','On the first rise',200,136,24],['rise2','Behind the second rise',258,70,24]],
+  zones:[['skirm','Open pasture',196,262,26],['front','Before the first rise',204,188,22],['rise1','On the first rise',200,136,24],['rise2','Behind the second rise',258,70,24]],
   ans:{u:'a_militia',z:'front'},
   near:{u:[],z:['skirm','rise1']},
   start:{a_militia:[64,112],a_cont:[104,112],a_cav:[146,104],a_rifles:[146,262],a_morgan:[236,112]},
@@ -64,7 +82,7 @@ PGD.mystery(14,{
   ground:[['Obstacle','The Meuse itself, covered by bunkers on the far bank.'],['Cover and concealment','The Ardennes forest behind you hides your columns.'],['Avenue of approach','Past the river, open country runs all the way to the sea.']],
   q:'Which force, sent where, gets you across the Meuse first?',
   toys:[['de_stuka','Dive bombers'],['de_eng','Engineers'],['de_1pz','Panzers']],
-  zones:[['sedan','The river at Sedan',176,214,24],['north','A crossing further north',182,72,24],['deep','The French reserves, far back',70,300,26],['wait','Stay hidden in the forest',320,332,26]],
+  zones:[['sedan','River at Sedan',176,214,24],['north','Crossing to the north',182,72,24],['deep','French reserves',70,300,26],['wait','Wait in the forest',320,332,26]],
   ans:{u:'de_stuka',z:'sedan'},
   near:{u:['de_eng'],z:['north']},
   start:{de_stuka:[330,64],de_eng:[316,160],de_1pz:[306,236],de_2pz:[352,120],de_10pz:[352,296],de_cmd:[372,206]},
@@ -109,7 +127,7 @@ PGD.mystery(17,{
   ground:[['Obstacle','Shoals along the landward side of the French line.'],['Key terrain','The head of the French line, nearest the island.'],['Avenue of approach','Open water along the seaward side.']],
   q:'Which of your ships go where to open the attack?',
   toys:[['gb_goliath','Your lead ships'],['gb_outside','Your main squadron']],
-  zones:[['inside','Between the French van and the shore',84,152,20],['outside','Beside the French van, seaward',150,104,22],['flag','Beside the big flagship',260,214,22],['rear','At the French rear',320,284,22],['wait','Wait outside the bay for dawn',358,214,22]],
+  zones:[['inside','Shore side of the van',84,152,20],['outside','Sea side of the van',150,104,22],['flag','Beside the flagship',260,214,22],['rear','The French rear',320,284,22],['wait','Outside the bay',358,214,22]],
   ans:{u:'gb_goliath',z:'inside'},
   near:{u:['gb_outside'],z:['outside']},
   start:{},

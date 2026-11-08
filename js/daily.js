@@ -67,7 +67,7 @@ function dailyFeat(f,k){
 /* ---------- loading scenario files ---------- */
 function loadDaily(){
   const FILES=(typeof PGD_FILES!=='undefined')?PGD_FILES:[]; let left=FILES.length;
-  const done=()=>{ Object.keys(PGD.quickQ).forEach(n=>{ if(PGD.byN[n]) applyQuick(PGD.byN[n],PGD.quickQ[n]); }); Object.keys(PGD.mysQ||{}).forEach(n=>{ if(PGD.byN[n]) PGD.byN[n].m=PGD.mysQ[n]; }); PGD.ready=true;
+  const done=()=>{ Object.keys(PGD.quickQ).forEach(n=>{ if(PGD.byN[n]) applyQuick(PGD.byN[n],PGD.quickQ[n]); }); Object.keys(PGD.mysQ||{}).forEach(n=>{ if(PGD.byN[n]) applyMystery(PGD.byN[n],PGD.mysQ[n]); }); PGD.ready=true;
     if(window.renderDailySlot) renderDailySlot(); const h=location.hash.replace('#',''); if(/^daily|^archive|^cards/.test(h)) route(); };
   if(!left){ done(); return; }
   FILES.forEach(f=>{
@@ -124,13 +124,14 @@ function dailyRoute(h){
 /* ---------- daily flow ---------- */
 function openDaily(n,preview=false){
   const sc=scFor(n); if(!sc) return; D.preview=preview;
-  show('battle'); state.mode='daily';
+  show('battle'); state.mode='daily'; document.body.classList.toggle('mys',!!sc.m);
   B=sc; D.sc=sc; D.n=n; tweens=[]; state.cur={i:-1}; state.curArrows=[]; state.pov=sc.side; state.lens=false; state.phase=0;
   $('#bName').textContent=sc.name;
   $('#bSub').innerHTML=`<span>Order #${n} · ${fmtDate(dateOfN(n))} · ${sc.year}</span> <span class="sw ${sc.side}"></span><span>${sc[sc.side].short}</span>`;
   $('#povG').textContent=sc.g.tab||sc.g.short; $('#povT').textContent=sc.t.tab||sc.t.short;
   buildBoard(sc); selectUnit(null); hideBanner();
   if(sc.m){ openMystery(); return; }
+  $('#dock').hidden=true;
   const r=resFor(n), k=sc.decisions.length;
   D.step = r.done ? k+1 : Math.min(r.picks.length,k);
   dailyShow(false);

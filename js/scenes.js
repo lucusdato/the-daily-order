@@ -7,7 +7,7 @@ function scClear(){ SC.timers.forEach(clearTimeout); SC.timers=[]; }
 
 function scenesPlay(list,{onEnd,onStep,endLabel='Continue',auto=false}={}){
   scClear(); SC.list=list; SC.i=-1; SC.onEnd=onEnd; SC.onStep=onStep; SC.endLabel=endLabel; SC.active=true; SC.auto=auto;
-  if(window.sheetTo && sheetOn() && SHEET.pos==='full') sheetTo('mid');
+  if(window.sheetTo && sheetOn()) sheetTo(isMys()?'peek':(SHEET.pos==='full'?'mid':SHEET.pos));
   scGo(0);
 }
 function scStop(){ SC.tok++; scClear(); SC.active=false; SC.busy=false; const c=$('#capbar'); if(c) c.hidden=true; }
@@ -45,10 +45,26 @@ function scGo(i){
 }
 function scNext(){ if(!SC.active) return; if(SC.i<SC.list.length-1) scGo(SC.i+1); else scFinish(); }
 function scBack(){ if(SC.active && SC.i>0){ SC.auto=false; scGo(SC.i-1); } }
+function renderCapDock(){
+  const d=$('#dock'), sc=SC.list[SC.i]; if(!d||!sc) return;
+  const last=SC.i===SC.list.length-1, n=SC.list.length;
+  d.hidden=false; d.className='dock dk-scene';
+  d.innerHTML=`<div class="dk-row"><span class="cb-n">${n>1?`Scene ${SC.i+1} of ${n}`:''}${sc.banner?`${n>1?' · ':''}<i>${sc.banner}</i>`:''}</span>${n>2?`<button type="button" class="cb-auto">${SC.auto?'❚❚ Pause':'▶ Auto'}</button>`:''}</div>
+    <b class="cb-t">${sc.t}</b><p class="cb-b">${sc.b}</p>
+    <div class="dk-nav">${SC.i>0?'<button type="button" class="cb-back" aria-label="Previous scene">‹</button>':''}<button type="button" class="cb-next${SC.busy?' wait':''}">${last?SC.endLabel:'Next'} ›</button></div>`;
+  if(window.sheetTo && sheetOn()) sheetTo(SHEET.pos==='peek'?'peek':SHEET.pos,false);
+}
+document.getElementById('dock').addEventListener('click',e=>{
+  if(!SC.active) return;
+  if(e.target.closest('.cb-back')){ e.stopPropagation(); return scBack(); }
+  if(e.target.closest('.cb-auto')){ e.stopPropagation(); return scToggleAuto(); }
+  if(e.target.closest('.cb-next')){ e.stopPropagation(); return scNext(); }
+});
 function scFinish(){ const fn=SC.onEnd; scStop(); hideBanner(); if(fn) fn(); }
 function scToggleAuto(){ SC.auto=!SC.auto; renderCap(); if(SC.auto && !SC.busy) scNext(); }
 
 function renderCap(){
+  if(isMys()) return renderCapDock();
   let c=$('#capbar');
   if(!c){ c=document.createElement('div'); c.id='capbar'; c.className='capbar'; c.setAttribute('aria-live','polite'); $('.board-wrap').appendChild(c);
     c.addEventListener('click',e=>{ e.stopPropagation();

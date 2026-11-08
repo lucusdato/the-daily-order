@@ -53,7 +53,7 @@
           <button id="next" type="button">Next &#8250;</button>
         </div>
       </div>
-      <div class="sheet" id="sheet"><div class="grab" id="grab" role="button" tabindex="0" aria-label="Show the board"><span></span></div><div class="card" id="card"></div></div>
+      <div class="sheet" id="sheet"><div class="grab" id="grab" role="button" tabindex="0" aria-label="Show the board"><span></span></div><div class="dock" id="dock" hidden aria-live="polite"></div><div class="card" id="card"></div></div>
     </div>
   </section>
 

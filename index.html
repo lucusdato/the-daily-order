@@ -645,6 +645,54 @@ body{
 .pb-head .bar{position:sticky;top:0;z-index:2}
 @media (max-width:380px){ .seg button,.tg{font-size:11px!important;padding:5px 7px!important} .tools{gap:4px} }
 
+/* ====================== v7: mystery layout, map first ====================== */
+.dock{display:none}
+body.mys .tools, body.mys .ctrl{display:none!important}
+body.mys .left{padding-top:6px}
+body.mys .board-wrap{margin:0 auto}
+body.mys .dock:not([hidden]){display:block;flex:none;padding:4px 14px 12px;background:linear-gradient(#efe3c5,#e9dcba);border-bottom:2px solid #c9b07a;position:relative;z-index:2}
+@media (min-width:900px) and (min-height:520px){ body.mys .dock:not([hidden]){border-radius:0} body.mys .sheet{flex-direction:column} }
+.dk-row{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:28px}
+.dk-q{font-family:var(--f-display);font-weight:700;font-size:17px;line-height:1.15;color:#21170d;letter-spacing:.01em}
+.pips2{display:flex;gap:4px;flex:none}
+.pip2{min-width:22px;height:18px;border-radius:3px;font-size:9px;letter-spacing:-1px;display:grid;place-items:center;background:#2a1f14}
+.pip2.empty{background:transparent;box-shadow:inset 0 0 0 1.5px #b9a473}
+.dk-tray{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:6px 0 8px}
+.dk-tray .toy{padding:4px 2px 6px!important;font-size:12.5px;gap:0}
+.dk-tray .toy svg{margin-bottom:-2px}
+.dock .commit{margin-top:0!important;width:100%;padding:11px 12px!important;font-size:14px!important}
+.dock .commit:disabled{background:#d9caa0!important;color:#5a4a30!important;box-shadow:inset 0 0 0 1px #bfa970!important}
+.dk-nav{display:flex;gap:8px;align-items:center;margin-top:8px}
+.dk-nav .commit,.dk-nav .cb-next{flex:1}
+.dk-ghost{flex:1;border:0;border-radius:5px;background:#2a1f14;color:#efe3c5;font-weight:800;padding:11px;cursor:pointer;font-family:var(--f-body)}
+.dk-scene .cb-n{font-family:var(--f-hand);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ox)}
+.dk-scene .cb-n i{font-style:normal;color:var(--ox)}
+.dk-scene .cb-auto{background:transparent!important;border:0;color:var(--ox);font-family:var(--f-hand);font-size:12px;cursor:pointer}
+.dk-scene .cb-t{display:block;font-family:var(--f-display);font-weight:700;font-size:18px;line-height:1.1;color:#21170d;margin:2px 0}
+.dk-scene .cb-b{margin:0;font-size:14.5px;line-height:1.42;color:#2a1f14}
+.dk-scene .cb-next{padding:11px 12px!important;font-size:14px!important}
+.dk-scene .cb-back{width:46px;height:42px}
+.dk-scene .cb-next.wait{opacity:.8}
+/* the brief, trimmed */
+.mys .who{margin:-6px 0 0;font-weight:700;font-size:14.5px;display:flex;gap:7px;align-items:center;color:#3a2d1c}
+.mys .sit{font-size:14.5px;padding:9px 11px}
+.theq{margin:0;font-size:15.5px;line-height:1.4;font-weight:700}
+.theq span{display:block;font-family:var(--f-hand);font-weight:400;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ox);margin-bottom:2px}
+.mett{gap:5px}
+.mrow{padding:7px 10px 7px 8px!important;grid-template-columns:24px 1fr!important;gap:9px!important}
+.ml{width:24px!important;height:24px!important;font-size:14px!important}
+.mb p{font-size:14px!important}
+.mk{font-size:10.5px!important;margin-right:3px}
+button.og{display:grid;grid-template-columns:auto 1fr;gap:7px;align-items:baseline;text-align:left;background:transparent;border:0;padding:2px 0;font:inherit;font-size:13.5px;line-height:1.4;color:var(--ink);cursor:pointer}
+button.og i{font-style:normal;color:var(--ox);font-weight:700;font-size:12px;white-space:nowrap}
+.mlock{display:block!important;border:0!important;padding:0 2px!important;font-size:13px!important;font-style:italic;margin:2px 0 0}
+.mett-q{justify-self:start;font-size:12.5px!important}
+.mfb{background:#2a1f14!important;color:#efe3c5;padding:9px 11px!important}
+.mfb p{font-size:14px!important}
+#mzones .mz text.mzl{font-family:var(--f-map);font-size:11px;fill:#2c1d0e;paint-order:stroke;stroke:rgba(239,227,197,.92);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+#mzones .mz.sel text.mzl{fill:#7d2717}
+@media (min-width:900px) and (min-height:520px){ body.mys .dock:not([hidden]){padding-top:12px} }
+
 </style>
 </head>
 <body>
@@ -739,7 +787,7 @@ body{
           <button id="next" type="button">Next &#8250;</button>
         </div>
       </div>
-      <div class="sheet" id="sheet"><div class="grab" id="grab" role="button" tabindex="0" aria-label="Show the board"><span></span></div><div class="card" id="card"></div></div>
+      <div class="sheet" id="sheet"><div class="grab" id="grab" role="button" tabindex="0" aria-label="Show the board"><span></span></div><div class="dock" id="dock" hidden aria-live="polite"></div><div class="card" id="card"></div></div>
     </div>
   </section>
 

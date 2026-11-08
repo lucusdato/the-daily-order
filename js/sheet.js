@@ -4,11 +4,29 @@
 const SHEET = { el:null, grab:null, pos:'mid', y:0, snaps:{}, drag:null };
 const sheetOn = () => !matchMedia('(min-width:900px) and (min-height:520px)').matches;
 
+const isMys = () => document.body.classList.contains('mys');
+/* in mystery mode the map takes all the room above the order dock */
+function sizeMap(avail){
+  const bw=document.querySelector('#battle .board-wrap'), st=document.querySelector('#battle .stage'); if(!bw||!st) return;
+  if(!isMys()){ bw.style.width=''; return; }
+  const k=400/(((typeof B!=='undefined')&&B&&B.H)||400), W=st.clientWidth;
+  const wide=!sheetOn();
+  const maxW = wide ? Math.min(W-470, 900) : W-12;
+  bw.style.width=Math.max(220,Math.min(maxW,(avail-12)*k))+'px';
+}
 function sheetMeasure(){
   const st=document.querySelector('#battle .stage'), left=document.querySelector('#battle .left');
   if(!st||!left) return;
-  const H=st.clientHeight, ctrlBottom=left.offsetHeight;
-  SHEET.snaps={ full:Math.min(56, H*.08), mid:Math.max(56, Math.min(ctrlBottom, H-170)), peek:H-58 };
+  const H=st.clientHeight;
+  if(isMys()){
+    const dock=document.getElementById('dock'), dh=(dock&&!dock.hidden)?dock.offsetHeight:0;
+    const peek=Math.round(Math.max(H*.42, H-(24+dh)));
+    SHEET.snaps={ full:Math.min(40,H*.06), mid:Math.round(Math.min(H*.42,peek)), peek };
+    sizeMap(peek-4);
+  } else {
+    const ctrlBottom=left.offsetHeight;
+    SHEET.snaps={ full:Math.min(56, H*.08), mid:Math.max(56, Math.min(ctrlBottom, H-170)), peek:H-58 };
+  }
   SHEET.el.style.height=(H-SHEET.snaps.full)+'px';
 }
 function sheetSet(y,anim){
@@ -20,7 +38,7 @@ function sheetSet(y,anim){
 }
 function sheetTo(pos,anim=true){
   if(!SHEET.el) return;
-  if(!sheetOn()){ SHEET.el.removeAttribute('style'); const c=document.getElementById('card'); if(c) c.style.paddingBottom=''; return; }
+  if(!sheetOn()){ SHEET.el.removeAttribute('style'); const c=document.getElementById('card'); if(c) c.style.paddingBottom=''; const st=document.querySelector('#battle .stage'); if(st) sizeMap(st.clientHeight-20); return; }
   sheetMeasure(); SHEET.pos=pos; sheetSet(SHEET.snaps[pos],anim);
   SHEET.el.dataset.pos=pos;
   if(SHEET.grab) SHEET.grab.setAttribute('aria-label', pos==='peek'?'Show the card':'Show the board');

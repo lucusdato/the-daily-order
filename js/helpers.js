@@ -3,7 +3,7 @@ const NS = 'http://www.w3.org/2000/svg';
 const PG = { list: [], add(b){ this.list.push(b); } };
 
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-const felt = c => `<rect width="400" height="400" fill="${c}"/><rect width="400" height="400" fill="url(#speck)"/>`;
+const felt = (c,H=400) => `<rect width="400" height="${H}" fill="${c}"/><rect width="400" height="${H}" fill="url(#speck)"/>`;
 const seaBg = () => `<rect width="400" height="400" fill="#5d9bc0"/><rect width="400" height="400" fill="url(#waves)"/>`;
 const land = (d,c='#8fa765') => `<path d="${d}" fill="${c}"/><path d="${d}" fill="url(#speck)"/><path d="${d}" fill="none" stroke="#e6d6a2" stroke-width="3" opacity=".8"/>`;
 const sea = d => `<path d="${d}" fill="#5d9bc0"/><path d="${d}" fill="url(#waves)"/><path d="${d}" fill="none" stroke="#e6d6a2" stroke-width="2.5" opacity=".7"/>`;
@@ -28,7 +28,7 @@ const tent = (x,y,c) => `<path d="M${x-8} ${y} L${x} ${y-10} L${x+8} ${y} Z" fil
 const label = (x,y,t,size=11,rot=0) => `<text class="lbl" x="${x}" y="${y}" font-size="${size}" text-anchor="middle"${rot?` transform="rotate(${rot} ${x} ${y})"`:''}>${t}</text>`;
 const city = (x,y,name,size=9,dy=-6,anchor='middle') => `<circle cx="${x}" cy="${y}" r="3.2" fill="#1f1a14" stroke="#f3ead6" stroke-width="1.4"/><text class="lbl" x="${x}" y="${y+dy}" font-size="${size}" text-anchor="${anchor}">${name}</text>`;
 const compass = (x,y) => `<g transform="translate(${x} ${y})"><circle r="12" fill="rgba(246,238,216,.9)" stroke="#1f1a14" stroke-width="1"/><path d="M0 -9 L3.6 3 L0 1 L-3.6 3 Z" fill="#d23f2c"/><text y="9.8" text-anchor="middle" font-size="6.5" font-family="Archivo, sans-serif" font-weight="800" fill="#1f1a14">N</text></g>`;
-const end = () => `<rect width="400" height="400" fill="url(#grid)"/><rect width="400" height="400" fill="url(#vig)"/><rect x="3" y="3" width="394" height="394" rx="3" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1.2"/>`;
+const end = (H=400) => `<rect width="400" height="${H}" fill="url(#grid)"/><rect width="400" height="${H}" fill="url(#vig)"/><rect x="3" y="3" width="394" height="${H-6}" rx="3" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1.2"/>`;
 const night = ph => `<rect class="ph" data-show="${ph}" width="400" height="400" fill="#14244a" fill-opacity=".4"/>`;
 const snowfall = ph => `<g class="ph" data-show="${ph}"><rect width="400" height="400" fill="#f4f6f8" fill-opacity=".28"/><rect width="400" height="400" fill="url(#snow)"/></g>`;
 function storm(ph,seed=7,y0=0,y1=400){
