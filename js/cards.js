@@ -153,15 +153,22 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') hideCard(); });
 
 /* ---------- the collection ---------- */
+function releasedSets(){
+  const out=new Set(); const n=window.todayN?todayN():0;
+  for(let k=1;k<=n;k++){ const sc=window.scFor&&scFor(k); if(sc) out.add(sc.n); }
+  return Object.entries(CARD_SETS).filter(([,v])=>out.has(v[1]));
+}
 function renderCards(){
-  const own=CARDS.filter(c=>OWNED.has(c.id)).length;
-  let h=`<div class="pb-head"><header class="bar"><button class="back" type="button" data-home>‹ Home</button><div class="bt"><div class="bt-name">Troop cards</div><div class="bt-sub">${own} of ${CARDS.length} collected. Finish a battle to add its troops.</div></div></header></div><div class="pb-inner">`;
-  Object.entries(CARD_SETS).forEach(([k,[name,n]])=>{
+  const sets=releasedSets(), keys=new Set(sets.map(([k])=>k));
+  const pool=CARDS.filter(c=>keys.has(c.set)), own=pool.filter(c=>OWNED.has(c.id)).length;
+  let h='';
+  sets.slice().reverse().forEach(([k,[name]])=>{
     const cs=CARDS.filter(c=>c.set===k);
-    h+=`<h3 class="cs-h">${name}<span>${cs.filter(c=>OWNED.has(c.id)).length}/${cs.length}</span></h3><div class="cgrid">${cs.map(c=>`<button type="button" class="cmini ${OWNED.has(c.id)?c.side:'locked'}" data-card="${c.id}">${toySvg(c,58)}<b>${OWNED.has(c.id)?c.name:'Locked'}</b></button>`).join('')}</div>`;
+    h+=`<section class="cset"><h2>${name}<span>${cs.filter(c=>OWNED.has(c.id)).length}/${cs.length}</span></h2><div class="cgrid">${cs.map(c=>{ const o=OWNED.has(c.id); return `<button type="button" class="cmini ${o?c.side:'locked'}" data-card="${c.id}"><span class="cmi">${toySvg(c,58)}</span><b>${o?c.name:'Locked'}</b></button>`; }).join('')}</div></section>`;
   });
-  h+=`</div>`;
-  const el=$('#cards'); el.innerHTML=h; el.scrollTop=0;
+  const el=$('#cards');
+  el.innerHTML=`<div class="pg2">${pgHead('Troop cards',`${own} of ${pool.length} collected. Finish an order to add its troops.`)}<div class="pbody">${h}</div></div>`;
+  el.scrollTop=0;
 }
 $('#cards').addEventListener('click',e=>{
   if(e.target.closest('[data-home]')){ location.hash='home'; return; }

@@ -124,7 +124,7 @@ PGD.mystery(14,{
     t:'A river a few hundred feet wide, with bunkers covering it. Open, rolling country beyond.',
     tr:'Three panzer divisions, infantry with rubber assault boats, and a large air force on call.',
     ti:'Every day counts. Your heavy artillery is still stuck in traffic on the forest roads.'},
-  ground:[['Obstacle','The Meuse itself, covered by bunkers on the far bank.'],['Cover and concealment','The Ardennes forest behind you hides your columns.'],['Avenue of approach','Past the river, open country runs all the way to the sea.']],
+  ground:[['Obstacle','The Meuse itself, covered by bunkers on the far bank.',[172,200,40]],['Cover and concealment','The Ardennes forest behind you hides your columns.',[320,220,64]],['Avenue of approach','Past the river, open country runs all the way to the sea.',[76,190,56]]],
   q:'Which force, sent where, gets you across the Meuse first?',
   toys:[['de_stuka','Dive bombers'],['de_eng','Engineers'],['de_1pz','Panzers']],
   zones:[['sedan','River at Sedan',176,214,24],['north','Crossing to the north',182,72,24],['deep','French reserves',70,300,26],['wait','Wait in the forest',320,332,26]],

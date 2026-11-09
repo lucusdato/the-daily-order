@@ -104,16 +104,17 @@ function renderDailySlot(){
 /* ---------- archive ---------- */
 function renderArchive(){
   const n=todayN();
-  let h=`<div class="pb-head"><header class="bar"><button class="back" type="button" data-home>‹ Home</button><div class="bt"><div class="bt-name">Past orders</div><div class="bt-sub">Every daily battle so far. Your scores stay on this device.</div></div></header></div><div class="pb-inner">`;
+  let rows='';
   for(let k=n;k>=1;k--){
     const sc=scFor(k); if(!sc) continue;
-    const r=RES[k], d=dateOfN(k);
-    const sc_= sc.m ? (r&&r.first?`${r.first.won?r.first.tries.length:'X'}/5`:(r&&r.tries&&r.tries.length?'In progress':'Not played'))
-      : r&&r.first?`${r.first.picks.map((p,j)=>SQUARE(ptsOf(sc,r.first,j))).join('')} ${firstScore(sc,r)}/${maxScore(sc)}`:(r&&r.picks&&r.picks.length?'In progress':'Not played');
-    h+=`<a class="arow" href="#daily-${k}"><span class="an">#${k}</span><span class="at"><b>${sc.name}, ${sc.year}</b><br>${fmtDate(d)} · ${sc.place}</span><span class="as${r&&r.first?' done':''}">${sc_}</span></a>`;
+    const r=RES[k], d=dateOfN(k), f=r&&r.first;
+    const st = f ? (f.won?`<span class="pst win">${f.tries.length}/5</span>`:`<span class="pst lose">X/5</span>`)
+      : (r&&r.tries&&r.tries.length ? `<span class="pst mid">In progress</span>` : `<span class="pst new">Play</span>`);
+    rows+=`<a class="prow" href="#daily-${k}"><span class="pn">#${k}</span><span class="ptx"><b>${sc.name} <i>${sc.year}</i></b><span>${fmtDate(d)} · ${(sc.m&&sc.m.war)||sc.place}</span></span>${st}</a>`;
   }
-  h+=`</div>`;
-  const el=$('#archive'); el.innerHTML=h; el.scrollTop=0;
+  const el=$('#archive');
+  el.innerHTML=`<div class="pg2">${pgHead('Past orders','Every daily order so far. Your scores stay on this device.')}<div class="pbody">${rows||'<p class="pempty">The first order arrives at 4 AM.</p>'}</div></div>`;
+  el.scrollTop=0;
 }
 $('#archive').addEventListener('click',e=>{ if(e.target.closest('[data-home]')) location.hash='home'; });
 

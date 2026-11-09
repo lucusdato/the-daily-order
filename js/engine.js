@@ -332,6 +332,8 @@ function buildBoard0(b){
 
 /* ---------- views ---------- */
 const views=['home','battle','playbook','archive','cards'];
+const BACK_SVG='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const pgHead=(t,sub)=>`<header class="pbar"><button class="back bk-ico" type="button" data-home aria-label="Back to today's order">${BACK_SVG}</button><div class="pbt"><h1>${t}</h1>${sub?`<p>${sub}</p>`:''}</div></header>`;
 function show(v){ views.forEach(x=>{$('#'+x).hidden=(x!==v);}); if(v!=='battle') document.body.classList.remove('mys'); if(v==='battle' && window.sheetTo) requestAnimationFrame(()=>sheetTo('mid',false)); }
 function strip(){
   let s=`<svg viewBox="0 0 400 74" aria-hidden="true"><rect x="0" y="58" width="400" height="16" rx="2" fill="#5a3a20"/><rect x="0" y="58" width="400" height="3" fill="#8a6230"/><rect x="0" y="71" width="400" height="3" fill="#2c1a0d"/>`;
@@ -362,11 +364,8 @@ function renderHome(){
       <div class="lright"><div id="dailySlot"></div>
         <ol class="lhow lhow-m">${how.map(([c,n,t])=>`<li><span class="ln ${c}">${n}</span><span>${t}</span></li>`).join('')}</ol></div>
     </div>
-    <nav class="lfoot"><a href="#archive">Past orders</a><a href="#cards">Troop cards</a><a href="#library">Battle library</a></nav>
-  </div>
-  <div class="home-inner" id="library">`+`<p class="sh-label">The campaign library · ${BATTLES.length} battles, step by step</p><div class="boxes">`;
-  BATTLES.forEach(b=>{ h+=`<a class="box" href="#${b.id}"><div class="thumb">${thumb(b)}</div><div class="bx"><div class="yr">${b.year} · ${b.place}</div><h2>${b.name}</h2><p>${b.summary}</p><div class="tags">${teaches(b).map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></a>`; });
-  h+=`</div><a class="pbcard" href="#playbook"><span class="pk">The Playbook</span><b>${PRINCIPLES.length} principles</b><span>Every lesson from the board, collected in one place and translated for strategy and leadership at work.</span></a><p class="foot">Board positions are simplified to show the shape of each battle. Troop numbers are best estimates, and ancient figures in particular are debated by historians. "What if" replays are informed speculation, clearly marked on the board.</p></div>`;
+    <nav class="lfoot"><a href="#archive">Past orders</a><a href="#cards">Troop cards</a></nav>
+  </div>`;
   $('#home').innerHTML=h;
   if(window.renderDailySlot) renderDailySlot();
 }
@@ -609,7 +608,6 @@ function route(){
   tweens=[];
   if(h==='playbook'){ show('playbook'); renderPlaybook(); return; }
   show('home');
-  if(h==='library') requestAnimationFrame(()=>{ const l=document.getElementById('library'); if(l) l.scrollIntoView(); });
 }
 window.addEventListener('hashchange',route);
 function start(data){
