@@ -70,8 +70,25 @@ const CARDS = [
   {id:'gun1815', set:'waterloo', name:'Field artillery', era:'Napoleonic Wars, 1815', t:'art', side:'t', st:[1,5,2,5],
    good:'Smashing any line it can see', beat:'Targets hidden behind a crest',
    fact:'Napoleon trained as an artillery officer and loved massed guns.'}
+,
+  // Hastings, 1066
+  {id:'knight1066', set:'hastings', name:'Norman knight', era:'Norman Conquest, 1066', t:'cav', side:'g', st:[4,4,3,1],
+   good:'Charging troops caught on open ground', beat:'Uphill charges into a solid shield wall',
+   fact:'Mounted warriors with lances and swords. England had almost no cavalry of its own.'},
+  {id:'archer1066', set:'hastings', name:'Norman archer', era:'Norman Conquest, 1066', t:'arch', side:'g', st:[3,2,1,4],
+   good:'Shooting into a crowded line', beat:'Shields, and shooting uphill',
+   fact:'The Bayeux Tapestry shows archers playing a part in the final stage of the battle.'},
+  {id:'normfoot1066', set:'hastings', name:'Norman foot soldier', era:'Norman Conquest, 1066', t:'hvy', side:'g', st:[2,3,3,1],
+   good:'Pressing home an attack', beat:'Axes and spears from higher ground',
+   fact:'Many wore mail shirts and carried long, kite-shaped shields.'},
+  {id:'housecarl1066', set:'hastings', name:'Housecarls', era:'Norman Conquest, 1066', t:'hvy', side:'t', st:[2,5,4,1],
+   good:'Holding a shield wall, the two-handed axe', beat:'Being lured away from the line',
+   fact:'Professional warriors who fought with fearsome two-handed axes.'},
+  {id:'fyrd1066', set:'hastings', name:'The fyrd', era:'Norman Conquest, 1066', t:'spr', side:'t', st:[2,2,2,1],
+   good:'Filling out the shield wall', beat:'Chasing an enemy who only seems beaten',
+   fact:'Part-time soldiers called up from the shires.'}
 ];
-const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28]};
+const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();
