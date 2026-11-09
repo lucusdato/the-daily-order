@@ -334,7 +334,7 @@ function renderPlaybook(){
   if(state.pbFocus){ const t=document.getElementById('pr-'+state.pbFocus); if(t){ t.classList.add('flash'); requestAnimationFrame(()=>t.scrollIntoView({block:'start'})); setTimeout(()=>t.classList.remove('flash'),2200);} state.pbFocus=null; }
 }
 $('#playbook').addEventListener('click',e=>{
-  if(e.target.closest('[data-home]')){ location.hash=''; return; }
+  if(e.target.closest('[data-home]')){ location.hash='home'; return; }
   const b=e.target.closest('[data-b]');
   if(b){ state.pending=+b.dataset.ph; location.hash=b.dataset.b; }
 });
@@ -396,7 +396,7 @@ function nextLabel(i){
 function advance(){
   if(state.mode==='daily') return dailyNext();
   if(state.phase<B.phases.length-1){ goTo(state.phase+1); return; }
-  const nb=nextBattle(); location.hash = nb ? nb.id : '';
+  const nb=nextBattle(); location.hash = nb ? nb.id : 'home';
 }
 function renderCtrl(){
   const n=B.phases.length, i=state.phase;
@@ -539,7 +539,7 @@ card.addEventListener('click',e=>{
 $('#dots').addEventListener('click',e=>{ const d=e.target.closest('[data-k]'); if(!d) return; if(state.mode==='daily') dailyDot(+d.dataset.k); else goTo(+d.dataset.k); });
 $('#prev').addEventListener('click',()=>{ if(state.mode==='daily') dailyPrev(); else goTo(state.phase-1); });
 $('#next').addEventListener('click',advance);
-$('#bBack').addEventListener('click',()=>{ location.hash=''; });
+$('#bBack').addEventListener('click',()=>{ location.hash='home'; });
 $('#bPb').addEventListener('click',()=>{ location.hash='playbook'; });
 $('#pov').addEventListener('click',e=>{
   const b=e.target.closest('[data-pov]'); if(!b||b.disabled) return;
@@ -556,7 +556,8 @@ document.addEventListener('keydown',e=>{
 });
 
 function route(){
-  const h=location.hash.replace('#','');
+  let h=location.hash.replace('#','');
+  if(h===''){ history.replaceState(null,'','#daily'); h='daily'; }
   if(window.dailyRoute && dailyRoute(h)) return;
   const b=BMAP[h];
   if(b){ openBattle(b); return; }

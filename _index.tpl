@@ -7,7 +7,7 @@
 <meta name="description" content="A daily military strategy puzzle. Read the situation like a real commander, make one call, and watch history play out on a toy board.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Stardos+Stencil:wght@400;700&family=Special+Elite&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Stardos+Stencil:wght@400;700&family=Special+Elite&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
 <style>
 {{CSS}}
 {{EXTRA}}
@@ -41,7 +41,7 @@
 
   <section id="battle" class="view" hidden>
     <header class="bar">
-      <button class="back" id="bBack" type="button">&#8249; Battles</button>
+      <button class="back bk-ico" id="bBack" type="button" aria-label="Back to all battles"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="bt"><div class="bt-name" id="bName"></div><div class="bt-sub" id="bSub"></div></div>
       <button class="pbtn" id="bPb" type="button">Playbook</button>
     </header>

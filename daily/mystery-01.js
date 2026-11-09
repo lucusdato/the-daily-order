@@ -26,6 +26,7 @@ PGD.mystery(1,{
     {x:200,y:26,px:90,py:40,d:'M0 22 Q200 48 400 16',line:true,name:'The river behind you',why:'The Broad River, a few miles back.'},
     {x:200,y:375,r:80,px:150,py:450,name:'Open pasture',why:'Open, gently rolling ground with few obstacles.'}],
   qs:'Set the trap: which toy goes where?',
+  lead:'The war in the South is going badly. The British have taken Charleston and crushed an American army at Camden. General Greene splits his small army and sends you west to rally the backcountry. The British send their most feared cavalry commander, Banastre Tarleton, to hunt you down.',
   sit:'January 1781. Tarleton\'s fast British force is a few hours behind you and will attack at dawn. How you set up tonight decides tomorrow.',
   mett:{
     m:'Defeat Tarleton\'s force, so the British cannot crush the American army in the South.',

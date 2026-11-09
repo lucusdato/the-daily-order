@@ -105,7 +105,7 @@ function renderArchive(){
   h+=`</div>`;
   const el=$('#archive'); el.innerHTML=h; el.scrollTop=0;
 }
-$('#archive').addEventListener('click',e=>{ if(e.target.closest('[data-home]')) location.hash=''; });
+$('#archive').addEventListener('click',e=>{ if(e.target.closest('[data-home]')) location.hash='home'; });
 
 /* ---------- routing ---------- */
 function dailyRoute(h){
@@ -173,7 +173,7 @@ function dailyNext(){
   if(D.step===0){ D.step=1; dailyShow(true); return; }
   if(D.step<=k){ if(r.picks[D.step-1]==null){ showOptions(); return; }
     const pb=card.querySelector('.dplay'); if(pb){ pb.click(); return; } D.step++; dailyShow(true); return; }
-  location.hash='';
+  location.hash='home';
 }
 function showOptions(){ // bring the answer buttons into view
   if(window.sheetTo && sheetOn()) sheetTo('full');

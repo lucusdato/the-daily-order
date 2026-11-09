@@ -63,7 +63,7 @@ function sheetMove(y){
 function sheetEnd(){
   const d=SHEET.drag; SHEET.drag=null; if(!d) return false;
   if(!d.moved) return false;
-  sheetTo(sheetNearest(SHEET.y,d.v||0)); return true;
+  const to=sheetNearest(SHEET.y,d.v||0); if(window.sheetUserMove) sheetUserMove(to); sheetTo(to); return true;
 }
 
 function initSheet(){
@@ -73,9 +73,10 @@ function initSheet(){
   // handle: pointer drag, or tap to toggle
   g.addEventListener('pointerdown',e=>{ if(!sheetOn()) return; g.setPointerCapture(e.pointerId); sheetMeasure(); sheetStart(e.clientY); });
   g.addEventListener('pointermove',e=>{ if(SHEET.drag) sheetMove(e.clientY); });
-  const up=()=>{ if(!SHEET.drag) return; const moved=sheetEnd(); if(!moved) sheetTo(SHEET.pos==='peek'?'mid':SHEET.pos==='mid'?'full':'mid'); };
+  const tog=()=>{ const to=SHEET.pos==='peek'?'mid':SHEET.pos==='mid'?'full':'mid'; if(window.sheetUserMove) sheetUserMove(to); sheetTo(to); };
+  const up=()=>{ if(!SHEET.drag) return; const moved=sheetEnd(); if(!moved) tog(); };
   g.addEventListener('pointerup',up); g.addEventListener('pointercancel',up);
-  g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); sheetTo(SHEET.pos==='peek'?'mid':SHEET.pos==='mid'?'full':'mid'); } });
+  g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tog(); } });
   // card body: pull down from the top to lower the sheet, push up to raise it
   let ty=null, mode=null;
   card.addEventListener('touchstart',e=>{ if(!sheetOn()||e.touches.length>1) return; ty=e.touches[0].clientY; mode=null; },{passive:true});
@@ -99,4 +100,4 @@ function initSheet(){
   sheetTo('mid',false);
 }
 /* When the board animates while the card covers it, drop the card so the move can be seen */
-function sheetRevealBoard(){ if(sheetOn() && SHEET.pos==='full') sheetTo('mid'); }
+function sheetRevealBoard(){ if(typeof MS!=='undefined' && MS.phase==='brief' && isMys()) return; if(sheetOn() && SHEET.pos==='full') sheetTo('mid'); }

@@ -87,7 +87,7 @@ function renderCards(){
   const el=$('#cards'); el.innerHTML=h; el.scrollTop=0;
 }
 $('#cards').addEventListener('click',e=>{
-  if(e.target.closest('[data-home]')){ location.hash=''; return; }
+  if(e.target.closest('[data-home]')){ location.hash='home'; return; }
   const b=e.target.closest('[data-card]'); if(!b) return;
   const c=CARDBY[b.dataset.card];
   if(OWNED.has(c.id)) showCard(c.id); else { b.classList.add('nope'); setTimeout(()=>b.classList.remove('nope'),400); }

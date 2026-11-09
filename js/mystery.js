@@ -21,7 +21,7 @@ function applyMystery(sc,m){
   (m.ground||[]).forEach(g=>{ if(g[2]) g[2]=[g[2][0],Y(g[2][1]),g[2][2]]; });
 }
 const MAXTRY = 5;
-const MS = { sel:{u:null,z:null}, busy:false, dirty:false, newClue:-1 };
+const MS = { sel:{u:null,z:null}, busy:false, dirty:false, newClue:-1, phase:'brief' };
 const SQ = {g:'🟩',y:'🟨',w:'⬜'};
 const mKey = () => D.preview ? 'p'+D.n : D.n;
 function mres(){ const k=mKey(); RES[k]=RES[k]||{tries:[],done:false}; RES[k].tries=RES[k].tries||[]; return RES[k]; }
@@ -72,10 +72,11 @@ function openMystery(){
   if(window.scStop) scStop();
   MS.sel={u:null,z:null}; MS.busy=false; MS.newClue=-1;
   const r=mres(), K=D.sc.states.length-1;
+  MS.phase = r.done ? 'done' : r.tries.length ? 'play' : 'brief';
   if(r.done){ display({i:K,ph:K},false,[]); state.phase=K; }
   else mBoardStart(false);
   mRender();
-  requestAnimationFrame(()=>{ if(window.sheetTo) sheetTo(r.done?'mid':'mid',false); });
+  requestAnimationFrame(()=>{ if(window.sheetTo) sheetTo(MS.phase==='brief'?'full':MS.phase==='play'?'peek':'mid',false); });
 }
 function mRender(){
   const r=mres();
@@ -94,7 +95,7 @@ function mNext(){
   const r=mres();
   if(!r.done){ if(MS.sel.u&&MS.sel.z) mCommit(); return; }
   if(!r.seen){ mReveal(); return; }
-  location.hash='';
+  location.hash='home';
 }
 
 /* ---------- the dock: always-visible order controls ---------- */
@@ -104,20 +105,30 @@ function pipsHtml(r){
 }
 function commitLabel(){
   const {u,z}=MS.sel;
-  if(u&&z) return `Order: ${mToyLabel(u)} → ${mz(z)[1]} ›`;
+  if(u&&z) return `Send ${mToyLabel(u)} to ${D.sc.m.zones.findIndex(x=>x[0]===z)+1} ›`;
   if(u) return 'Now tap a circle on the map';
   if(z) return 'Now pick a toy';
   return 'Pick a toy, then a circle on the map';
 }
+const SQC={g:'Right',y:'Close',w:'Wrong'};
+function sqHtml(k){ return `<i class="sq2 s-${k}" aria-label="${SQC[k]}"></i>`; }
 function renderDock(){
   if(SC.active) return;
   const d=$('#dock'); if(!d) return;
   const sc=D.sc, m=sc.m, r=mres();
+  if(MS.phase==='brief' && !r.done){ d.hidden=true; d.innerHTML=''; refit(); return; }
   d.hidden=false;
-  if(!r.done){
+  if(!r.done && MS.phase==='clue'){
+    const n=r.tries.length, last=r.tries[n-1], [su,sz]=mSquares(last), c=m.clues[MS.newClue];
+    d.className='dock dk-clue';
+    d.innerHTML=`<div class="dk-row"><b class="dk-q">Round ${n} missed</b>${pipsHtml(r)}</div>
+      <div class="dk-fb"><p>${sqHtml(su)}<span><b>Toy.</b> ${su==='g'?'Right toy.':m.fbU[last.u]}</span></p><p>${sqHtml(sz)}<span><b>Place.</b> ${sz==='g'?'Right place.':m.fbZ[last.z]}</span></p></div>
+      ${c&&MS.newClue>=0?`<div class="dk-new"><span class="msl">New intel${c.cat?` · ${METT.find(x=>x[0]===c.cat)[2]}`:''}</span>${c.card?`<button type="button" class="mcard" data-card="${c.card}">${toySvg(CARDBY[c.card],26)}<span><b>${CARDBY[c.card].name}</b><em>Troop card · tap to study</em></span></button>`:`<p><b>${c.t}.</b> ${c.b}</p>`}</div>`:''}
+      <button type="button" class="commit mnext">Round ${n+1} of ${MAXTRY} ›</button>`;
+  } else if(!r.done){
     d.className='dock dk-play';
     d.innerHTML=`<div class="dk-row"><b class="dk-q">${m.qs||'Your order'}</b>${pipsHtml(r)}</div>
-      <div class="dk-tray">${m.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}">${toySvg({t:sprOf(U),side:U.s},40)}<b>${lab}</b></button>${m.cards[u]?`<button type="button" class="toyi" data-card="${m.cards[u]}" aria-label="${lab} troop card">i</button>`:''}</div>`; }).join('')}</div>
+      <div class="dk-tray">${m.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}"><span class="band ${U.s}"></span>${toySvg({t:sprOf(U),side:U.s},40)}<b>${lab}</b></button>${m.cards[u]?`<button type="button" class="toyi" data-card="${m.cards[u]}" aria-label="${lab}: troop card">i</button>`:''}</div>`; }).join('')}</div>
       <button type="button" class="commit"${MS.sel.u&&MS.sel.z?'':' disabled'}>${commitLabel()}</button>`;
   } else if(!r.seen){
     d.className='dock dk-res';
@@ -138,53 +149,39 @@ function mSyncSel(){
 function mPickToy(u){ if(MS.busy||mres().done||SC.active) return; MS.sel.u = MS.sel.u===u?null:u; mPreview(); mSyncSel(); }
 function mPickZone(z){ if(MS.busy||mres().done||SC.active) return; MS.sel.z = MS.sel.z===z?null:z; mPreview(); mSyncSel(); if(window.sheetTo&&sheetOn()&&SHEET.pos!=='peek') sheetTo('peek'); }
 
-/* ---------- brief styles: three looks to compare ---------- */
-const BSTYLES=[['dispatch','Dispatch'],['board','Plotting board'],['notebook','Field notebook']];
-function bsGet(){ try{ const v=localStorage.getItem('pg-bs'); if(BSTYLES.some(b=>b[0]===v)) return v; }catch(e){} return 'board'; }
-function bsApply(v){ v=v||bsGet(); BSTYLES.forEach(([k])=>document.body.classList.toggle('bs-'+k,k===v)); if(D.sc) document.body.dataset.side=D.sc.side||'g'; }
-function bsSwitch(){ const v=bsGet(); return `<div class="bsw" role="group" aria-label="Brief style"><span>Look</span>${BSTYLES.map(([k,l])=>`<button type="button" data-bs="${k}" aria-pressed="${k===v}">${l}</button>`).join('')}</div>`; }
-bsApply();
-
-/* ---------- the brief: METT-T, short ---------- */
+/* ---------- the order: who you are, how you got here, METT-T, then the question ---------- */
 const METT=[['m','M','Mission'],['e','E','Enemy'],['t','T','Terrain'],['tr','T','Troops'],['ti','T','Time']];
 function intelHtml(c,i){
   const nw=i===MS.newClue?' new':'';
-  if(c.card){ const C=CARDBY[c.card]; return `<button type="button" class="intel ccard ${C.side}${nw}" data-card="${c.card}">${toySvg(C,30)}<span><b>${C.name}</b><em>Troop card · tap to study</em></span></button>`; }
-  return `<div class="intel${nw}"><span class="it">Intel</span><b>${c.t}.</b> ${c.b}</div>`;
+  if(c.card){ const C=CARDBY[c.card]; return `<button type="button" class="msub mcard${nw}" data-card="${c.card}">${toySvg(C,26)}<span><b>${C.name}</b><em>Troop card · tap to study</em></span></button>`; }
+  return `<div class="msub${nw}"><span class="msl">Intel · ${c.t}</span><p>${c.b}</p></div>`;
 }
 function mettHtml(vis){
-  const m=D.sc.m, left=m.clues.length-vis;
-  return `<div class="mett">
-    ${METT.map(([k,L,label])=>`<div class="mrow mr-${k}"><span class="ml">${L}</span><div class="mb"><p><b class="mk">${label}</b> ${m.mett[k]}</p>
-      ${k==='t'?(m.ground||[]).map(([tag,tx,at],i)=>at?`<button type="button" class="og" data-gi="${i}"><span class="ogt">${tag}</span><span>${tx} <i>Show me</i></span></button>`:`<p class="og"><span class="ogt">${tag}</span>${tx}</p>`).join(''):''}
-      ${m.clues.map((c,i)=>i<vis&&c.cat===k?intelHtml(c,i):'').join('')}</div></div>`).join('')}
-    ${left>0?`<p class="mlock">${left} more intel ${left===1?'report unlocks':'reports unlock'} with each miss.</p>`:''}
-    <button type="button" class="mett-q">Why METT-T?</button>
-    <p class="mett-x" hidden>US Army and Marine officers size up every situation with five questions, <b>METT-T</b>: Mission, Enemy, Terrain and weather, Troops available, Time. They read the ground with <b>OAKOC</b>: Observation, Avenues of approach, Key terrain, Obstacles, Cover and concealment.</p>
-  </div>`;
+  const m=D.sc.m;
+  return `<div class="mett">${METT.map(([k,L,label])=>`<section class="mrow mr-${k}"><span class="ml" aria-hidden="true">${L}</span><div class="mb">
+      <div class="mtop"><h3 class="mk">${label}</h3><p>${m.mett[k]}</p></div>
+      ${k==='t'?(m.ground||[]).map(([tag,tx,at],i)=>`<div class="msub"><span class="msl">${tag}</span><p>${tx}${at?` <button type="button" class="og" data-gi="${i}">Show on map</button>`:''}</p></div>`).join(''):''}
+      ${m.clues.map((c,i)=>i<vis&&c.cat===k?intelHtml(c,i):'').join('')}</div></section>`).join('')}</div>`;
 }
+function mLead(){ const sc=D.sc, m=sc.m; return m.lead || firstSentences(sc.brief.situation,2)[0]; }
 function mCardPlay(){
   state.cardMode='daily';
-  const sc=D.sc, m=sc.m, r=mres(), misses=r.tries.length, vis=Math.min(m.clues.length,2+misses);
-  const last=r.tries[misses-1];
-  let fbHtml='';
-  if(last){ const [su,sz]=mSquares(last);
-    fbHtml=`<div class="mfb"><div class="mfb-h"><span class="sq">${SQ[su]}${SQ[sz]}</span><b>Try ${misses}: ${mToyLabel(last.u)} → ${mz(last.z)[1]}</b></div><p>${su==='g'?'<b>Right toy.</b> ':m.fbU[last.u]+' '}${sz==='g'?'<b>Right place.</b>':m.fbZ[last.z]}</p></div>`;
-  }
-  const b=sc.brief; bsApply();
-  card.innerHTML=`<div class="card-in mys">
-    ${bsSwitch()}
-    ${fbHtml}
-    <div class="kicker">${D.preview?'Preview':'Order #'+D.n} · ${sc.place} · ${sc.year}</div>
-    <h2>${sc.name}</h2>
-    <p class="who"><span class="sw ${sc.side}"></span>You are ${sc.you}</p>
+  const sc=D.sc, m=sc.m, r=mres(), vis=Math.min(m.clues.length,2+r.tries.length);
+  card.innerHTML=`<div class="card-in mys morder">
+    <header class="ohead">
+      <div class="kicker">${D.preview?'Preview':'Order #'+D.n} · ${sc.place} · ${sc.year}</div>
+      <h2>${sc.name}</h2>
+      <p class="who"><span class="sw ${sc.side}"></span>You are ${sc.you}</p>
+    </header>
+    <p class="lead">${mLead()}</p>
     <p class="sit">${m.sit}</p>
-    <p class="theq"><span>Your order</span>${m.q}</p>
     ${mettHtml(vis)}
-    <details class="more sm"><summary>Full history</summary><div class="more-in">${sec('The situation',b.situation)}${sec('Your forces',b.forces)}${sec('The enemy',b.enemy)}${sec('The ground',b.ground)}${sec('What you know',b.intel)}</div></details>
+    <div class="theq"><span>Your order</span><p>${m.q}</p></div>
+    ${MS.phase==='brief'?'<button type="button" class="commit mgo">To the map ›</button>':''}
   </div>`;
   if(MS.newClue<0) card.scrollTop=0;
 }
+function mGo(){ MS.phase='play'; mRender(); if(window.sheetTo) sheetTo('peek'); }
 
 /* ---------- what a wrong order plays out as ----------
    m.fail['toy@zone'] is the specific outcome for that combination; m.fail[zone] is the fallback.
@@ -218,10 +215,10 @@ function mCommit(){
   } else {
     list=mFailList(u,z,out);
   }
-  scenesPlay(list,{endLabel:win?'See result':out?'See the answer':'Try again',onEnd:()=>{
+  scenesPlay(list,{endLabel:win?'See result':out?'See the answer':'Continue',onEnd:()=>{
     MS.busy=false; MS.sel={u:null,z:null};
-    MS.newClue = (win||out)?-1:Math.min(m.clues.length-1,1+r.tries.length);
-    if(!r.done) mBoardStart(true);
+    const k=1+r.tries.length; MS.newClue = (win||out||k>=m.clues.length)?-1:k;
+    MS.phase = r.done ? 'done' : 'clue';
     mRender();
     if(win && r.tries.length===1 && window.confetti) confetti();
   }});
@@ -273,10 +270,9 @@ function mCardDebrief(){
     <h2>${db.title}</h2>
     <p class="now">${oHead}</p>
     ${m.deduce?`<div class="sec est"><h3>What the winning commander read</h3>${m.deduce.map(([f,d])=>`<div class="ded"><p class="df">${f}</p><p class="dd"><span>So</span>${d}</p></div>`).join('')}</div>`:''}
-    <aside class="boardroom"><div class="br-k">In the boardroom</div><h4>${db.board.h}</h4><p>${db.board.b}</p><p class="try"><b>Try this:</b> ${db.board.try}</p></aside>
     <div class="sec"><h3>Troop cards from this battle</h3><div class="cgrid sm">${cards.map(id=>{const C=CARDBY[id]; return `<button type="button" class="cmini ${C.side}" data-card="${id}">${nw.has(id)?'<i class="newb">New</i>':''}${toySvg(C,46)}<b>${C.name}</b></button>`;}).join('')}</div></div>
     ${pr.length?`<div class="sec"><h3>Principles in play</h3><div class="chips">${pr.map(p=>`<button type="button" class="chip-p" data-pr="${p.id}">${p.name}</button>`).join('')}</div></div>`:''}
-    <details class="more sm"><summary>The full story</summary><div class="more-in">${oRest?`<p>${oRest}</p>`:''}${sec('Why it worked',db.why)}<div class="other"><h3>${sc.t.eyes}</h3><p>${db.them}</p></div></div></details>
+    <details class="more sm"><summary>Want the full story?</summary><div class="more-in">${sec('How it came to this',sc.brief.situation)}${sec('Your forces',sc.brief.forces)}${sec('The enemy',sc.brief.enemy)}${sec('The ground',sc.brief.ground)}${oRest?sec('How it ended',oRest):''}${sec('Why it worked',db.why)}<div class="other"><h3>${sc.t.eyes}</h3><p>${db.them}</p></div></div></details>
     ${m.sources?`<details class="more sm srcs"><summary>Sources</summary><div class="more-in"><ul>${m.sources.map(([n,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${n}</a></li>`).join('')}</ul></div></details>`:''}
     <div class="drow2"><a class="dlink2" href="#archive">Past orders</a><button type="button" class="dreplay mreplay">Play again</button></div>
     <p class="hint">${r.first&&(r.first.won!==r.won||r.first.tries.length!==r.tries.length)?'Your first attempt is the score that counts. ':''}${D.preview?'This was a preview. ':''}Next order in ${untilTomorrow()}.</p>
@@ -291,15 +287,15 @@ function mShare(){
 /* ---------- events ---------- */
 function mClick(e){
   if(state.mode!=='daily' || !D.sc || !D.sc.m) return;
-  const bs=e.target.closest('[data-bs]'); if(bs){ try{localStorage.setItem('pg-bs',bs.dataset.bs);}catch(err){} bsApply(bs.dataset.bs); card.querySelectorAll('[data-bs]').forEach(x=>x.setAttribute('aria-pressed',x===bs)); return; }
   const cb=e.target.closest('[data-card]'); if(cb){ showCard(cb.dataset.card); return; }
   const t=e.target.closest('[data-mt]'); if(t){ mPickToy(t.dataset.mt); return; }
   const og=e.target.closest('[data-gi]'); if(og){ const g=D.sc.m.ground[+og.dataset.gi]; if(window.sheetTo&&sheetOn()) sheetTo('peek'); setTimeout(()=>pulseAt(g[2][0],g[2][1],g[2][2],g[0]),250); return; }
+  if(e.target.closest('.mgo')){ mGo(); return; }
+  if(e.target.closest('.mnext')){ MS.phase='play'; mBoardStart(true); mRender(); if(window.sheetTo) sheetTo('peek'); return; }
   if(e.target.closest('.commit:not(.mreveal):not(.mshare)')){ mCommit(); return; }
   if(e.target.closest('.mreveal')){ mReveal(); return; }
   if(e.target.closest('.mskip')||e.target.closest('.mdone')){ mFinishReveal(); return; }
   const rk=e.target.closest('.revl li'); if(rk && SC.active){ SC.auto=false; scGo(+rk.dataset.rk); return; }
-  if(e.target.closest('.mett-q')){ const x=card.querySelector('.mett-x'); if(x) x.hidden=!x.hidden; return; }
   if(e.target.closest('.mshare')){
     const tx=mShare(), btn=e.target.closest('.mshare');
     try{ if(navigator.share && matchMedia('(pointer:coarse)').matches) navigator.share({text:tx}).catch(()=>{}); else navigator.clipboard.writeText(tx).then(()=>{btn.textContent='Copied';},()=>{btn.textContent='Could not copy';}); }catch(err){ btn.textContent='Could not copy'; }
@@ -317,5 +313,7 @@ function mUnitTap(id){
   if(m.cards[id]){ showCard(m.cards[id]); return true; }
   return false;
 }
+/* in the opening order, pulling the sheet down to the map starts the game */
+function sheetUserMove(to){ if(document.body.classList.contains('mys') && MS.phase==='brief' && to!=='full' && D.sc && D.sc.m && !SC.active && !mres().done){ MS.phase='play'; mRender(); } }
 /* leaving the mystery hides the dock */
 addEventListener('hashchange',()=>{ if(!document.body.classList.contains('mys')){ const d=$('#dock'); if(d) d.hidden=true; } });
