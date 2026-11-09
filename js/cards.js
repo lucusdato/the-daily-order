@@ -44,8 +44,34 @@ const CARDS = [
   {id:'battery1798', set:'nile', name:'Shore battery', era:'French Revolutionary Wars, 1798', t:'art', side:'t', st:[1,3,4,4],
    good:'Guarding a channel close by', beat:'Ships that stay out of its range',
    fact:'The guns on Aboukir Island had little effect on the battle.'}
+,
+  // Waterloo, 1815
+  {id:'redcoat1815', set:'waterloo', name:'British line infantry', era:'Napoleonic Wars, 1815', t:'inf-blk', side:'g', st:[2,4,3,3],
+   good:'Volley fire from a steady line or square', beat:'Massed guns firing at a line in the open',
+   fact:'At Waterloo many battalions lay down behind the ridge to shelter from the French guns.'},
+  {id:'guards1815', set:'waterloo', name:'Foot Guards', era:'Napoleonic Wars, 1815', t:'hvy-blk', side:'g', st:[2,4,4,3],
+   good:'Holding a strongpoint, close-range volleys', beat:'Being worn down with no relief',
+   fact:'Guardsmen held the walled farm of Hougoumont all day.'},
+  {id:'heavycav1815', set:'waterloo', name:'British heavy cavalry', era:'Napoleonic Wars, 1815', t:'cav-blk', side:'g', st:[4,5,2,1],
+   good:'Charging infantry caught in column', beat:'Losing control and riding too far',
+   fact:'The Union and Household Brigades broke a French infantry corps, then paid heavily for chasing too far.'},
+  {id:'prussian1815', set:'waterloo', name:'Prussian infantry', era:'Napoleonic Wars, 1815', t:'inf-blk', side:'g', st:[3,3,3,3],
+   good:'Arriving on the enemy\'s flank', beat:'Long marches on muddy roads',
+   fact:'Blücher\'s men marched for hours on soaked roads to reach the battle.'},
+  {id:'ligne1815', set:'waterloo', name:'French line infantry', era:'Napoleonic Wars, 1815', t:'inf-blk', side:'t', st:[3,3,3,3],
+   good:'Attacking in dense columns', beat:'Volley fire, cavalry on the flank',
+   fact:'Veterans of many campaigns, trained to attack in deep columns.'},
+  {id:'cuirass1815', set:'waterloo', name:'Cuirassiers', era:'Napoleonic Wars, 1815', t:'cav-blk', side:'t', st:[4,5,4,1],
+   good:'Riding down infantry caught out of formation', beat:'Infantry squares',
+   fact:'Armoured heavy cavalry. Thousands charged the allied squares at Waterloo without breaking them.'},
+  {id:'garde1815', set:'waterloo', name:'Imperial Guard', era:'Napoleonic Wars, 1815', t:'hvy-blk', side:'t', st:[2,5,4,3],
+   good:'Deciding a battle at the right moment', beat:'Close-range fire from a hidden line',
+   fact:'Napoleon\'s veteran elite. Their retreat at Waterloo broke the whole French army.'},
+  {id:'gun1815', set:'waterloo', name:'Field artillery', era:'Napoleonic Wars, 1815', t:'art', side:'t', st:[1,5,2,5],
+   good:'Smashing any line it can see', beat:'Targets hidden behind a crest',
+   fact:'Napoleon trained as an artillery officer and loved massed guns.'}
 ];
-const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17]};
+const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();
@@ -55,12 +81,46 @@ const STAT_L=['Speed','Punch','Protection','Range'];
 function toySvg(c,size=96){
   return `<svg viewBox="-20 -46 40 52" width="${size}" height="${(size*1.3).toFixed(1)}" aria-hidden="true"><ellipse cx="0" cy="1.5" rx="11" ry="3" fill="rgba(0,0,0,.25)"/><g transform="translate(0 ${/plane|stuka|bomber|jet/.test(c.t)?-8:0}) scale(${/ship|gal|carrier/.test(c.t)?.78:1.25})"><use href="#u-${c.t}" ${fillAttr({s:c.side})}/></g></svg>`;
 }
+/* ---------- the card: a collectible with a living picture ---------- */
+const TYPE_L = t => /^(inf|inf-blk|inf-med|inf-mod|para)$/.test(t)?'Infantry':/^(hvy|hvy-blk)$/.test(t)?'Heavy infantry':/^spr$/.test(t)?'Spearmen':/^arch$/.test(t)?'Archers':/^cav|cav-blk$/.test(t)?'Cavalry':/^(art|art-ww|art-anc)$/.test(t)?'Artillery':t==='bunker'?'Fortification':/^arm/.test(t)?'Armour':/^(plane|stuka|bomber|jet)$/.test(t)?'Aircraft':/^(ship|ship-med|ship-ww|gal|carrier)$/.test(t)?'Warship':/^cmd/.test(t)?'Commander':/truck|wagon/.test(t)?'Transport':'Unit';
+const ACT_OF = t => /^(art|art-ww|art-anc|bunker)$/.test(t)?'gun':/^arm/.test(t)?'tank':/^(plane|stuka|bomber|jet)$/.test(t)?'air':/^(ship|ship-med|ship-ww|gal|carrier)$/.test(t)?'sea':/^cav/.test(t)?'ride':/^arch$/.test(t)?'bow':/^(spr|hvy|cmd-anc)$/.test(t)?'thrust':/^cmd/.test(t)?'lead':/truck|wagon/.test(t)?'drive':'fire';
+function cardArt(c){
+  const a=ACT_OF(c.t), fill=c.side==='g'?'#5fb84a':'#e6b86c', ink='#1c1a17';
+  const sea=a==='sea', air=a==='air';
+  let bg=`<rect width="240" height="140" fill="${sea?'#bfe6f4':air?'#a9dcf2':'#cdebf6'}"/>`;
+  if(air) bg+=`<g class="ca-cloud"><ellipse cx="60" cy="40" rx="26" ry="9" fill="#fff"/><ellipse cx="180" cy="26" rx="20" ry="7" fill="#fff"/><ellipse cx="150" cy="104" rx="30" ry="9" fill="#fff"/></g>`;
+  else if(sea) bg+=`<rect y="88" width="240" height="52" fill="#46b3c4"/><path d="M0 88 H240" stroke="${ink}" stroke-width="2"/><g class="ca-waves" stroke="#2c8ea3" stroke-width="2" fill="none"><path d="M-20 104 q8 -6 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/><path d="M-12 122 q8 -6 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/></g>`;
+  else bg+=`<path d="M0 84 Q60 66 120 80 T240 72 V140 H0Z" fill="#b6dc8a" stroke="${ink}" stroke-width="1.6"/><rect y="104" width="240" height="36" fill="#9ccc6e"/><path d="M0 104 H240" stroke="${ink}" stroke-width="2"/><g class="ca-ground" fill="#7fb257"><circle cx="30" cy="120" r="3"/><circle cx="96" cy="128" r="2.5"/><circle cx="170" cy="118" r="3"/><circle cx="214" cy="130" r="2.5"/></g>`;
+  const sc = sea?2.6:air?2.4:3.1, ux = a==='ride'||a==='drive'?112:a==='air'?120:92, uy = sea?100:air?70:118;
+  const unit=`<g class="ca-u"><g transform="translate(${ux} ${uy}) scale(${sc})"><ellipse cx="0" cy="1" rx="10" ry="2.6" fill="rgba(0,0,0,.2)"${sea||air?' opacity="0"':''}/><use href="#u-${c.t}" fill="${fill}" stroke="${ink}" stroke-width=".55" stroke-linejoin="round"/></g></g>`;
+  const flash=(x,y,cls='')=>`<g transform="translate(${x} ${y})"><g class="ca-flash ${cls}"><path d="M0 -9 L3 -3 L10 -3 L4 1 L7 8 L0 4 L-7 8 L-4 1 L-10 -3 L-3 -3Z" fill="#ffd34d" stroke="${ink}" stroke-width="1.2"/></g></g>`;
+  const smoke=(x,y,cls='')=>`<g transform="translate(${x} ${y})"><g class="ca-smoke ${cls}"><circle r="7" fill="#f2efe6" stroke="${ink}" stroke-width="1"/><circle cx="8" cy="-4" r="5.5" fill="#f2efe6" stroke="${ink}" stroke-width="1"/></g></g>`;
+  let fx='';
+  if(a==='fire') fx=flash(132,64)+smoke(146,60);
+  else if(a==='thrust') fx=`<g transform="translate(150 62)"><g class="ca-spark"><path d="M0 -8 V8 M-8 0 H8 M-5 -5 L5 5 M5 -5 L-5 5" stroke="#ffd34d" stroke-width="2.4" stroke-linecap="round"/></g></g>`;
+  else if(a==='bow') fx=`<g class="ca-arrow"><path d="M0 0 L16 0 M12 -3 L16 0 L12 3" stroke="${ink}" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`;
+  else if(a==='ride') fx=smoke(40,112,'dust')+smoke(22,116,'dust d2')+`<g class="ca-speed" stroke="${ink}" stroke-width="1.6" stroke-linecap="round"><path d="M14 80 H40"/><path d="M6 92 H30"/></g>`;
+  else if(a==='gun') fx=flash(150,90)+smoke(164,86)+`<circle class="ca-ball" cx="150" cy="90" r="4" fill="${ink}"/>`;
+  else if(a==='tank') fx=flash(160,96)+smoke(174,92)+`<path class="ca-tracer" d="M160 96 H190" stroke="#ffd34d" stroke-width="3" stroke-linecap="round"/>`;
+  else if(a==='sea') fx=flash(108,92,'f1')+flash(124,92,'f2')+flash(140,92,'f3')+smoke(150,84,'s1');
+  else if(a==='air') fx=`<g class="ca-bomb"><ellipse cx="0" cy="0" rx="2.6" ry="5" fill="${ink}"/></g>`;
+  else if(a==='lead') fx=`<g transform="translate(132 44)"><g class="ca-spark"><path d="M0 -8 V8 M-8 0 H8" stroke="#ffd34d" stroke-width="2.4" stroke-linecap="round"/></g></g>`;
+  else if(a==='drive') fx=smoke(40,116,'dust')+smoke(24,118,'dust d2');
+  return `<svg class="ca act-${a}" viewBox="0 0 240 140" aria-hidden="true">${bg}${unit}${fx}</svg>`;
+}
 function cardFace(c,opts={}){
-  const own=OWNED.has(c.id) || opts.peek;
-  if(!own) return `<div class="tc locked"><div class="tc-toy">${toySvg(c,84)}</div><b>Locked</b><span>Play ${CARD_SETS[c.set][0]} to collect</span></div>`;
-  return `<div class="tc ${c.side}"><div class="tc-band"><span class="tc-era">${c.era}</span></div><div class="tc-toy">${toySvg(c)}</div><h3>${c.name}</h3>
-    <div class="tc-stats">${c.st.map((v,i)=>`<div class="tc-s"><span>${STAT_L[i]}</span><i>${[1,2,3,4,5].map(k=>`<em class="${k<=v?'on':''}"></em>`).join('')}</i></div>`).join('')}</div>
-    <p class="tc-g"><b>Strong at</b> ${c.good}</p><p class="tc-b"><b>Beaten by</b> ${c.beat}</p><p class="tc-f">${c.fact}</p></div>`;
+  const own=OWNED.has(c.id) || opts.peek, idx=CARDS.indexOf(c)+1, pow=c.st.reduce((x,y)=>x+y,0)*10;
+  if(!own) return `<div class="tcx locked"><div class="tcx-in"><header class="tcx-hd"><span class="tcx-nm">Locked card</span></header><div class="tcx-art">${toySvg(c,84)}</div><p class="tcx-fx">Play ${CARD_SETS[c.set][0]} to collect it.</p></div></div>`;
+  return `<div class="tcx ${c.side}"><div class="tcx-in">
+    <header class="tcx-hd"><span class="tcx-nm">${c.name}</span><span class="tcx-pw"><small>PWR</small>${pow}</span></header>
+    <div class="tcx-art">${cardArt(c)}</div>
+    <div class="tcx-ty">${TYPE_L(c.t)} · ${c.era}</div>
+    <div class="tcx-ab"><b>Strong at</b><p>${c.good}</p></div>
+    <div class="tcx-ab weak"><b>Beaten by</b><p>${c.beat}</p></div>
+    <div class="tcx-st">${c.st.map((v,i)=>`<div><span>${STAT_L[i]}</span><b>${v}</b><i>${[1,2,3,4,5].map(k=>`<em class="${k<=v?'on':''}"></em>`).join('')}</i></div>`).join('')}</div>
+    <p class="tcx-fx">${c.fact}</p>
+    <footer class="tcx-ft"><span>${CARD_SETS[c.set][0]}</span><span>No. ${idx} of ${CARDS.length}</span></footer>
+  </div></div>`;
 }
 function showCard(id,extra=''){
   const c=CARDBY[id]; if(!c) return;

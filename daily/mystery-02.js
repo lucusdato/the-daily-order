@@ -108,5 +108,5 @@ PGD.mystery(28,{
            ['National Army Museum: Battle of Waterloo','https://www.nam.ac.uk/explore/battle-waterloo'],
            ['King\'s College London: the battle of Waterloo','https://kingscollections.org/exhibitions/archives/wellington/military/waterloo-battle'],
            ['History UK: reverse slope and the Guard','https://www.history.co.uk/history-of-the-battle-of-waterloo/waterloo']],
-  cards:{}
+  cards:{al_line:'redcoat1815',al_houg:'guards1815',al_cav:'heavycav1815',al_pruss:'prussian1815',fr_inf:'ligne1815',fr_cav:'cuirass1815',fr_guard:'garde1815',fr_art:'gun1815'}
 });
