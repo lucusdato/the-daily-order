@@ -20,9 +20,12 @@ function sheetMeasure(){
   const H=st.clientHeight;
   if(isMys()){
     const dock=document.getElementById('dock'), dh=(dock&&!dock.hidden)?dock.offsetHeight:0;
-    const peek=Math.round(Math.max(H*.42, H-(24+dh)));
-    SHEET.snaps={ full:Math.min(40,H*.06), mid:Math.round(Math.min(H*.42,peek)), peek };
+    let peek=Math.round(Math.max(H*.42, H-(24+dh)));
     sizeMap(peek-4);
+    /* a map that is wider than tall leaves a gap: raise the sheet to meet it */
+    const bw=document.querySelector('#battle .board-wrap');
+    if(bw && sheetOn()){ const bot=bw.getBoundingClientRect().bottom-st.getBoundingClientRect().top; if(bot>0 && bot+14<peek) peek=Math.round(bot+14); }
+    SHEET.snaps={ full:Math.min(40,H*.06), mid:Math.round(Math.min(H*.42,peek)), peek };
   } else {
     const ctrlBottom=left.offsetHeight;
     SHEET.snaps={ full:Math.min(56, H*.08), mid:Math.max(56, Math.min(ctrlBottom, H-170)), peek:H-58 };

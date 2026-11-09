@@ -111,13 +111,14 @@ PGD.mystery(1,{
 });
 
 PGD.mystery(14,{
-  sit:'May 1940. Your tanks came through the Ardennes forest days ahead of schedule and have reached the Meuse River at Sedan. You need to get across.',
+  lead:'In 1940 the French expect the main German attack to come through Belgium, and send their best armies north to meet it. The thick Ardennes forest to the south, they believe, will hold any tanks for a week or more. Your panzers have come through it in under three days.',
+  sit:'12 May 1940. Your tanks have reached the Meuse River at Sedan, far sooner than the French thought possible. You need to get across.',
   mett:{
     m:'Cross the Meuse at Sedan and break into open country, to cut off the Allied armies in Belgium.',
-    e:'French reservists dug into bunkers on the far bank. Stronger French reserves are moving up slowly.',
-    t:'A wide river with bunkers covering it. Open, rolling country beyond.',
-    tr:'Three tank divisions, engineers with rubber boats, and a large air force on call.',
-    ti:'Every day counts. Your heavy artillery is still days behind on the forest roads.'},
+    e:'French reservists of the 55th Division in bunkers on the far bank. Stronger French reserves are moving up slowly.',
+    t:'A river a few hundred feet wide, with bunkers covering it. Open, rolling country beyond.',
+    tr:'Three panzer divisions, infantry with rubber assault boats, and a large air force on call.',
+    ti:'Every day counts. Your heavy artillery is still stuck in traffic on the forest roads.'},
   ground:[['Obstacle','The Meuse itself, covered by bunkers on the far bank.'],['Cover and concealment','The Ardennes forest behind you hides your columns.'],['Avenue of approach','Past the river, open country runs all the way to the sea.']],
   q:'Which force, sent where, gets you across the Meuse first?',
   toys:[['de_stuka','Dive bombers'],['de_eng','Engineers'],['de_1pz','Panzers']],
@@ -125,17 +126,37 @@ PGD.mystery(14,{
   ans:{u:'de_stuka',z:'sedan'},
   near:{u:['de_eng'],z:['north']},
   start:{de_stuka:[330,64],de_eng:[316,160],de_1pz:[306,236],de_2pz:[352,120],de_10pz:[352,296],de_cmd:[372,206]},
-  fbU:{de_stuka:'Right toy. With your guns days behind, dive bombers can be your artillery.',
-       de_eng:'Close. Engineers do the crossing, but in open boats they need the bunkers silenced first.',
-       de_1pz:'Tanks cannot swim. Without a bridge they sit on the bank under fire.'},
+  fbU:{de_stuka:'Right toy. With your guns stuck in traffic, the bombers are the only heavy fire you have.',
+       de_eng:'Close. Engineers do the crossing, but in open boats they need the far bank kept quiet first.',
+       de_1pz:'Not this toy. Tanks cannot cross a river without a bridge.'},
   fbZ:{sedan:'Right place. You are already here, and the French do not expect a crossing this soon.',
        north:'Close, but shifting north costs a day on jammed forest roads, and the French reinforce.',
-       deep:'Bold, but the bunkers on the river are untouched. Nobody crosses.',
+       deep:'Too deep. The bunkers on the river are untouched, so nobody gets across.',
        wait:'Waiting is what the French are counting on. Every day, more reserves reach the river.'},
-  fail:{sedan:{fire:[['fr_bunk','$','cannon'],['fr_55','$']]},
-        north:{u:{fr_res:[150,96]},a:[['t',60,300,110,200,148,100]],fire:[['fr_res','$','tank']]},
-        deep:{fire:[['fr_res','$','tank'],['fr_bunk','de_eng','cannon']],ko:['$','de_eng']},
-        wait:{u:{fr_res:[138,232]},a:[['t',60,300,134,234]],ko:[]}},
+  /* Toys you did not place wait on the east bank. */
+  fail:{
+    'de_eng@sedan':{fire:[['fr_bunk','$','cannon'],['fr_55','$']],
+      b:'Without the bombing, every French gun is free to fire. Rubber boats on open water are shot to pieces before they reach the far bank.'},
+    'de_1pz@sedan':{fire:[['fr_bunk','$','cannon'],['fr_55','$']],
+      b:'Tanks cannot swim. With no bridge they sit on the open bank, in plain view of the guns across the river.'},
+    'de_stuka@north':{fire:[['fr_bunk','de_eng','cannon']],ko:[],idle:['$'],
+      b:'The bombs fall on a quiet stretch of river. At Sedan the bunkers are untouched, and the French gain a day.'},
+    'de_eng@north':{u:{fr_res:[148,96]},a:[['t',60,300,110,200,148,104]],fire:[['fr_res','$','tank']],
+      b:'Moving north costs a day on jammed forest roads. By the time the boats are ready, French reserves have reached the bank.'},
+    'de_1pz@north':{u:{fr_res:[148,96]},a:[['t',60,300,110,200,148,104]],fire:[['fr_res','$','tank']],
+      b:'A day lost on forest roads, and still no bridge. French reserves reach the river first.'},
+    'de_stuka@deep':{fire:[['$','fr_res','bomb'],['fr_bunk','de_eng','cannon']],ko:['fr_res'],
+      b:'The reserves far behind take a beating, but nobody is across the river. The bunkers on the bank are untouched.'},
+    'de_eng@deep':{fire:[['fr_res','$','tank'],['fr_bunk','$','cannon']],
+      b:'Nobody reaches the French rear while the bunkers on the river are untouched. The boats never get that far.'},
+    'de_1pz@deep':{fire:[['fr_res','$','tank']],
+      b:'Tanks cannot get behind the river without crossing it first. There is no bridge, and the French guns are waiting.'},
+    'de_stuka@wait':{u:{fr_res:[128,236]},a:[['t',60,300,124,240]],ko:[],idle:['$'],
+      b:'Holding the bombers back hands the French the days they expected to have. Their reserves reach the river.'},
+    'de_eng@wait':{u:{fr_res:[128,236]},a:[['t',60,300,124,240]],ko:[],idle:['$'],
+      b:'Waiting for your artillery gives the French the days they planned on. Their reserves reach the river, and the crossing gets much harder.'},
+    'de_1pz@wait':{u:{fr_res:[128,236]},a:[['t',60,300,124,240]],ko:[],idle:['$'],
+      b:'Tanks waiting in the forest do nothing for the crossing. The French use the time to bring their reserves up to the river.'}},
   clues:[
     {cat:'ti',t:'The clock',b:'French commanders believe you need days to prepare any river crossing.'},
     {cat:'e',card:'res1940'},
@@ -146,12 +167,27 @@ PGD.mystery(14,{
   deduce:[['Your heavy artillery is days behind.','Waiting for it hands the French the days they need. Find something else to do its job.'],
           ['The French expect days of preparation.','Crossing tomorrow, right here, hits them before they are ready.'],
           ['The reservists have never faced air attack.','Massed bombing may break their nerve, not just their bunkers.']],
-  scenes:[
-    {s:0,t:'At the river, early',b:'Your panzers reach the Meuse at Sedan days before the French expect anyone. Reservists hold bunkers on the far bank.'},
-    {s:0,u:{de_stuka:[204,170]},t:'Bombers as artillery',b:'For hours, wave after wave of dive bombers pounds the bunkers. Many reservists have never been bombed before.',fire:[['de_stuka','fr_bunk','bomb'],['de_stuka','fr_55','bomb']]},
-    {s:1,t:'Across in rubber boats',b:'Engineers paddle across under fire and clear the bunkers one by one. The French line breaks.',fire:[['de_eng','fr_bunk'],['de_eng','fr_55']]},
-    {s:2,t:'Break out west',b:'Bridges go up and the panzers race west. French reserves arrive in small groups and are beaten one at a time.',fire:[['de_10pz','fr_res','tank']]},
-    {s:3,t:'The halt at Dunkirk',b:'The panzers reach the Channel on 20 May and trap the Allies. Then a halt order stops them for three days, and about 338,000 troops escape by sea.'}],
+  /* The real battle. The river runs north to south; the Germans hold the east bank. Every unit is placed in every scene. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={de_1pz:[232,200],de_2pz:[244,110],de_10pz:[244,300],de_eng:[214,224],de_stuka:[330,64],de_cmd:[264,240],
+           fr_55:[136,190],fr_bunk:[148,244],fr_res:[50,320],fr_north:[110,40],fr_cmd:[56,226]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{},{t:'At the river, early',b:'12 May. Your tanks reach the Meuse at Sedan days before the French thought possible. Reservists of the 55th Division hold bunkers on the far bank. Your heavy artillery is still stuck in traffic in the forest.'});
+    add(0,{de_stuka:[176,196]},{a:[['g',330,64,250,120,184,190]],t:'Bombers instead of guns',b:'13 May. From morning to late afternoon, wave after wave of bombers and dive bombers hits the far bank. The bombs destroy less than it seems, but the defenders keep their heads down and many of their guns fall silent.',fire:[['de_stuka','fr_bunk','bomb'],['de_stuka','fr_55','bomb']]});
+    add(1,{de_stuka:[300,60],de_eng:[160,216],fr_bunk:[148,244,'ko']},{a:[['g',214,224,166,218]],t:'Across in rubber boats',b:'Around 4 p.m. infantry and assault engineers cross in rubber boats under fire and take the bunkers one by one. By night they hold the heights beyond the river.',fire:[['de_eng','fr_bunk'],['de_eng','fr_55']]});
+    add(1,{fr_55:[40,160,'exit']},{t:'Panic behind the line',b:'That evening a false report of German tanks spreads behind the French line. Much of the 55th Division, its gunners included, abandons its positions.'});
+    add(1,{de_1pz:[148,200],de_10pz:[168,290],de_cmd:[176,236]},{a:[['g',232,200,154,200],['g',244,300,174,290]],t:'A bridge by morning',b:'Engineers bridge the river overnight. Early on 14 May the first tanks roll across.'});
+    add(2,{fr_res:[110,282,'ko']},{a:[['t',50,320,104,286]],t:'The counterattack comes late',b:'French reserves attack the bridgehead on 14 May, hours later than planned and in small groups. They are beaten one at a time.',fire:[['de_10pz','fr_res','tank'],['de_1pz','fr_res','tank']]});
+    add(2,{de_1pz:[60,140],de_2pz:[50,100],de_cmd:[86,166],de_stuka:[120,60]},{a:[['g',148,200,90,170,64,146],['g',244,110,120,100,56,100]],t:'Turn west at once',b:'Guderian does not wait. He turns his tanks west on 14 May, and on 20 May they reach the Channel coast, cutting off the Allied armies in Belgium.'});
+    add(3,{fr_north:[80,10,'exit']},{t:'The halt',b:'On 24 May a halt order stops the panzers short of Dunkirk. The delay helps more than 338,000 Allied troops escape by sea.'});
+    return S;
+  })(),
+  sources:[['Wikipedia: Battle of Sedan (1940), drawing on Frieser','https://en.wikipedia.org/wiki/Battle_of_Sedan_(1940)'],
+           ['WarHistory.org: Sedan, 13 May, the Germans cross the Meuse','https://warhistory.org/2015/11/26/sedan-13-may-the-germans-cross-the-meuse/'],
+           ['Marine Corps Gazette: Guderian and synchronization','https://www.mca-marines.org/gazette/guderian-and-synchronization/'],
+           ['WarHistory.org: Sedan, 14 and 15 May, the counterattack fails','https://warhistory.org/de/article/sedan-14-15-may-the-counter-attack-fails-the-tragic-fate-of-the-three-dcrs-part-ii?amp=0'],
+           ['Imperial War Museums: why the Dunkirk evacuations were an unexpected success','https://www.iwm.org.uk/history/second-world-war/dunkirk/why-the-dunkirk-evacuations-were-an-unexpected-success']],
   cards:{de_1pz:'panzer1940',de_2pz:'panzer1940',de_10pz:'panzer1940',de_stuka:'stuka1940',de_eng:'pio1940',fr_55:'res1940',fr_bunk:'bunker1940'}
 });
 

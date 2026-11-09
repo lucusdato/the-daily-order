@@ -36,6 +36,8 @@ function check(label,list,before,ctx){
     // A + B: opposing units passing through or standing face to face with no fight between them
     for(let x=0;x<ids.length;x++) for(let y=x+1;y<ids.length;y++){
       const a=ids[x], b=ids[y]; if(side(a)===side(b)) continue;
+      if(ctx&&ctx.toy&&i===0) continue; /* placing the toy: the next scene resolves it */
+      const ua=D.sc.units.find(u=>u.id===a), ub=D.sc.units.find(u=>u.id===b); if(ua.t==='plane'||ub.t==='plane') continue; /* aircraft fly over */
       const sa=p1[a][2]||'', sb=p1[b][2]||'';
       if(gone(sa)||gone(sb)||sa==='hide'||sb==='hide'||sa==='decoy'||sb==='decoy') continue;
       if(pair(a,b)) continue;
