@@ -204,7 +204,7 @@ function mCommit(){
   const r=mres(), m=D.sc.m, {u,z}=MS.sel; if(!u||!z||MS.busy||r.done) return;
   MS.busy=true; r.tries.push({u,z});
   const win = u===m.ans.u && z===m.ans.z, out = !win && r.tries.length>=MAXTRY;
-  if(win||out){ r.done=true; r.won=win; if(!r.first) r.first={tries:r.tries.slice(),won:win,playedOn:ymd(new Date())}; r.newCards=unlockCards([...new Set(Object.values(m.cards))]); }
+  if(win||out){ r.done=true; r.won=win; if(!r.first) r.first={tries:r.tries.slice(),won:win,playedOn:ymd(gameNow())}; r.newCards=unlockCards([...new Set(Object.values(m.cards))]); }
   saveRes(RES);
   buzz(win?3:0);
   const t={u,z}, Z=mz(z), placed={[u]:[Z[2],Z[3]]}, lab=`${mToyLabel(u)} → ${Z[1]}.`;

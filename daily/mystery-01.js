@@ -8,6 +8,8 @@
    deduce: the commander's estimate, fact and so-what, shown in the debrief. cards: unit to troop card. */
 
 PGD.mystery(1,{
+  war:'American Revolution',
+  pitch:'You are <b>Daniel Morgan</b>. A feared British cavalry commander attacks at dawn. Set the trap.',
   H:600,
   terrain(){
     let s=felt('#93a463',600);
@@ -111,6 +113,8 @@ PGD.mystery(1,{
 });
 
 PGD.mystery(14,{
+  war:'Second World War',
+  pitch:'You are <b>Heinz Guderian</b>. Your tanks reached the Meuse days early. Get across before France is ready.',
   general:'Heinz Guderian',
   lead:'In 1940 the French expect the main German attack to come through Belgium, and send their best armies north to meet it. The thick Ardennes forest to the south, they believe, will hold any tanks for a week or more. Your panzers have come through it in under three days.',
   sit:'12 May 1940. Your tanks have reached the Meuse River at Sedan, far sooner than the French thought possible. You need to get across.',
@@ -193,6 +197,8 @@ PGD.mystery(14,{
 });
 
 PGD.mystery(17,{
+  war:'French Revolutionary Wars',
+  pitch:'You are <b>Horatio Nelson</b>. The French fleet lies at anchor in Aboukir Bay, and the sun is setting.',
   general:'Horatio Nelson',
   sit:'August 1798. After weeks of searching, you find the French fleet anchored in Aboukir Bay. The sun is setting.',
   mett:{

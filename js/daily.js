@@ -13,7 +13,10 @@ const D = { sc:null, n:0, step:0 };          // step: 0 = brief, 1..k = decision
 
 /* ---------- dates and storage ---------- */
 const midnight = d => new Date(d.getFullYear(),d.getMonth(),d.getDate());
-function todayN(){ return Math.round((midnight(new Date())-DSTART)/864e5)+1; }
+/* a new order goes out at 4 AM local time, so it is waiting when people wake up */
+const ROLL_H = 4;
+const gameNow = () => new Date(Date.now()-ROLL_H*36e5);
+function todayN(){ return Math.round((midnight(gameNow())-DSTART)/864e5)+1; }
 function dateOfN(n){ const d=new Date(DSTART); d.setDate(d.getDate()+n-1); return d; }
 const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const fmtDate = d => d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
@@ -31,7 +34,7 @@ function streak(){
   return s;
 }
 function untilTomorrow(){
-  const now=new Date(), t=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1), m=Math.max(0,Math.round((t-now)/6e4));
+  const g=gameNow(), now=new Date(), t=new Date(g.getFullYear(),g.getMonth(),g.getDate()+1,ROLL_H), m=Math.max(0,Math.round((t-now)/6e4));
   return `${Math.floor(m/60)}h ${m%60}m`;
 }
 
@@ -80,16 +83,22 @@ function loadDaily(){
 
 /* ---------- home card ---------- */
 function renderDailySlot(){
-  const el=$('#dailySlot'); if(!el) return;
-  if(!PGD.ready){ el.innerHTML=`<div class="dcard"><span class="dk">Today's order</span><p class="dmeta">Loading today's briefing…</p></div>`; return; }
-  const n=todayN(), sc=scFor(n);
-  if(!sc){ el.innerHTML=`<div class="dcard"><div class="dbody"><span class="dk">Order #${n} · ${fmtDate(dateOfN(n))}</span><h2>Next order coming soon</h2><p>Today's battle is still being checked against the history. Come back a little later.</p></div></div><div class="dlinks"><a class="dlink" href="#archive">Past orders ›</a></div>`; return; }
-  const r=RES[n], st=streak(), d=dateOfN(n);
-  const done=r&&r.first, mys=!!sc.m;
-  const status = mys ? (done?`${r.first.won?'Solved':'Defeated'} ${r.first.won?r.first.tries.length:'X'}/5 · Next in ${untilTomorrow()}`:(r&&r.tries&&r.tries.length?'Continue ›':'Open today\'s order ›')) : null;
-  const owned=CARDS.filter(c=>OWNED.has(c.id)).length;
-  const prev=Object.values(PGD.byN).filter(s=>s.m&&s.n>n).sort((a,b)=>a.n-b.n);
-  el.innerHTML=`<a class="dcard" href="#daily"><div class="dthumb">${thumb(sc,true)}</div><div class="dbody"><span class="dk">Order #${n} · ${fmtDate(d)}</span><h2>${sc.name}, ${sc.year}</h2><p>${sc.brief.hook}</p><p class="dmeta">${mys?`Mystery · one move · 5 tries · you are ${sc.you}`:`You command: ${sc.you} · ${sc.decisions.length} calls · about ${Math.max(3,sc.minutes-2)} min`}</p><div class="drow"><span class="dbtn">${mys?status:done?`Done: ${firstScore(sc,r)}/${maxScore(sc)} · Next in ${untilTomorrow()}`:(r&&r.picks.length?'Continue ›':'Open today\'s order ›')}</span><span class="dstreak">${st?`🔥 ${st} day streak`:'Start a streak'}</span></div></div></a><div class="dlinks"><a class="dlink" href="#archive">Past orders ›</a><a class="dlink" href="#cards">Troop cards ${owned}/${CARDS.length} ›</a></div>`;
+  const el=$('#dailySlot'), sub=$('#lsub'); if(!el) return;
+  if(!PGD.ready){ el.innerHTML=`<div class="lcard"><div class="lband"></div><div class="lin"><span class="lk">Today's order</span><p>Loading today's order…</p></div></div>`; return; }
+  const n=todayN(), sc=scFor(n), d=dateOfN(n), day=d.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});
+  if(!sc){ if(sub) sub.textContent='Prove it.'; el.innerHTML=`<div class="lcard"><div class="lband"></div><div class="lin"><span class="lk">Order #${n} · ${day}</span><h2>Next order coming soon</h2><p>Today's battle is still being checked against the history. Come back a little later.</p></div></div>`; return; }
+  const m=sc.m, g=m.general||sc.you, r=RES[n], st=streak();
+  if(sub) sub.textContent=`Today: can you match ${g}?`;
+  const done=r&&r.first, going=r&&r.tries&&r.tries.length&&!r.done;
+  const cta = done ? `${r.first.won?`Solved ${r.first.tries.length}/5`:'Defeated X/5'} · See the debrief ›` : going ? 'Continue today\'s order ›' : 'Take today\'s order ›';
+  el.innerHTML=`<a class="lcard" href="#daily"><div class="lband"></div><div class="lin">
+      <span class="lk">Today's order · #${n} · ${day}</span>
+      <div class="lname"><h2>${sc.name}</h2><span>${sc.year}</span></div>
+      <span class="lwar">${m.war?m.war+' · ':''}${sc.place}</span>
+      <div class="lthumb">${thumb(sc,true)}</div>
+      <p>${m.pitch||sc.brief.hook}</p>
+      <span class="lcta">${cta}</span></div></a>
+    <p class="lnext">Next order in ${untilTomorrow()}${st>1?` · 🔥 ${st} day streak`:''}</p>`;
 }
 
 /* ---------- archive ---------- */
@@ -252,7 +261,7 @@ function cardDebrief(){
   state.cardMode='daily';
   const sc=D.sc, r=resFor(D.n), db=sc.debrief, max=maxScore(sc);
   const fresh=!r.done;
-  if(!r.done){ r.done=true; if(!r.first) r.first={picks:r.picks.slice(),hints:r.hints.slice(),playedOn:ymd(new Date())}; saveRes(RES); }
+  if(!r.done){ r.done=true; if(!r.first) r.first={picks:r.picks.slice(),hints:r.hints.slice(),playedOn:ymd(gameNow())}; saveRes(RES); }
   const tot=scoreOf(sc,r);
   const pr=(db.principles||[]).map(id=>PRINCIPLES.find(p=>p.id===id)).filter(Boolean);
   const [oHead,oRest]=firstSentences(db.outcome,2);

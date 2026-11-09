@@ -8,7 +8,7 @@ PRINCIPLES.forEach(p=>p.refs.forEach(([b,i])=>{(PR_AT[b+':'+i]=PR_AT[b+':'+i]||[
 const teaches = b => [...new Set(PRINCIPLES.filter(p=>p.refs.some(r=>r[0]===b.id)).map(p=>p.name))].slice(0,3);
 const TYPE = {inf:'Infantry',spr:'Infantry',hvy:'Heavy infantry',cav:'Cavalry',arch:'Ranged troops',art:'Artillery',arm:'Armor',ship:'Naval',gal:'Naval',para:'Airborne',cmd:'Commander',truck:'Supply',crate:'Logistics',stake:'Field defences',plane:'Aircraft'};
 const OFF = {1:[[0,0]],2:[[-7,1],[7,-1]],3:[[-10,2],[0,-2],[10,2]]};
-const fillAttr = u => u.s==='g' ? 'fill="url(#pg)" stroke="#23420f" stroke-width=".7"' : 'fill="url(#pt)" stroke="#6e4f22" stroke-width=".7"';
+const fillAttr = u => TOON ? (u.s==='g' ? 'fill="#5fb84a" stroke="#1c1a17" stroke-width=".95" stroke-linejoin="round"' : 'fill="#e6b86c" stroke="#1c1a17" stroke-width=".95" stroke-linejoin="round"') : u.s==='g' ? 'fill="url(#pg)" stroke="#23420f" stroke-width=".7"' : 'fill="url(#pt)" stroke="#6e4f22" stroke-width=".7"';
 const card = $('#card');
 /* era-accurate toy shapes: the same unit type looks different in 480 BC, 1781, 1940 and 1991 */
 function yearOf(b){ if(!b) return 1900; if(b._yr!=null) return b._yr; const y=String(b.year||''); const n=parseInt(y.replace(/[^0-9]/g,''),10)||1900; return b._yr=/BC/.test(y)?-n:n; }
@@ -341,13 +341,30 @@ function strip(){
 }
 function thumb(b,sq){
   const H=b.H||400; let vy=0;
-  if(sq && H>400){ const ys=b.units.map(u=>((b.m&&b.m.start&&b.m.start[u.id])||posAt(u,0))[1]); vy=Math.max(0,Math.min(H-400,ys.reduce((a,c)=>a+c,0)/ys.length-200)); }
-  let s=`<svg viewBox="0 ${vy.toFixed(0)} 400 ${sq?400:H}" aria-hidden="true"><g filter="url(#aged)">${b.terrain()}</g><rect width="400" height="${H}" fill="url(#parch)"/>`;
+  if(sq && H>400){ const ys=(b.m&&b.m.zones)?b.m.zones.map(z=>z[3]):b.units.map(u=>posAt(u,0)[1]); vy=Math.max(0,Math.min(H-400,ys.reduce((a,c)=>a+c,0)/ys.length-200)); }
+  const T0=TOON; TOON=!!sq;
+  let s=sq ? `<svg viewBox="0 ${vy.toFixed(0)} 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g filter="url(#sketch)">${b.terrain()}</g>`
+           : `<svg viewBox="0 0 400 ${H}" aria-hidden="true"><g filter="url(#aged)">${b.terrain()}</g><rect width="400" height="${H}" fill="url(#parch)"/>`;
   b.units.forEach(u=>{ const p=(b.m&&b.m.start&&b.m.start[u.id])||posAt(u,0); if(p[2]==='off'||p[2]==='exit') return; const lift=u.t==='plane'?-15:0; OFF[u.n||1].forEach(o=>{ s+=`<g transform="translate(${p[0]+o[0]} ${p[1]+o[1]+lift}) scale(${b.face[u.s]*1.15} 1.15)"${p[2]==='hide'?' opacity=".45"':''}><use href="#u-${SPR(u.t,yearOf(b),u.name)}" ${fillAttr(u)}/></g>`; }); });
+  TOON=T0;
   return s+'</svg>';
 }
 function renderHome(){
-  let h=`<div class="home-inner"><div class="hero"><h1><span class="w1">The Daily</span> <span class="w2">Order</span></h1><p>One historic battle a day. Read the situation like a real commander, give the order that wins it, then watch it play out on the war table.</p><div class="strip">${strip()}</div></div><div id="dailySlot"></div><p class="sh-label">The campaign library · ${BATTLES.length} battles, step by step</p><div class="boxes">`;
+  const how=[['r','1','Read the general\'s briefing.'],['y','2','Make one move: a toy and a place.'],['b','3','Watch what really happened.']];
+  let h=`<div class="land">
+    <header class="lbar"><span class="lword">The Daily Order</span><a href="#archive">Past orders</a></header>
+    <div class="lwrap">
+      <section class="lhero"><span class="lchip">A new battle every day</span>
+        <h1>Think you're smarter than history's greatest generals?</h1>
+        <p class="lsub" id="lsub"></p>
+        <ol class="lhow lhow-d">${how.map(([c,n,t])=>`<li><span class="ln ${c}">${n}</span><span>${t}</span></li>`).join('')}</ol>
+      </section>
+      <div class="lright"><div id="dailySlot"></div>
+        <ol class="lhow lhow-m">${how.map(([c,n,t])=>`<li><span class="ln ${c}">${n}</span><span>${t}</span></li>`).join('')}</ol></div>
+    </div>
+    <nav class="lfoot"><a href="#archive">Past orders</a><a href="#cards">Troop cards</a><a href="#library">Battle library</a></nav>
+  </div>
+  <div class="home-inner" id="library">`+`<p class="sh-label">The campaign library · ${BATTLES.length} battles, step by step</p><div class="boxes">`;
   BATTLES.forEach(b=>{ h+=`<a class="box" href="#${b.id}"><div class="thumb">${thumb(b)}</div><div class="bx"><div class="yr">${b.year} · ${b.place}</div><h2>${b.name}</h2><p>${b.summary}</p><div class="tags">${teaches(b).map(t=>`<span class="tag">${t}</span>`).join('')}</div></div></a>`; });
   h+=`</div><a class="pbcard" href="#playbook"><span class="pk">The Playbook</span><b>${PRINCIPLES.length} principles</b><span>Every lesson from the board, collected in one place and translated for strategy and leadership at work.</span></a><p class="foot">Board positions are simplified to show the shape of each battle. Troop numbers are best estimates, and ancient figures in particular are debated by historians. "What if" replays are informed speculation, clearly marked on the board.</p></div>`;
   $('#home').innerHTML=h;
@@ -586,13 +603,13 @@ document.addEventListener('keydown',e=>{
 
 function route(){
   let h=location.hash.replace('#','');
-  if(h===''){ history.replaceState(null,'','#daily'); h='daily'; }
   if(window.dailyRoute && dailyRoute(h)) return;
   const b=BMAP[h];
   if(b){ openBattle(b); return; }
   tweens=[];
   if(h==='playbook'){ show('playbook'); renderPlaybook(); return; }
   show('home');
+  if(h==='library') requestAnimationFrame(()=>{ const l=document.getElementById('library'); if(l) l.scrollIntoView(); });
 }
 window.addEventListener('hashchange',route);
 function start(data){
