@@ -32,7 +32,9 @@ function mSquares(t){ const m=D.sc.m, a=m.ans;
   const su = t.u===a.u?'g':(m.near.u||[]).includes(t.u)?'y':'w';
   const sz = t.z===a.z?'g':(m.near.z||[]).includes(t.z)?'y':'w';
   return [su,sz]; }
-function mGrid(tries){ return tries.map(t=>mSquares(t).map(s=>SQ[s]).join('')).join('\n'); }
+function mGrid(tries){ return ['🪖📍'].concat(tries.map(t=>mSquares(t).map(s=>SQ[s]).join(''))).join('\n'); }
+const mGeneral = () => (D.sc.m.general || D.sc.you);
+function siteUrl(){ if(!/^https?:/.test(location.protocol)) return ''; return location.origin+location.pathname.replace(/index\.html$/,''); }
 function mScoreTxt(r){ return r.won ? `${r.tries.length}/${MAXTRY}` : `X/${MAXTRY}`; }
 const MRANK = ['','Marshal of the board','General','Colonel','Captain','Cadet'];
 const refit = () => { if(window.sheetTo) sheetTo(SHEET.pos,false); };
@@ -268,6 +270,7 @@ function mCardDebrief(){
   const cards=[...new Set(Object.values(m.cards))], nw=new Set(r.newCards||[]);
   card.innerHTML=`<div class="card-in mys"><div class="kicker">Debrief · ${D.preview?'Preview':'Order #'+D.n}</div>
     <h2>${db.title}</h2>
+    <div class="sharebox"><span class="msl">Your result</span><pre>${mShare().replace(/&/g,'&amp;').replace(/</g,'&lt;')}</pre><button type="button" class="commit mshare">Share result</button></div>
     <p class="now">${oHead}</p>
     ${m.deduce?`<div class="sec est"><h3>What the winning commander read</h3>${m.deduce.map(([f,d])=>`<div class="ded"><p class="df">${f}</p><p class="dd"><span>So</span>${d}</p></div>`).join('')}</div>`:''}
     <div class="sec"><h3>Troop cards from this battle</h3><div class="cgrid sm">${cards.map(id=>{const C=CARDBY[id]; return `<button type="button" class="cmini ${C.side}" data-card="${id}">${nw.has(id)?'<i class="newb">New</i>':''}${toySvg(C,46)}<b>${C.name}</b></button>`;}).join('')}</div></div>
@@ -279,9 +282,19 @@ function mCardDebrief(){
   </div>`;
   card.scrollTop=0;
 }
+/* the share text: who you matched, how fast, a labelled grid (🪖 the toy, 📍 the place), a dare and the link */
 function mShare(){
-  const r=mres(), F=r.first||r, s=streak();
-  return `The Daily Order ${D.preview?'preview':'#'+D.n} · ${D.sc.name} ${mScoreTxt(F)}\n${mGrid(F.tries)}${!D.preview&&s>1?`\n🔥 ${s} day streak`:''}`;
+  const sc=D.sc, r=mres(), F=r.first||r, s=streak(), g=mGeneral(), n=F.tries.length, url=siteUrl();
+  const line = F.won ? (n===1 ? `Matched ${g} on the first try 🎖️` : `Matched ${g} in ${n}/${MAXTRY} 🎖️`) : `${g} out-thought me (X/${MAXTRY})`;
+  return [`The Daily Order ${D.preview?'(preview)':'#'+D.n}: ${sc.name}, ${sc.year}`, line, '', mGrid(F.tries), '',
+    (!D.preview&&s>1?`🔥 ${s} day streak\n`:'')+`Think you're smarter than history's greatest generals?${url?'\n'+url:''}`].join('\n');
+}
+function mShareDo(btn){
+  const tx=mShare(), done=t=>{ btn.textContent=t; setTimeout(()=>{ btn.textContent='Share result'; },2400); };
+  try{
+    if(navigator.share && matchMedia('(pointer:coarse)').matches){ navigator.share({text:tx}).catch(()=>{}); return; }
+    navigator.clipboard.writeText(tx).then(()=>done('Copied. Paste it anywhere'),()=>done('Could not copy'));
+  }catch(err){ done('Could not copy'); }
 }
 
 /* ---------- events ---------- */
@@ -296,11 +309,7 @@ function mClick(e){
   if(e.target.closest('.mreveal')){ mReveal(); return; }
   if(e.target.closest('.mskip')||e.target.closest('.mdone')){ mFinishReveal(); return; }
   const rk=e.target.closest('.revl li'); if(rk && SC.active){ SC.auto=false; scGo(+rk.dataset.rk); return; }
-  if(e.target.closest('.mshare')){
-    const tx=mShare(), btn=e.target.closest('.mshare');
-    try{ if(navigator.share && matchMedia('(pointer:coarse)').matches) navigator.share({text:tx}).catch(()=>{}); else navigator.clipboard.writeText(tx).then(()=>{btn.textContent='Copied';},()=>{btn.textContent='Could not copy';}); }catch(err){ btn.textContent='Could not copy'; }
-    return;
-  }
+  if(e.target.closest('.mshare')){ mShareDo(e.target.closest('.mshare')); return; }
   if(e.target.closest('.mreplay')){ const r=mres(); r.tries=[]; r.done=false; r.won=false; r.seen=false; saveRes(RES); openMystery(); return; }
 }
 card.addEventListener('click',mClick);
