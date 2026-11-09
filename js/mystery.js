@@ -48,7 +48,7 @@ function drawZones(){
   if(mres().done || SC.active) return;
   const g=document.createElementNS(NS,'g'); g.id='mzones';
   g.innerHTML=D.sc.m.zones.map(([id,lab,x,y,r],k)=>`<g class="mz${MS.sel.z===id?' sel':''}" data-z="${id}" role="button" aria-label="${lab}"><circle cx="${x}" cy="${y}" r="${r}"/><g transform="translate(${x} ${y-r})"><circle r="8.5"/><text y="3.4" text-anchor="middle">${k+1}</text></g><text class="mzl" x="${x}" y="${y+r+11}" text-anchor="middle">${lab}</text></g>`).join('');
-  f.insertBefore(g,$('#fx'));
+  f.insertBefore(g,$('#fx')); if(window.refitLabels) refitLabels();
   g.addEventListener('click',e=>{ const z=e.target.closest('.mz'); if(z){ e.stopPropagation(); mPickZone(z.dataset.z); } });
 }
 function mPreview(){

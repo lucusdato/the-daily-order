@@ -632,3 +632,7 @@ body.mys .dlink2,body.mys .dreplay{font-family:var(--f-hd);text-transform:upperc
 body.mys .sharebox{display:flex!important;flex-direction:column;gap:10px;padding:14px!important;background:#fff!important;color:var(--ink)!important;border:2px solid var(--ink)!important;border-radius:10px!important;box-shadow:0 4px 0 var(--ink)!important;margin:0!important}
 body.mys .sharebox pre{margin:0!important;padding:0!important;background:none!important;border:0!important;font-family:var(--f-bd)!important;font-size:15px!important;line-height:1.45!important;white-space:pre-wrap;word-break:break-word;color:var(--ink)!important}
 body.mys .sharebox .msl{color:#9b2a17}
+/* readable map labels in the daily: plain capitals, bigger, with a solid halo */
+body.mys #board text.lbl,body.mys #mzones .mz text.mzl{font-family:'Oswald',sans-serif!important;font-weight:500!important;text-transform:uppercase;letter-spacing:.05em;font-size:13px!important;fill:#1c1a17!important;stroke:#f7f1e1!important;stroke-width:3.4px!important;paint-order:stroke;stroke-linejoin:round}
+body.mys #mzones .mz.sel text.mzl{fill:#9b2a17!important}
+@media (min-width:900px) and (min-height:520px){ body.mys #board text.lbl,body.mys #mzones .mz text.mzl{font-size:11px!important;stroke-width:3px!important} }

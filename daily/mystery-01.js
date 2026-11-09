@@ -16,7 +16,7 @@ PGD.mystery(1,{
     s+=road('M120 600 Q178 410 200 214 Q212 100 232 0');
     s+=hill(232,104,70,34,4)+hill(200,212,86,40,4);
     s+=trees(101,40,[10,390,50,590],(x,y)=>(Math.abs(x-200)>95||y>470)&&!(y>380&&y<480&&Math.abs(x-200)<110),['#3b6b2b','#4b7a35','#557f3b']);
-    s+=label(112,58,'Broad River, a few miles back',10)+label(312,226,'First rise',10)+label(326,112,'Second rise',10)+label(150,540,'Road from the south',10,-66);
+    s+=label(112,58,'Broad River, a few miles back',10)+label(312,226,'First rise',10)+label(336,130,'Second rise',10)+label(150,540,'Road from the south',10,-66);
     s+=compass(378,578);
     return s+end(600);
   },

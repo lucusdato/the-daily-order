@@ -281,7 +281,36 @@ function drawTheaterArrows(){
 }
 
 /* ---------- board build ---------- */
-function buildBoard(b){
+/* keep every map label fully on the board: measure it and nudge it inside the edges */
+function fitLabels(root){
+  const svg=$('#board'); if(!svg||!root) return;
+  const H=(B&&B.H)||400, m=svg.getScreenCTM(); if(!m||!m.a) return;
+  const k=1/m.a, sr=svg.getBoundingClientRect(), pad=5, placed=[];
+  const box=t=>{ const r=t.getBoundingClientRect(); return {x0:(r.left-sr.left)*k, x1:(r.right-sr.left)*k, y0:(r.top-sr.top)*k, y1:(r.bottom-sr.top)*k, w:r.width}; };
+  const hit=(a,b)=>a.x0<b.x1+2 && a.x1>b.x0-2 && a.y0<b.y1+1 && a.y1>b.y0-1;
+  const shift=(t,dx,dy)=>{ t.setAttribute('transform',`translate(${dx.toFixed(1)} ${dy.toFixed(1)}) `+(t.getAttribute('transform')||'')); t.dataset.fit='1'; };
+  const all=[...root.querySelectorAll('text.lbl'),...root.querySelectorAll('text.mzl')].filter(t=>!t.closest('[style*="display:none"]')&&!t.closest('#theater'));
+  all.forEach(t=>{ if(t.dataset.fit){ t.setAttribute('transform',(t.getAttribute('transform')||'').replace(/^translate\([^)]*\)\s*/,'')); delete t.dataset.fit; if(!t.getAttribute('transform')) t.removeAttribute('transform'); } });
+  all.forEach(t=>{
+    let b=box(t); if(!b.w) return;
+    let dx=0, dy=0;
+    if(b.x0<pad) dx=pad-b.x0; else if(b.x1>400-pad) dx=400-pad-b.x1;
+    if(b.y0<pad) dy=pad-b.y0; else if(b.y1>H-pad) dy=H-pad-b.y1;
+    const mv=o=>({x0:b.x0+dx,x1:b.x1+dx,y0:b.y0+dy+o,y1:b.y1+dy+o});
+    if(placed.some(p=>hit(mv(0),p))){
+      const step=(b.y1-b.y0)+1;
+      for(const o of [step,-step,2*step,-2*step,3*step,-3*step]){ const c=mv(o); if(c.y0>=pad && c.y1<=H-pad && !placed.some(p=>hit(c,p))){ dy+=o; break; } }
+    }
+    if(dx||dy) shift(t,dx,dy);
+    placed.push(mv(0));
+  });
+}
+function refitLabels(){ requestAnimationFrame(()=>fitLabels($('#board'))); }
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(refitLabels);
+addEventListener('resize',()=>{ clearTimeout(refitLabels.t); refitLabels.t=setTimeout(refitLabels,200); });
+
+function buildBoard(b){ buildBoard0(b); refitLabels(); }
+function buildBoard0(b){
   const svg=$('#board');
   const P=b.prologue, box=P?P.box:[0,0,400], [bx,by,bw]=box, H=b.H||400;
   const wrap=svg.closest('.board-wrap'); if(wrap) wrap.style.aspectRatio = H===400 ? '' : `400 / ${H}`;
