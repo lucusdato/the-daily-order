@@ -17,7 +17,8 @@ function todayN(){ return Math.round((midnight(new Date())-DSTART)/864e5)+1; }
 function dateOfN(n){ const d=new Date(DSTART); d.setDate(d.getDate()+n-1); return d; }
 const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const fmtDate = d => d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
-function scFor(n){ if(PGD.byN[n]) return PGD.byN[n]; const L=PGD.list.slice().sort((a,b)=>a.n-b.n); return L.length?L[(n-1)%L.length]:null; }
+/* day n → the scenario released that day (see daily/manifest.js) */
+function scFor(n){ const id=(typeof PGD_RELEASE!=='undefined'?PGD_RELEASE:[])[n-1]; const sc=id&&PGD.byN[id]; return sc&&sc.m?sc:null; }
 function loadRes(){ try{ return JSON.parse(localStorage.getItem(DKEY)||'{}'); }catch(e){ return {}; } }
 function saveRes(r){ try{ localStorage.setItem(DKEY,JSON.stringify(r)); }catch(e){} }
 let RES = loadRes();
@@ -82,13 +83,13 @@ function renderDailySlot(){
   const el=$('#dailySlot'); if(!el) return;
   if(!PGD.ready){ el.innerHTML=`<div class="dcard"><span class="dk">Today's order</span><p class="dmeta">Loading today's briefing…</p></div>`; return; }
   const n=todayN(), sc=scFor(n);
-  if(!sc){ el.innerHTML=''; return; }
+  if(!sc){ el.innerHTML=`<div class="dcard"><div class="dbody"><span class="dk">Order #${n} · ${fmtDate(dateOfN(n))}</span><h2>Next order coming soon</h2><p>Today's battle is still being checked against the history. Come back a little later.</p></div></div><div class="dlinks"><a class="dlink" href="#archive">Past orders ›</a></div>`; return; }
   const r=RES[n], st=streak(), d=dateOfN(n);
   const done=r&&r.first, mys=!!sc.m;
   const status = mys ? (done?`${r.first.won?'Solved':'Defeated'} ${r.first.won?r.first.tries.length:'X'}/5 · Next in ${untilTomorrow()}`:(r&&r.tries&&r.tries.length?'Continue ›':'Open today\'s order ›')) : null;
   const owned=CARDS.filter(c=>OWNED.has(c.id)).length;
   const prev=Object.values(PGD.byN).filter(s=>s.m&&s.n>n).sort((a,b)=>a.n-b.n);
-  el.innerHTML=`<a class="dcard" href="#daily"><div class="dthumb">${thumb(sc,true)}</div><div class="dbody"><span class="dk">Order #${n} · ${fmtDate(d)}</span><h2>${sc.name}, ${sc.year}</h2><p>${sc.brief.hook}</p><p class="dmeta">${mys?`Mystery · one move · 5 tries · you are ${sc.you}`:`You command: ${sc.you} · ${sc.decisions.length} calls · about ${Math.max(3,sc.minutes-2)} min`}</p><div class="drow"><span class="dbtn">${mys?status:done?`Done: ${firstScore(sc,r)}/${maxScore(sc)} · Next in ${untilTomorrow()}`:(r&&r.picks.length?'Continue ›':'Open today\'s order ›')}</span><span class="dstreak">${st?`🔥 ${st} day streak`:'Start a streak'}</span></div></div></a>${prev.length?`<div class="mprev"><b>Preview the new format:</b> ${prev.map(s=>`<a href="#daily-${s.n}">${s.name}</a>`).join(' · ')}</div>`:''}<div class="dlinks"><a class="dlink" href="#archive">Past orders ›</a><a class="dlink" href="#cards">Troop cards ${owned}/${CARDS.length} ›</a></div>`;
+  el.innerHTML=`<a class="dcard" href="#daily"><div class="dthumb">${thumb(sc,true)}</div><div class="dbody"><span class="dk">Order #${n} · ${fmtDate(d)}</span><h2>${sc.name}, ${sc.year}</h2><p>${sc.brief.hook}</p><p class="dmeta">${mys?`Mystery · one move · 5 tries · you are ${sc.you}`:`You command: ${sc.you} · ${sc.decisions.length} calls · about ${Math.max(3,sc.minutes-2)} min`}</p><div class="drow"><span class="dbtn">${mys?status:done?`Done: ${firstScore(sc,r)}/${maxScore(sc)} · Next in ${untilTomorrow()}`:(r&&r.picks.length?'Continue ›':'Open today\'s order ›')}</span><span class="dstreak">${st?`🔥 ${st} day streak`:'Start a streak'}</span></div></div></a><div class="dlinks"><a class="dlink" href="#archive">Past orders ›</a><a class="dlink" href="#cards">Troop cards ${owned}/${CARDS.length} ›</a></div>`;
 }
 
 /* ---------- archive ---------- */
@@ -117,13 +118,14 @@ function dailyRoute(h){
   let n=m[1]?+m[1]:todayN(), preview=false;
   if(n>todayN()){ const s=PGD.byN[n]; if(s&&s.m) preview=true; else n=todayN(); }
   if(n<1) n=todayN();
+  if(!preview && !scFor(n)){ location.replace('#home'); return true; }
   openDaily(n,preview);
   return true;
 }
 
 /* ---------- daily flow ---------- */
 function openDaily(n,preview=false){
-  const sc=scFor(n); if(!sc) return; D.preview=preview;
+  const sc=preview?PGD.byN[n]:scFor(n); if(!sc) return; D.preview=preview;
   show('battle'); state.mode='daily'; document.body.classList.toggle('mys',!!sc.m);
   B=sc; D.sc=sc; D.n=n; tweens=[]; state.cur={i:-1}; state.curArrows=[]; state.pov=sc.side; state.lens=false; state.phase=0;
   $('#bName').textContent=sc.name;
