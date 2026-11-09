@@ -636,3 +636,8 @@ body.mys .sharebox .msl{color:#9b2a17}
 body.mys #board text.lbl,body.mys #mzones .mz text.mzl{font-family:'Oswald',sans-serif!important;font-weight:500!important;text-transform:uppercase;letter-spacing:.05em;font-size:13px!important;fill:#1c1a17!important;stroke:#f7f1e1!important;stroke-width:3.4px!important;paint-order:stroke;stroke-linejoin:round}
 body.mys #mzones .mz.sel text.mzl{fill:#9b2a17!important}
 @media (min-width:900px) and (min-height:520px){ body.mys #board text.lbl,body.mys #mzones .mz text.mzl{font-size:11px!important;stroke-width:3px!important} }
+/* cartoon map in the daily */
+body.mys #board .terr{filter:url(#sketch)!important}
+body.mys #field>rect[fill="url(#parch)"]{display:none}
+body.mys #board .neat{display:none}
+body.mys #units use{stroke:#1c1a17;stroke-width:.55px;stroke-linejoin:round;paint-order:stroke}

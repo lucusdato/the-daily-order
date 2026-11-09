@@ -309,7 +309,7 @@ function refitLabels(){ requestAnimationFrame(()=>fitLabels($('#board'))); }
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(refitLabels);
 addEventListener('resize',()=>{ clearTimeout(refitLabels.t); refitLabels.t=setTimeout(refitLabels,200); });
 
-function buildBoard(b){ buildBoard0(b); refitLabels(); }
+function buildBoard(b){ TOON=document.body.classList.contains('mys'); buildBoard0(b); TOON=false; refitLabels(); }
 function buildBoard0(b){
   const svg=$('#board');
   const P=b.prologue, box=P?P.box:[0,0,400], [bx,by,bw]=box, H=b.H||400;

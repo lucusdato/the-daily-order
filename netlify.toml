@@ -1,0 +1,4 @@
+# Netlify: the site is plain static files, already built. Nothing to compile.
+[build]
+  publish = "."
+  command = ""
