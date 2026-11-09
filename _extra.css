@@ -564,8 +564,8 @@ body.mys.bs-board .mr-e .ml{background:radial-gradient(circle at 35% 30%,#ff8a72
 body.mys.bs-board .mk{color:#f1c661}
 body.mys.bs-board .ogt{background:transparent!important;color:#f1c661;padding:0!important;text-transform:uppercase;font-size:11px;letter-spacing:.05em;font-weight:800}
 body.mys.bs-board button.og i{color:#f1c661}
-body.mys.bs-board .intel{background:none!important;border:0!important;border-radius:0!important;padding:6px 0 0 18px!important;position:relative;color:var(--txt);box-shadow:none!important}
-body.mys.bs-board .intel::before{content:"";position:absolute;left:2px;top:9px;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8a72,#c8321e 60%,#8d1f10);box-shadow:0 1.5px 0 rgba(0,0,0,.5)}
+body.mys.bs-board .intel{background:none!important;border:0!important;border-radius:0!important;padding:6px 0 0!important;position:relative;color:var(--txt);box-shadow:none!important}
+body.mys.bs-board .intel::before{display:none;content:"";position:absolute;left:2px;top:9px;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8a72,#c8321e 60%,#8d1f10);box-shadow:0 1.5px 0 rgba(0,0,0,.5)}
 body.mys.bs-board .intel .it{color:#ff9b84}
 body.mys.bs-board .intel.ccard em{color:var(--txt);opacity:.75}
 body.mys.bs-board .term{color:inherit}

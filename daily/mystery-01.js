@@ -36,21 +36,42 @@ PGD.mystery(1,{
   ground:[['Key terrain','The first rise, where a main line can stand.',[200,142,46]],['Avenue of approach','The road from the south, straight across open pasture.',[172,300,34]],['Obstacle','A river behind you. Nobody can run far.',[200,16,30]]],
   q:'Tarleton always charges. Which toy, placed where, turns that charge into a trap?',
   toys:[['a_militia','Militia'],['a_cont','Continentals'],['a_cav','Cavalry']],
-  zones:[['skirm','Open pasture',196,262,26],['front','Before the first rise',204,188,22],['rise1','On the first rise',200,136,24],['rise2','Behind the second rise',258,70,24]],
+  zones:[['skirm','Open pasture',196,262,26],['front','Before the first rise',204,188,22],['rise1','On the first rise',200,136,24],['rise2','Behind the second rise',272,40,22]],
   ans:{u:'a_militia',z:'front'},
   near:{u:[],z:['skirm','rise1']},
   start:{a_militia:[64,112],a_cont:[104,112],a_cav:[146,104],a_rifles:[146,262],a_morgan:[236,112]},
   fbU:{a_militia:'Right toy. Tarleton expects militia to run. Let them, on your schedule.',
-       a_cont:'Your only troops who can stand a bayonet charge. Spend them out front and nothing is left to hold.',
-       a_cav:'Your only horsemen. Shown this early, the dragoons swamp them and the surprise is gone.'},
-  fbZ:{front:'Right place. They fire, then slip round the side while the British run on into your regulars.',
-       skirm:'Too far out. In the open pasture the dragoons ride them down before they can fall back.',
-       rise1:'In the main line, one break takes the whole line with it.',
-       rise2:'Hidden away, they never fire a shot. Tarleton hits your regulars at full strength.'},
-  fail:{skirm:{u:{t_drag:[176,292],a_rifles:[120,170]},a:[['t',130,360,170,320,180,296]],fire:[['a_rifles','t_drag'],['t_drag','$','clash']]},
-        front:{u:{t_inf:[200,234],a_rifles:[120,170]},a:[['t',190,370,200,240]],fire:[['a_rifles','t_inf'],['t_inf','$']]},
-        rise1:{u:{t_inf:[200,172],a_rifles:[120,170]},a:[['t',190,370,200,178]],fire:[['a_rifles','t_inf'],['t_inf','$','clash']]},
-        rise2:{u:{t_inf:[200,150],a_rifles:[120,170]},a:[['t',190,370,200,156]],fire:[['a_rifles','t_inf'],['t_art','a_cont','cannon'],['t_inf','a_cont']],ko:['a_cont']}},
+       a_cont:'Not this toy. Your regulars are the anchor of the plan, not the bait.',
+       a_cav:'Not this toy. Your few horsemen are the hammer, kept back for the right moment.'},
+  fbZ:{front:'Right place. Close enough to fire, close enough to slip back behind your regulars.',
+       skirm:'Too far out. On open pasture, dragoons can ride down a line before it gets back.',
+       rise1:'Too far back. A line here takes the charge at full strength, with nothing out front to thin it.',
+       rise2:'Out of sight and out of the fight. Nothing slows Tarleton before he reaches your main line.'},
+  /* Every wrong combination has its own outcome. Toys you did not place wait in camp; the riflemen are already out front
+     and, like all skirmishers, fall back before the enemy reaches them. idle: placed toys that are meant to do nothing. */
+  fail:{
+    'a_militia@skirm':{u:{t_drag:[168,272],t_inf:[196,320],a_rifles:[64,160]},a:[['t',130,360,168,280]],fire:[['t_drag','$','clash']],
+      b:'Out in the open, the dragoons catch the militia before they can get back. After Camden, five months earlier, Tarleton\'s horsemen chased fleeing militia for 20 miles.'},
+    'a_militia@rise1':{u:{t_inf:[200,170],a_rifles:[64,160]},a:[['t',190,370,200,178]],fire:[['t_inf','$','clash']],
+      b:'Militia without bayonets now face the charge head on, in your main line. At Camden, militia in the main line ran before the bayonets reached them.'},
+    'a_militia@rise2':{u:{t_inf:[196,150],t_71:[140,160],a_rifles:[64,160]},a:[['t',190,370,196,158],['t',250,386,142,168]],fire:[['t_inf','a_cav'],['t_71','a_cont']],ko:['a_cont'],idle:['$'],
+      b:'Hidden behind the second rise, the militia never fire. Tarleton\'s line arrives fresh, takes the first rise and turns on your camp.'},
+    'a_cont@skirm':{u:{t_drag:[160,282],t_71:[236,290],t_inf:[196,304],a_rifles:[64,160]},a:[['t',130,360,160,288],['t',250,386,236,296]],fire:[['t_inf','$'],['t_drag','$','clash'],['t_71','$','clash']],
+      b:'Your best troops stand alone in open pasture. Dragoons ride round one end of the line, Highlanders the other, while the infantry closes in front.'},
+    'a_cont@front':{u:{t_inf:[204,232],t_71:[160,204],a_rifles:[64,160]},a:[['t',190,370,204,238],['t',250,386,160,210]],fire:[['t_inf','$'],['t_71','$','clash']],
+      b:'They can take a charge, but out here the Highlanders lap round their open flank, and there is no line behind them to fall back on.'},
+    'a_cont@rise1':{u:{t_inf:[200,176],t_71:[146,150],a_rifles:[64,160]},a:[['t',190,370,200,182],['t',250,386,146,156]],fire:[['t_inf','$'],['t_71','$','clash']],
+      b:'The right spot for your regulars, but alone it is an ordinary defence. Nothing out front thins or fools Tarleton, so his whole force arrives fresh and overlaps their flank.'},
+    'a_cont@rise2':{u:{t_inf:[196,150],t_71:[140,160],a_rifles:[64,160]},a:[['t',190,370,196,158],['t',250,386,142,168]],fire:[['t_inf','a_cav'],['t_71','a_militia']],ko:['a_militia'],idle:['$'],
+      b:'Hidden behind the second rise, your best troops never fire a shot. Tarleton takes the first rise unopposed and turns on the rest of your army.'},
+    'a_cav@skirm':{u:{t_drag:[170,282],t_inf:[196,314],a_rifles:[64,160]},a:[['t',130,360,170,288]],fire:[['t_drag','$','clash']],
+      b:'Your few horsemen are shown early against far more dragoons. They are driven off, and the surprise you were saving is gone.'},
+    'a_cav@front':{u:{t_inf:[204,236],t_drag:[160,214],a_rifles:[64,160]},a:[['t',130,360,160,220]],fire:[['t_inf','$'],['t_drag','$','clash']],
+      b:'Horsemen standing still cannot hold a line. Infantry volleys empty their saddles, the dragoons finish the job, and your surprise is gone.'},
+    'a_cav@rise1':{u:{t_inf:[200,214],t_art:[186,262],a_rifles:[64,160]},a:[['t',190,370,200,220]],fire:[['t_art','$','cannon'],['t_inf','$']],
+      b:'On the hilltop your horsemen are in plain view. The guns and infantry fire on them, and Tarleton now knows exactly where your reserve is.'},
+    'a_cav@rise2':{u:{t_inf:[196,150],t_71:[140,160],a_rifles:[64,160]},a:[['t',190,370,196,158],['t',250,386,142,168]],fire:[['t_inf','a_cont'],['t_71','a_militia']],ko:['a_cont'],idle:['$'],
+      b:'The right spot for the cavalry, but cavalry needs a moment to strike. With no lines out front, Tarleton\'s attack never breaks up, and that moment never comes.'}},
   clues:[
     {cat:'e',t:'Tarleton\'s habit',b:'He has beaten militia again and again with one headlong bayonet charge.'},
     {cat:'tr',card:'militia1781'},
@@ -61,13 +82,30 @@ PGD.mystery(1,{
   deduce:[['Tarleton always charges headlong.','Make his charge work for you: let him believe he is winning.'],
           ['Militia shoot well but break against bayonets.','Put them where shooting matters and running away is part of the plan.'],
           ['A river blocks any retreat.','Your men must fight here, and they know it. Morgan counted on that.']],
-  scenes:[
-    {s:0,t:'The trap is set',b:'Morgan forms three lines: riflemen out front, militia behind them, Continentals on the first rise. The cavalry waits out of sight.'},
-    {s:0,u:{t_inf:[196,300],t_71:[260,330],t_drag:[120,300],t_art:[178,322],t_tarleton:[230,336]},a:[['t',190,370,196,306]],t:'Tarleton attacks at dawn',b:'As always, he sends his infantry straight forward, his small cannon firing in support.',fire:[['t_art','a_rifles','cannon']]},
-    {s:1,t:'Two volleys',b:'The riflemen pick off officers. The militia fire their two volleys, aiming at officers, exactly as Morgan asked.',fire:[['a_rifles','t_inf'],['a_militia','t_inf']]},
-    {s:2,a:[['gd',200,205,150,160,124,118],['t',200,280,200,162]],t:'The militia slip away',b:'They file off around the left. Tarleton sees the usual rout and charges with everything he has.'},
-    {s:2,t:'Turn and fire',b:'On Morgan\'s signal the Continentals turn and fire one crushing volley at about 30 metres into the breathless British.',fire:[['a_cont','t_inf'],['a_cont','t_71']]},
-    {s:3,a:[['g',206,102,206,208],['g',262,62,322,160,292,244],['g',118,112,100,200,124,246]],t:'Charge from three sides',b:'Bayonets in front, cavalry on one flank, reformed militia on the other. Most of the British surrender. Tarleton flees.',fire:[['a_cont','t_inf','clash'],['a_cav','t_71','clash'],['a_militia','t_art']]}],
+  /* The real battle. Every unit is placed in every scene so nothing drifts. North is up: the British come from the south,
+     so the American right (and the British left) is the west side of the map. Checked against the sources below. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={a_rifles:[196,262],a_militia:[204,190],a_cont:[200,136],a_cav:[290,40],a_morgan:[238,108],
+           t_inf:[190,370],t_71:[250,386],t_drag:[250,352],t_art:[170,380],t_tarleton:[222,392]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(1,{},{t:'The trap is set',b:'Three lines, about 150 yards apart: riflemen out front, militia behind them, Continentals on the first rise. Washington\'s cavalry waits behind the second rise.'});
+    add(1,{t_drag:[226,290]},{a:[['t',250,352,228,296]],t:'Dragoons probe',b:'At dawn Tarleton sends dragoons at the riflemen. Aimed fire empties saddles and the horsemen pull back.',fire:[['a_rifles','t_drag']]});
+    add(1,{t_drag:[276,336],t_inf:[196,300],t_art:[176,330],t_tarleton:[226,350],a_rifles:[176,196]},{a:[['t',190,370,196,306],['g',196,262,180,204]],t:'The line advances',b:'Drums beating, the British infantry come on at a trot, their two small guns firing. Their job done, the riflemen fall back to the militia.',fire:[['t_art','a_militia','cannon']]});
+    add(2,{t_inf:[200,236]},{t:'Two volleys',b:'The militia fire two volleys, aiming at officers, exactly as Morgan asked. Gaps open in the British ranks.',fire:[['a_militia','t_inf'],['a_rifles','t_inf']]});
+    add(2,{a_militia:[300,96],a_rifles:[286,122],t_drag:[298,176],a_cav:[292,148],t_inf:[200,200]},{a:[['gd',204,190,262,160,300,102],['t',276,336,296,184],['g',290,40,292,140]],t:'Bait and hammer',b:'The militia peel away around your left. Dragoons gallop after them, sure this is the usual rout, until Washington\'s cavalry charges out and scatters them.',fire:[['a_cav','t_drag','clash']]});
+    add(2,{t_drag:[356,350],a_cav:[268,90],t_inf:[200,178],t_art:[186,206],t_71:[128,172]},{a:[['t',250,386,176,300,130,180]],t:'Highlanders on the flank',b:'Your Continentals and the British line trade volleys. Tarleton throws in his reserve, the 71st Highlanders, to wrap around your right.',fire:[['t_inf','a_cont'],['a_cont','t_inf']]});
+    add(2,{a_cont:[206,92],a_morgan:[240,78],t_inf:[204,134],t_71:[150,124],a_militia:[214,34],a_rifles:[236,42]},{a:[['g',200,136,206,98],['t',200,178,204,140]],t:'A misheard order',b:'Howard tells one company to turn and face the Highlanders. The order is misheard and the whole line steps back in good order. The British rush after them, sure they have won. Behind the hill, the militia re-form.'});
+    add(2,{},{t:'Turn and fire',b:'Morgan picks the spot. The Continentals face about and fire one volley at close range into the breathless British.',fire:[['a_cont','t_inf'],['a_cont','t_71']]});
+    add(3,{a_cont:[198,174],a_cav:[240,186],a_militia:[110,110],a_rifles:[98,96],t_inf:[214,198,'ko'],t_71:[150,124,'ko'],t_art:[186,206,'ko'],t_drag:[380,396,'exit'],t_tarleton:[196,420,'exit']},
+      {a:[['g',206,98,198,168],['g',268,90,268,150,244,180],['g',214,34,150,50,112,104]],t:'Caught on both sides',b:'The Continentals charge with the bayonet and take the guns. The militia reappear on your right and the cavalry hits the other flank. Most of the British surrender. Tarleton escapes with a handful of horsemen.',
+       fire:[['a_cont','t_inf','clash'],['a_cav','t_inf','clash'],['a_militia','t_71'],['a_cont','t_art','clash']]});
+    return S;
+  })(),
+  sources:[['National Park Service: Battle of Cowpens','https://www.nps.gov/articles/000/battle-of-cowpens.htm'],
+           ['National Park Service: Colonel Howard\'s misunderstood order','https://www.nps.gov/places/colonel-howard-s-misunderstood-order.htm'],
+           ['Journal of the American Revolution: William Washington at Cowpens','https://allthingsliberty.com/2026/03/coup-doeil-william-washington-at-the-battle-of-cowpens/'],
+           ['South Carolina Battleground Trust: Battle of Camden','https://scbattlegroundtrust.org/the-battle-of-camden']],
   cards:{a_militia:'militia1781',a_cont:'cont1781',a_cav:'drag1781',t_inf:'redcoat1781',t_drag:'legion1781'}
 });
 

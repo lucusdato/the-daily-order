@@ -140,7 +140,7 @@ function mPickZone(z){ if(MS.busy||mres().done||SC.active) return; MS.sel.z = MS
 
 /* ---------- brief styles: three looks to compare ---------- */
 const BSTYLES=[['dispatch','Dispatch'],['board','Plotting board'],['notebook','Field notebook']];
-function bsGet(){ try{ const v=localStorage.getItem('pg-bs'); if(BSTYLES.some(b=>b[0]===v)) return v; }catch(e){} return 'dispatch'; }
+function bsGet(){ try{ const v=localStorage.getItem('pg-bs'); if(BSTYLES.some(b=>b[0]===v)) return v; }catch(e){} return 'board'; }
 function bsApply(v){ v=v||bsGet(); BSTYLES.forEach(([k])=>document.body.classList.toggle('bs-'+k,k===v)); if(D.sc) document.body.dataset.side=D.sc.side||'g'; }
 function bsSwitch(){ const v=bsGet(); return `<div class="bsw" role="group" aria-label="Brief style"><span>Look</span>${BSTYLES.map(([k,l])=>`<button type="button" data-bs="${k}" aria-pressed="${k===v}">${l}</button>`).join('')}</div>`; }
 bsApply();
@@ -186,6 +186,20 @@ function mCardPlay(){
   if(MS.newClue<0) card.scrollTop=0;
 }
 
+/* ---------- what a wrong order plays out as ----------
+   m.fail['toy@zone'] is the specific outcome for that combination; m.fail[zone] is the fallback.
+   Each can carry its own text (b). '$' stands for the toy you placed. */
+function mFailList(u,z,out){
+  const m=D.sc.m, Z=mz(z), placed={[u]:[Z[2],Z[3]]}, [su,sz]=mSquares({u,z}), sub=x=>x==='$'?u:x;
+  const F=(m.fail&&(m.fail[u+'@'+z]||m.fail[z]))||{};
+  return [{t:'Your order',b:`${mToyLabel(u)} → ${Z[1]}.`,cur:startCur(placed)},
+          {t:out?'Defeated':'What happens',b:F.b||(sz!=='g'?m.fbZ[z]:m.fbU[u]),cur:startCur(Object.assign({},F.u||{},placed)),a:F.a||[],
+           fire:(F.fire||[]).map(f=>f.map(sub)),ko:[...new Set((F.ko||['$']).map(sub))].filter(Boolean),banner:'What if',idle:(F.idle||[]).map(sub)}];
+}
+function mRevealList(){
+  return D.sc.m.scenes.map(x=>({t:x.t,b:x.b,cur:{i:x.s,ph:x.s,alt:x.u?{u:x.u}:undefined},a:x.a||[],fire:x.fire||[],ko:x.ko||[],idle:x.idle||[]}));
+}
+
 /* ---------- sending the order ---------- */
 function mCommit(){
   const r=mres(), m=D.sc.m, {u,z}=MS.sel; if(!u||!z||MS.busy||r.done) return;
@@ -202,10 +216,7 @@ function mCommit(){
     list=[{t:'Your order',b:lab,cur:startCur(placed)},
           {t:'Right call',b:`${m.fbU[u].replace(/^Right toy\.\s*/,'')} ${m.fbZ[z].replace(/^Right place\.\s*/,'')}`,cur:startCur(placed),fire:(m.win&&m.win.fire)||[]}];
   } else {
-    const F=(m.fail&&m.fail[z])||{}, [su,sz]=mSquares(t), sub=x=>x==='$'?u:x;
-    list=[{t:'Your order',b:lab,cur:startCur(placed)},
-          {t:out?'Defeated':'What happens',b:sz!=='g'?m.fbZ[z]:m.fbU[u],cur:startCur(Object.assign({},F.u||{},placed)),a:F.a||[],
-           fire:(F.fire||[]).map(f=>f.map(sub)),ko:[...new Set((F.ko||['$']).map(sub))],banner:'What if'}];
+    list=mFailList(u,z,out);
   }
   scenesPlay(list,{endLabel:win?'See result':out?'See the answer':'Try again',onEnd:()=>{
     MS.busy=false; MS.sel={u:null,z:null};
@@ -238,7 +249,7 @@ function mReveal(){
     <button type="button" class="dlink2 mdone">Skip to the debrief</button></div>`;
   card.scrollTop=0;
   display({i:0,ph:0},true,[]); state.phase=0;
-  const list=m.scenes.map(x=>({t:x.t,b:x.b,cur:{i:x.s,ph:x.s,alt:x.u?{u:x.u}:undefined},a:x.a||[],fire:x.fire||[],ko:x.ko||[]}));
+  const list=mRevealList();
   setTimeout(()=>scenesPlay(list,{endLabel:'Debrief',onStep:k=>{
       card.querySelectorAll('.revl li').forEach(li=>{ const n=+li.dataset.rk; li.classList.toggle('on',n===k); li.classList.toggle('past',n<k); });
       state.phase=list[k].cur.i;
@@ -266,6 +277,7 @@ function mCardDebrief(){
     <div class="sec"><h3>Troop cards from this battle</h3><div class="cgrid sm">${cards.map(id=>{const C=CARDBY[id]; return `<button type="button" class="cmini ${C.side}" data-card="${id}">${nw.has(id)?'<i class="newb">New</i>':''}${toySvg(C,46)}<b>${C.name}</b></button>`;}).join('')}</div></div>
     ${pr.length?`<div class="sec"><h3>Principles in play</h3><div class="chips">${pr.map(p=>`<button type="button" class="chip-p" data-pr="${p.id}">${p.name}</button>`).join('')}</div></div>`:''}
     <details class="more sm"><summary>The full story</summary><div class="more-in">${oRest?`<p>${oRest}</p>`:''}${sec('Why it worked',db.why)}<div class="other"><h3>${sc.t.eyes}</h3><p>${db.them}</p></div></div></details>
+    ${m.sources?`<details class="more sm srcs"><summary>Sources</summary><div class="more-in"><ul>${m.sources.map(([n,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${n}</a></li>`).join('')}</ul></div></details>`:''}
     <div class="drow2"><a class="dlink2" href="#archive">Past orders</a><button type="button" class="dreplay mreplay">Play again</button></div>
     <p class="hint">${r.first&&(r.first.won!==r.won||r.first.tries.length!==r.tries.length)?'Your first attempt is the score that counts. ':''}${D.preview?'This was a preview. ':''}Next order in ${untilTomorrow()}.</p>
   </div>`;
