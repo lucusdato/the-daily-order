@@ -114,7 +114,7 @@ function puff(x,y,s=1){
 }
 function makeHand(){ const fx=$('#fx'); const g=document.createElementNS(NS,'g'); g.setAttribute('class','hand'); g.innerHTML='<use href="#hand"/>'; g.style.opacity='0'; fx.appendChild(g); return g; }
 function dropIn(f,endOp,delay){
-  const hand = f.fi===0 ? makeHand() : null;
+  const hand = null; /* the hand graphic is retired: pieces just hop */
   f.op=0; f.h=70;
   addTw({dur:640,delay,step:p=>{
     const e=easeOut(p); f.h=70*(1-e); f.op=endOp*Math.min(1,p*4);

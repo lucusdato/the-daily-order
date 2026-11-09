@@ -15,7 +15,7 @@ function plan(list,before){
     D.sc.units.forEach(u=>{ const a=posFor(u,prev), b=posFor(u,sc.cur); p0[u.id]=a; p1[u.id]=b; });
     out.push({sc,p0,p1,dead:new Set(dead)});
     (sc.ko||[]).forEach(id=>dead.add(id));
-    D.sc.units.forEach(u=>{ const st=p1[u.id][2]; if(st==='ko'||st==='exit'||st==='off') dead.add(u.id); });
+    D.sc.units.forEach(u=>{ const st=p1[u.id][2]; if(st==='ko'||st==='exit') dead.add(u.id); }); /* 'off' units can still arrive later */
     prev=sc.cur;
   });
   return out;
