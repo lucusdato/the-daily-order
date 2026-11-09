@@ -173,7 +173,7 @@ function mCardPlay(){
     <header class="ohead">
       <div class="kicker">${D.preview?'Preview':'Order #'+D.n} · ${sc.place} · ${sc.year}</div>
       <h2>${sc.name}</h2>
-      <p class="who"><span class="sw ${sc.side}"></span>You are ${sc.you}</p>
+      <p class="who"><span class="sw ${sc.side}"></span>You are ${mGeneral()}</p>
     </header>
     <p class="lead">${mLead()}</p>
     <p class="sit">${m.sit}</p>

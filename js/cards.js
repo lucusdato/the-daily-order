@@ -86,9 +86,51 @@ const CARDS = [
    fact:'Professional warriors who fought with fearsome two-handed axes.'},
   {id:'fyrd1066', set:'hastings', name:'The fyrd', era:'Norman Conquest, 1066', t:'spr', side:'t', st:[2,2,2,1],
    good:'Filling out the shield wall', beat:'Chasing an enemy who only seems beaten',
-   fact:'Part-time soldiers called up from the shires.'}
+   fact:'Part-time soldiers called up from the shires.'},
+  // Battle of Britain, 1940
+  {id:'hurricane1940', set:'britain', name:'Hawker Hurricane', era:'Second World War, 1940', t:'plane', side:'g', st:[4,4,3,2],
+   good:'Attacking bombers and their close escort', beat:'Bf 109s coming down from above',
+   fact:'Park\'s orders sent Hurricanes against the bombers and close escort while Spitfires took the fighter screen.'},
+  {id:'spitfire1940', set:'britain', name:'Supermarine Spitfire', era:'Second World War, 1940', t:'plane', side:'g', st:[5,4,3,2],
+   good:'Climbing to fight the escorts', beat:'Being caught low and slow',
+   fact:'Park\'s orders sent Spitfires up against the German fighter screen.'},
+  {id:'wing1940', set:'britain', name:'The Duxford big wing', era:'Second World War, 1940', t:'plane', side:'g', st:[3,5,3,2],
+   good:'Hitting a raid with several squadrons at once', beat:'Time: it took too long to form up',
+   fact:'On 15 September Douglas Bader led five squadrons from Duxford over London.'},
+  {id:'bomber1940', set:'britain', name:'German bomber formation', era:'Second World War, 1940', t:'bomber', side:'t', st:[3,4,3,5],
+   good:'Hitting airfields and cities by day', beat:'Fighters, once the escort has turned for home',
+   fact:'Heinkels, Dorniers and Junkers bombers all flew against Britain in 1940.'},
+  {id:'bf109_1940', set:'britain', name:'Messerschmitt Bf 109', era:'Second World War, 1940', t:'plane', side:'t', st:[5,4,3,2],
+   good:'Diving on enemy fighters', beat:'Fuel: London was at the limit of its range',
+   fact:'On 15 September, German fighters turned back near London as their fuel ran low.'},
+  {id:'bf110_1940', set:'britain', name:'Messerschmitt Bf 110', era:'Second World War, 1940', t:'plane', side:'t', st:[3,4,3,3],
+   good:'Long range and heavy guns', beat:'Agile single-engined fighters',
+   fact:'A twin-engined heavy fighter, built to escort bombers at long range.'}
+,
+  // Gaugamela, 331 BC
+  {id:'companion331', set:'gaugamela', name:'Companion cavalry', era:'Wars of Alexander, 331 BC', t:'cav', side:'g', st:[5,5,3,1],
+   good:'A wedge charge into a gap', beat:'Formed pikes, being surrounded',
+   fact:'Alexander led them in person, and at Gaugamela they rode straight at Darius.'},
+  {id:'phalanx331', set:'gaugamela', name:'Macedonian phalanx', era:'Wars of Alexander, 331 BC', t:'hvy', side:'g', st:[1,5,4,1],
+   good:'A wall of long pikes from the front', beat:'Being hit from the side, keeping pace',
+   fact:'At Gaugamela a second line stood behind the first, ready to turn around if surrounded.'},
+  {id:'thessal331', set:'gaugamela', name:'Thessalian cavalry', era:'Wars of Alexander, 331 BC', t:'cav', side:'g', st:[4,4,3,1],
+   good:'Holding a flank against heavy pressure', beat:'Being outnumbered for too long',
+   fact:'They fought on the left under Parmenion and were holding their own when Alexander returned.'},
+  {id:'javelin331', set:'gaugamela', name:'Javelin men', era:'Wars of Alexander, 331 BC', t:'arch', side:'g', st:[4,2,1,3],
+   good:'Killing chariot drivers, screening', beat:'Cavalry on open ground',
+   fact:'At Gaugamela they hit the chariot horses, seized the reins and killed the drivers.'},
+  {id:'chariot331', set:'gaugamela', name:'Scythed chariots', era:'Wars of Alexander, 331 BC', t:'cav', side:'t', st:[5,4,1,1],
+   good:'Charging over flat, cleared ground', beat:'Javelins, lanes opened in the line',
+   fact:'Darius had the plain leveled so they could charge.'},
+  {id:'guard331', set:'gaugamela', name:'Persian royal guard', era:'Wars of Alexander, 331 BC', t:'hvy', side:'t', st:[2,4,3,2],
+   good:'Standing around the king', beat:'A charge that breaks through to the king',
+   fact:'When Darius fled, the Persian center collapsed.'},
+  {id:'pcav331', set:'gaugamela', name:'Persian cavalry', era:'Wars of Alexander, 331 BC', t:'cav', side:'t', st:[4,3,2,2],
+   good:'Wrapping around a shorter line', beat:'Leaving a gap when they ride out',
+   fact:'At Gaugamela they were drawn so far out that a gap opened beside Darius.'}
 ];
-const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4]};
+const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();

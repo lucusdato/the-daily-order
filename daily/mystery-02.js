@@ -322,3 +322,200 @@ PGD.mystery(17,{
            ['Wikipedia: Battle of the Nile order of battle','https://en.wikipedia.org/wiki/Battle_of_the_Nile_order_of_battle']],
   cards:{gb_goliath:'sol74_1798',gb_inside:'sol74_1798',gb_outside:'sol74_1798',fr_van:'sol74_1798',fr_center:'sol74_1798',fr_rear:'sol74_1798',fr_orient:'orient1798',fr_fort:'battery1798'}
 });
+
+/* ---------- Battle of Britain, 15 September 1940 ---------- */
+PGD.mystery(8,{
+  war:'Second World War',
+  general:'Keith Park',
+  pitch:'You are <b>Keith Park</b>, commanding 11 Group. The biggest raid yet is heading for London. Get your fighters onto it.',
+  H:600,
+  terrain(){
+    let s=seaBg(600);
+    s+=land('M0 0 H400 V140 Q340 150 300 172 Q260 178 232 176 Q262 188 312 190 Q360 192 392 200 Q392 240 376 272 Q352 300 334 322 Q292 340 250 346 Q186 352 120 350 Q86 340 60 340 Q30 352 0 356 Z','#8fa765');
+    s+=land('M400 352 L374 400 Q332 462 300 502 Q200 542 120 556 Q60 566 0 576 V600 H400 Z','#8fa765');
+    const dot=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.4" fill="#f4e7c3" stroke="#1c1a17" stroke-width="1.4"/>`;
+    s+=dot(262,206)+dot(246,216)+dot(298,160)+dot(292,120)+dot(180,160)+dot(120,322)+dot(176,62)+dot(206,92);
+    s+=house(206,166)+house(220,160,'#8a3a2a')+house(214,178)+house(230,176);
+    s+=label(216,150,'London',11)+label(262,226,'Biggin Hill',8)+label(120,338,'Tangmere',8)+label(144,58,'Duxford',8)+label(150,158,'Uxbridge',8);
+    s+=label(352,228,'Kent',11)+label(360,316,'Dover',8)+label(110,440,'English Channel',12)+label(360,136,'Thames Estuary',8)+label(166,588,'Occupied France',11)+label(386,352,'Calais',8);
+    s+=compass(30,572);
+    return s+end(600);
+  },
+  lead:'France has fallen, and Hitler wants to invade Britain. First the Luftwaffe must beat the RAF. For weeks it pounded your airfields, then on 7 September it switched to bombing London.',
+  sit:'15 September 1940. Radar shows a huge raid forming over France. Your airfields have had a week to recover. Now you have to stop the bombers before they reach London.',
+  mett:{
+    m:'Break up the raid before it can bomb London, and keep Fighter Command alive.',
+    e:'Bombers with fighter escorts. At the start of the battle Germany had about 3,500 aircraft. Its Bf 109s can only just reach London.',
+    t:'Kent lies between the coast and the capital. The Channel lies behind it, and France beyond is German held.',
+    tr:'Spitfires and Hurricanes, with radar and a network of control rooms. 11 Group holds the southeast. 12 Group sits north of London, and 10 Group guards the southwest.',
+    ti:'Minutes. Radar gives you warning, but only just enough to climb and meet the raid.'},
+  ground:[['Key terrain','London, the target of the raid.',[216,110,36]],
+          ['Avenue of approach','Kent, the straight line from the French coast to London.',[310,176,46]],
+          ['Obstacle','The Channel. A pilot who comes down here is often lost.',[200,290,50]]],
+  q:'A huge raid is coming for London. Which squadrons, sent where, break it up before the bombs fall?',
+  qs:'Stop the raid: which toy goes where?',
+  toys:[['r_11','11 Group'],['r_12','12 Group'],['r_10','10 Group']],
+  zones:[['kent','Over Kent, on the raid\'s path',306,174,24],['london','Over London',216,106,24],['channel','Out over the Channel',260,272,24],['france','Over the airfields in France',322,356,24]],
+  ans:{u:'r_11',z:'kent'},
+  near:{u:['r_12'],z:['london']},
+  start:{r_11:[262,135],r_12:[196,42],r_10:[60,170],r_dowding:[160,60],l_bomb:[336,326],l_fight:[318,308],l_110:[356,296],l_goring:[370,372]},
+  fbU:{r_11:'Right toy. Your squadrons are based closest to the raid\'s path.',
+       r_12:'Close. A strong force, but it sits north of London and it takes time to gather.',
+       r_10:'Not this toy. 10 Group is far to the west, guarding the southwest.'},
+  fbZ:{kent:'Right place. Meet the raid here and it breaks up before London.',
+       london:'Close. Right raid, wrong place. Over London, the bombers are already at the target.',
+       channel:'Too far out. A pilot who comes down in the sea is often lost.',
+       france:'Too far. Over France, every pilot who bales out is a prisoner.'},
+  /* North is up. London lies inland, the Channel is south, and German bases lie southeast across the Strait of Dover. */
+  fail:{
+    'r_11@channel':{fire:[['l_fight','$','rifle']],
+      b:'Out over the sea, your pilots meet the escorts first. Park\'s orders warned against just this: he could not afford to lose pilots in the water.'},
+    'r_11@london':{u:{l_bomb:[222,118]},a:[['t',336,326,226,124]],fire:[['$','l_bomb','rifle']],ko:[],
+      b:'Your squadrons wait over the capital. They hit the bombers hard, but only once the bombers have reached it.'},
+    'r_11@france':{fire:[['l_fight','$','rifle']],
+      b:'You go looking for them over France. Every pilot who bales out there is a prisoner, and the raid flies past below.'},
+    'r_12@kent':{u:{l_bomb:[222,118]},a:[['t',336,326,226,124]],ko:[],idle:['$'],
+      b:'Forming up a wing north of London takes too long. By the time it reaches Kent, the raid has already gone by.'},
+    'r_12@london':{u:{l_bomb:[222,118]},a:[['t',336,326,226,124]],fire:[['$','l_bomb','rifle']],ko:[],
+      b:'The big wing hits hard over London, as it really did. Alone, though, it would have struck only after the bombs fell.'},
+    'r_12@channel':{fire:[['l_fight','$','rifle']],
+      b:'12 Group flies the full length of England to fight over the sea. It arrives short of fuel, and pilots go into the water.'},
+    'r_12@france':{fire:[['l_fight','$','rifle']],
+      b:'12 Group flies all the way to France, where its pilots become prisoners if they come down. London has no cover at all.'},
+    'r_10@kent':{u:{l_bomb:[296,196]},a:[['t',336,326,300,202]],fire:[['$','l_bomb','rifle']],ko:[],
+      b:'Kent is the right place, but 10 Group has to cross half of southern England to get there. It arrives thin and late.'},
+    'r_10@london':{u:{l_bomb:[222,118]},a:[['t',336,326,226,124]],fire:[['$','l_bomb','rifle']],ko:[],
+      b:'10 Group reaches London with bombs already falling, and the southwest is left open behind it.'},
+    'r_10@channel':{fire:[['l_fight','$','rifle']],
+      b:'Far from its own bases, 10 Group fights over open water, where a pilot who comes down is often lost.'},
+    'r_10@france':{fire:[['l_fight','$','rifle']],
+      b:'A raid on France does nothing to stop bombers already over Kent. Your pilots are now fighting over enemy ground.'}},
+  clues:[
+    {cat:'tr',t:'The system',b:'Radar and the observers feed your control rooms. You can keep fighters on the ground until you know where the raid is going.'},
+    {cat:'e',t:'Short of fuel',b:'London is at the very edge of the Bf 109\'s range. The escorts cannot stay long.'},
+    {cat:'t',t:'Gliding distance',b:'You have told your controllers to fight over land, or within gliding distance of the coast. You cannot afford to lose pilots in the sea.'},
+    {cat:'tr',t:'12 Group',b:'12 Group sits north of London and wants to fly in big formations. They hit hard, but they take time to form up.'},
+    {cat:'m',t:'Your rule',b:'You want raids broken up before they reach the target, so you send squadrons up in pairs.'},
+    {cat:'e',t:'The escorts',b:'Bf 109s fly high above the bombers. Your Spitfires can go for them, while Hurricanes take the bombers and close escort.'}],
+  deduce:[['Radar shows where the raid is going.','You do not need standing patrols. Send fighters to meet it on its way in.'],
+          ['London is at the limit of the Bf 109\'s fuel.','The further inland the raid goes, the more alone the bombers are. So fight it over Kent, then again over London.'],
+          ['A pilot who bales out over England can fly again.','Fight over land, not over the sea or over France.']],
+  /* The real battle. North is up; the raid comes in from the southeast, over Kent toward London. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={r_11:[262,135],r_12:[196,42],r_10:[60,170],r_dowding:[160,60],l_bomb:[336,326],l_fight:[318,308],l_110:[356,296],l_goring:[370,372]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{},{t:'On the map tables',b:'15 September 1940. Just after 11 a.m., radar at Dover reports a raid forming over France. In the control rooms, the plot starts to move across the map.'});
+    add(1,{r_11:[300,178],l_bomb:[330,250]},{a:[['g',262,135,296,172],['t',336,326,332,256]],t:'Scramble',b:'Keith Park sends up his squadrons in pairs. The controllers guide them onto the raid by radio.'});
+    add(2,{l_bomb:[312,196],l_fight:[328,184],l_110:[296,206]},{a:[['t',330,250,314,204]],t:'Over Kent',b:'Over Kent the fighters hit the raid. Spitfires go for the German fighters above. Hurricanes go for the bombers and their close escort.',fire:[['r_11','l_bomb','rifle'],['r_11','l_fight','rifle']]});
+    add(2,{l_bomb:[226,124],r_11:[258,140],l_fight:[332,300],l_110:[280,160]},{a:[['t',312,196,230,132],['t',328,184,330,290]],t:'Fuel runs low',b:'Near London the German escorts reach the limit of their fuel and turn back. The bombers fly on with far less cover.',fire:[['r_11','l_bomb','rifle']]});
+    add(3,{r_12:[216,100]},{a:[['g',196,42,214,92]],t:'The big wing',b:'Over London the raid meets 12 Group\'s big wing, five squadrons from Duxford led by Douglas Bader.',fire:[['r_12','l_bomb','rifle']]});
+    add(3,{l_bomb:[294,202],l_fight:[320,184],l_110:[306,222],r_11:[290,170],r_12:[240,120]},{t:'No reserves',b:'That afternoon a second raid crosses the coast. At Uxbridge, Churchill asks what other reserves there are. "There are none," Park replies.'});
+    add(3,{l_bomb:[240,150,'ko']},{a:[['t',294,202,244,154]],t:'Every squadron up',b:'Every fighter in the southeast is in the air. The raid is attacked on the way in and on the way out. German losses that day are about 60 aircraft.',fire:[['r_11','l_bomb','rifle'],['r_12','l_bomb','rifle']],ko:['l_bomb']});
+    add(3,{l_fight:[330,380,'exit'],l_110:[340,380,'exit'],r_11:[262,135],r_12:[196,42]},{a:[['g',290,170,264,140]],t:'The invasion is off',b:'Within days Hitler postpones the invasion of Britain indefinitely. Fighter Command is still flying.'});
+    return S;
+  })(),
+  sources:[['RAF Museum: Subordinate RAF commanders in the Battle of Britain','https://rafmuseum.org.uk/research/online-exhibitions/history-of-the-battle-of-britain/subordinate-raf-commanders'],
+           ['NZ History: the Battle of Britain, September to October','https://nzhistory.govt.nz/war/battle-of-britain/the-battle-september-october'],
+           ['Battle of Britain 1940: Sunday 15 September 1940','https://battleofbritain1940.com/entry/sunday-15-september-1940/'],
+           ['Classic Warbirds: RAF tactics during the Battle of Britain','https://www.classicwarbirds.co.uk/articles/royal-air-force-tactics-during-the-battle-of-britain.php']],
+  cards:{r_11:'hurricane1940',r_12:'wing1940',r_10:'spitfire1940',l_bomb:'bomber1940',l_fight:'bf109_1940',l_110:'bf110_1940'}
+});
+
+/* ---------- Gaugamela, 1 October 331 BC ---------- */
+PGD.mystery(9,{
+  war:'Wars of Alexander the Great',
+  general:'Alexander the Great',
+  pitch:'You are <b>Alexander</b>. A gap has just opened in the Persian line, close to Darius. Choose your moment.',
+  H:600,
+  terrain(){
+    let s=felt('#c2b47c',600);
+    s+=`<rect x="24" y="150" width="352" height="110" rx="6" fill="rgba(255,250,220,.28)" stroke="#1c1a17" stroke-opacity=".3" stroke-width="1.4" stroke-dasharray="6 5"/>`;
+    s+=trees(331,10,[0,400,540,596],()=>true,['#7a8a4a','#8d9a54']);
+    s+=trees(9,8,[0,400,6,44],()=>true,['#7a8a4a','#8d9a54']);
+    s+=label(96,168,'Ground leveled for chariots',9)+label(200,30,'Persian camp',10)+label(200,586,'Macedonian camp',10);
+    return s+end(600);
+  },
+  lead:'In three years you have marched from Greece to the heart of the Persian Empire and beaten every army sent against you. King Darius has gathered all the forces he has left, on a great plain near Arbela.',
+  sit:'1 October 331 BC. You led your army at an angle to the right, and the Persian left has been dragged out wide to follow you. A gap has opened beside Darius.',
+  mett:{
+    m:'Break Darius\'s army, ideally by reaching Darius himself.',
+    e:'A far larger army, with long cavalry wings on both flanks. Its center, and its nerve, is the king.',
+    t:'A flat plain, leveled by Darius for his scythed chariots. There are no rivers or hills to guard your flanks.',
+    tr:'About 40,000 infantry and 7,000 cavalry. Your phalanx is deep and slow. The Companion cavalry are your striking force.',
+    ti:'One moment. As soon as the Persian horsemen turn back, the gap will close.'},
+  ground:[['Key terrain','Darius\'s place in the center of the Persian line.',[200,60,36]],
+          ['Avenue of approach','The gap between the Persian center and its left wing.',[274,128,34]],
+          ['Obstacle','The Persian wings, reaching around both ends of your line.',[362,134,40]]],
+  q:'The Persian line has opened near Darius. Which toy, sent where, breaks the whole army?',
+  qs:'Break Darius: which toy goes where?',
+  toys:[['mc_comp','Companions'],['mc_phal','Phalanx'],['mc_lt','Javelin men']],
+  zones:[['gap','The gap near Darius',274,128,24],['front','Head on at the center',196,156,24],['left','Back to Parmenion',128,262,22],['right','After the Persian left',362,174,24]],
+  ans:{u:'mc_comp',z:'gap'},
+  near:{u:['mc_phal'],z:['front']},
+  start:{mc_comp:[344,268],mc_alex:[360,286],mc_lt:[318,232],mc_phal:[226,288],mc_phal2:[222,330],mc_left:[112,300],pr_chariot:[292,222,'ko'],pr_center:[196,92],pr_left:[362,134],pr_right:[94,232],pr_darius:[202,58]},
+  fbU:{mc_comp:'Right toy. Only the Companions are fast and heavy enough to reach Darius in time.',
+       mc_phal:'Close. Part of the phalanx did follow Alexander in, but on its own it is too slow to get there first.',
+       mc_lt:'Not this toy. Javelin men can harass and stop chariots. They cannot break a king\'s guard.'},
+  fbZ:{gap:'Right place. The gap leads straight to Darius, and nobody stands in it.',
+       front:'Close. Right enemy, wrong spot. The center is where his line is strongest.',
+       left:'Not yet. Parmenion needs help, but if you leave now the gap closes.',
+       right:'Wrong way. You would be chasing the horsemen Darius sent to pull you away.'},
+  /* No source gives a compass direction, so the map is drawn from Alexander's side with no north arrow. He faces up the board:
+     his right, and the Persian left facing him, are on the right of the map. Parmenion and the Persian right are on the left. */
+  fail:{
+    'mc_comp@front':{u:{pr_center:[196,124]},a:[['t',196,92,196,120]],fire:[['pr_center','$','clash']],
+      b:'You ride head on into the deepest part of the Persian line. The king\'s guard holds, and the gap closes beside you.'},
+    'mc_comp@left':{fire:[['$','pr_right','clash']],ko:[],
+      b:'You save the left, and Parmenion is grateful. But the gap has closed, and Darius will fight again.'},
+    'mc_comp@right':{fire:[['pr_left','$','clash']],ko:[],
+      b:'You are pulled further and further from Darius, fighting the very horsemen he sent to hold you. The gap closes behind you.'},
+    'mc_phal@gap':{u:{pr_left:[306,146]},a:[['t',362,134,310,144]],fire:[['pr_left','$','clash']],
+      b:'The phalanx marches for the gap, but it is too slow. The Persian horsemen turn back and hit its open side.'},
+    'mc_phal@front':{u:{pr_center:[196,124]},a:[['t',196,92,196,120]],fire:[['$','pr_center','clash']],ko:[],
+      b:'The pikes push into the Persian center and grind on. It is a slow fight, and Darius has time to get away.'},
+    'mc_phal@left':{fire:[['$','pr_right','clash']],ko:[],
+      b:'The phalanx turns to help Parmenion. The left holds, but your center is now empty and the gap goes to waste.'},
+    'mc_phal@right':{fire:[['pr_left','$','clash']],ko:[],
+      b:'Pikemen cannot catch horsemen. The Persian cavalry ride around your slow pikes, and the gap closes.'},
+    'mc_lt@gap':{u:{pr_left:[306,146]},a:[['t',362,134,310,144]],fire:[['pr_left','$','clash']],
+      b:'Light troops reach the gap first, but they have no weight. The Persian horsemen ride them down.'},
+    'mc_lt@front':{u:{pr_center:[196,124]},a:[['t',196,92,196,120]],fire:[['pr_center','$','clash']],
+      b:'Javelins cannot break the king\'s guard. The light troops are cut down in front of the Persian center.'},
+    'mc_lt@left':{fire:[['pr_right','$','clash']],
+      b:'Javelin men run to Parmenion\'s aid, but open ground is no place to meet cavalry. They are ridden down.'},
+    'mc_lt@right':{fire:[['$','pr_left','arrows']],ko:[],
+      b:'The javelins help hold the flank, as they really did. But nobody strikes at Darius, and the gap closes.'}},
+  clues:[
+    {cat:'e',t:'Moving lines',b:'The Persian left has ridden out wide to stop you going around it. A line that moves opens gaps.'},
+    {cat:'e',t:'The king',b:'Darius commands from his chariot in the center. His army fights for him, and it will not stay without him.'},
+    {cat:'tr',t:'The wedge',b:'Your Companions are drilled to charge in a wedge, a shape made for driving through a narrow gap.'},
+    {cat:'t',t:'Leveled ground',b:'Darius has smoothed this plain for his chariots. You have already drawn the fight away from it.'},
+    {cat:'tr',t:'Second line',b:'A second phalanx stands behind the first, ready to turn around if you are surrounded. Your rear can look after itself.'},
+    {cat:'ti',t:'A moment',b:'As soon as those horsemen turn back, the gap is gone. Whatever goes in must go in fast.'}],
+  deduce:[['The Persian left has ridden wide to follow you.','A gap has opened next to the king. Hit it before it closes.'],
+          ['This army is held together by Darius.','Go for the king, and the whole line can fall.'],
+          ['Only cavalry can cross that ground in time.','Send the Companions, in a wedge, with Alexander at their head.']],
+  /* The real battle. Drawn from Alexander's side: he faces up the map, so his right wing is on the right. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={mc_comp:[300,300],mc_phal:[200,300],mc_phal2:[200,340],mc_left:[100,300],mc_lt:[280,260],mc_alex:[320,320],
+           pr_chariot:[200,150],pr_center:[200,80],pr_left:[300,80],pr_right:[90,80],pr_darius:[200,56]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{},{t:'The longer line',b:'1 October 331 BC. On a plain leveled for his chariots, the Persian line stretches past both ends of Alexander\'s.'});
+    add(1,{mc_comp:[352,280],mc_alex:[368,298],mc_lt:[300,240],mc_phal:[226,288],mc_phal2:[220,330],mc_left:[120,300],pr_left:[358,118]},{a:[['g',300,300,348,282],['t',300,80,354,114]],t:'Off to the right',b:'Alexander leads his line at an angle to the right, away from the leveled ground. The Persian left rides along to keep him from going around it.'});
+    add(1,{pr_chariot:[290,226,'ko']},{a:[['t',200,150,286,222]],t:'The chariots',b:'Darius sends in his scythed chariots. Javelin men kill the drivers and the infantry open lanes, so the rest run through and are caught behind.',fire:[['mc_lt','pr_chariot','arrows']],ko:['pr_chariot']});
+    add(1,{pr_left:[352,182],mc_lt:[340,232]},{a:[['t',358,118,352,176]],t:'The gap',b:'More Persian horsemen ride out to wrap around Alexander\'s flank. His flank guard holds them, and the Persian line opens next to the center.',fire:[['mc_lt','pr_left','arrows']]});
+    add(2,{mc_comp:[232,104],mc_alex:[250,120],mc_phal:[222,172],mc_phal2:[220,300]},{a:[['g',352,280,300,190,236,110],['g',226,288,222,178]],t:'The wedge',b:'Alexander forms the Companions into a wedge, with part of the phalanx behind him, and drives through the gap straight at Darius.',fire:[['mc_comp','pr_center','clash']]});
+    add(2,{pr_center:[200,80,'ko'],pr_darius:[200,8,'exit']},{a:[['td',200,56,200,12]],t:'Darius runs',b:'The king turns and flees. The Persian center collapses behind him.',fire:[['mc_comp','pr_center','clash']],ko:['pr_center']});
+    add(2,{pr_right:[106,276],mc_phal2:[200,352]},{a:[['t',90,80,104,270],['g',220,300,204,346]],t:'Trouble behind',b:'The Persian right presses Parmenion hard. Persian and Indian cavalry ride through a gap in the Macedonian line and loot the camp, and the second line turns back to save it.',fire:[['pr_right','mc_left','clash']]});
+    add(2,{mc_comp:[124,258],mc_alex:[150,270]},{a:[['g',232,104,176,180,128,252]],t:'Back to the left',b:'Parmenion sends for help. Alexander breaks off the chase and rides back into the hardest cavalry fight of the day.',fire:[['mc_comp','pr_right','clash'],['mc_left','pr_right','clash']]});
+    add(2,{pr_right:[30,160,'exit'],pr_left:[396,100,'exit']},{a:[['t',106,276,40,170],['t',352,182,392,110]],t:'The empire falls',b:'The Persian wings give way. Darius escapes, but months later he is killed by his own officers, and the empire is Alexander\'s.'});
+    return S;
+  })(),
+  sources:[['Britannica: Battle of Gaugamela','https://www.britannica.com/event/Battle-of-Gaugamela'],
+           ['World History Encyclopedia: the Battle of Gaugamela','https://www.worldhistory.org/article/108/the-battle-of-gaugamela-331-bce/'],
+           ['Arrian on the battle (University of Texas at Arlington)','https://websites.uta.edu/hunnicut/reading-list/readings-western-civilization/arrian-alexander-at-the-battle-of-gaugamela'],
+           ['Livius: Gaugamela (331 BCE)','https://www.livius.org/articles/battle/gaugamela-331-bce/']],
+  cards:{mc_comp:'companion331',mc_phal:'phalanx331',mc_phal2:'phalanx331',mc_left:'thessal331',mc_lt:'javelin331',pr_chariot:'chariot331',pr_center:'guard331',pr_left:'pcav331',pr_right:'pcav331'}
+});
