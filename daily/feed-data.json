@@ -45,6 +45,48 @@
    "war": "Wars of Alexander the Great",
    "year": "331 BC",
    "place": "Near Mosul, Iraq"
+  },
+  {
+   "day": 8,
+   "war": "Greco-Persian Wars",
+   "year": "490 BC",
+   "place": "Attica, Greece"
+  },
+  {
+   "day": 9,
+   "war": "Great Sioux War",
+   "year": "1876",
+   "place": "Montana Territory, United States"
+  },
+  {
+   "day": 10,
+   "war": "Second World War",
+   "year": "1942",
+   "place": "Western Desert, Egypt"
+  },
+  {
+   "day": 11,
+   "war": "Greco-Persian Wars",
+   "year": "480 BC",
+   "place": "Greece"
+  },
+  {
+   "day": 12,
+   "war": "Gallic Wars",
+   "year": "52 BC",
+   "place": "Burgundy, France"
+  },
+  {
+   "day": 13,
+   "war": "Second World War",
+   "year": "1943",
+   "place": "Southern Russia"
+  },
+  {
+   "day": 14,
+   "war": "American Revolution",
+   "year": "1781",
+   "place": "Virginia, United States"
   }
  ]
 }

@@ -112,11 +112,11 @@ PGD.mystery(29,{
   terrain(){
     let s=felt('#b9ad7a',600);
     s+=hill(304,236,62,128,3)+hill(246,500,54,40,3)+hill(214,140,40,30,2);
-    s+=`<path d="M392 352 Q330 336 276 330 Q230 326 196 318" fill="none" stroke="#8a7a4e" stroke-width="10" stroke-linecap="round" opacity=".55"/>`;
+    s+=`<path d="M396 420 Q320 396 262 360 Q222 334 196 318" fill="none" stroke="#8a7a4e" stroke-width="10" stroke-linecap="round" opacity=".55"/>`;
     s+=river('M150 0 Q118 90 156 180 Q196 270 152 360 Q108 450 146 540 Q160 580 150 600',12);
     [[40,92],[86,70],[26,236],[94,262],[70,420],[24,452],[104,478],[54,560],[110,140]].forEach(p=>s+=tent(p[0],p[1],'#efe4c4'));
     s+=trees(1876,10,[118,190,20,580],(x,y)=>true,['#4f7a3a','#5f8a44']);
-    s+=label(66,30,'Lakota and Cheyenne camp',10)+label(122,300,'Little Bighorn River',9,-80)+label(354,250,'Battle Ridge',10,90)+label(250,566,'Reno Hill',10)+label(338,372,'Medicine Tail Coulee',9);
+    s+=label(66,30,'Lakota and Cheyenne camp',10)+label(122,300,'Little Bighorn River',9,-80)+label(354,250,'Battle Ridge',10,90)+label(250,566,'Reno Hill',10)+label(330,430,'Medicine Tail Coulee',9,22);
     s+=compass(376,40);
     return s+end(600);
   },
@@ -311,4 +311,104 @@ PGD.mystery(23,{
            ['WarHistory.org: Operation Bertram, the cover plan for El Alamein','https://warhistory.org/2017/07/23/operation-bertram-the-cover-plan-for-el-alamein-ii/'],
            ['Grounded Curiosity: Second El Alamein, the lost manoeuvrist battle?','https://groundedcuriosity.com/second-battle-of-el-alamein-the-lost-manoeuvrist-battle/']],
   cards:{gb_inf:'tommy1942',gb_arm:'sherman1942',gb_res:'sherman1942',gb_dummy:'dummy1942',gb_guns:'gun1942',ax_north:'axisinf1942',ax_ital:'panzer1942',ax_panz:'panzer1942'}
+});
+
+PGD.mystery(2,{
+  war:'Greco-Persian Wars',
+  general:'Themistocles',
+  pitch:'You are <b>Themistocles</b>. The Persian fleet is twice your size. Pick the water you fight on.',
+  H:600,
+  terrain(){
+    let s=seaBg(600);
+    s+=land('M0 0 H400 V420 Q360 400 330 380 Q290 340 250 300 Q210 250 170 200 Q130 150 90 110 Q60 90 30 96 Q10 100 0 104 Z','#c9b98a');
+    s+=land('M22 150 Q44 140 70 168 Q100 200 130 240 Q170 290 200 340 Q230 390 230 440 Q226 500 170 540 Q100 576 40 556 Q16 540 18 480 Q22 300 22 150 Z','#bfb27e');
+    s+=`<ellipse cx="292" cy="448" rx="18" ry="11" fill="#bfb27e" stroke="#1c1a17" stroke-width="1.6"/>`;
+    s+=hill(318,190,62,36,3)+hill(96,400,50,40,2);
+    s+=trees(480,10,[240,400,20,160],()=>true,['#6f7f45','#7f8f4c'])+trees(48,8,[40,200,420,540],()=>true,['#6f7f45','#7f8f4c']);
+    s+=label(252,64,'Attica',11)+label(340,150,'Mount Aigaleo',9)+label(92,470,'Salamis',11)+label(330,474,'Psyttaleia',9)+label(196,300,'Strait of Salamis',10,56)+label(352,580,'Open sea',10)+label(36,72,'To the Isthmus',9);
+    s+=compass(372,520);
+    return s+end(600);
+  },
+  lead:'Ten years after Marathon, King Xerxes has invaded Greece with a huge army and fleet. The Spartans have fallen at Thermopylae and Athens has been burned. Its people have fled to the island of Salamis, and the Greek fleet waits in the strait beside it.',
+  sit:'September 480 BC. You sent a secret message telling Xerxes the Greeks were about to run. His ships rowed all night to block every way out. Now it is dawn, and the Persian fleet is gathered at the mouth of the strait.',
+  mett:{
+    m:'Destroy or drive off the Persian fleet, so the invasion cannot go on by sea.',
+    e:'A much bigger fleet with skilled Phoenician and Ionian crews. In open water they could surround you.',
+    t:'A narrow, crowded strait between Salamis and the mainland, opening into wide water to the south.',
+    tr:'About 370 heavy triremes built to ram, and hoplites waiting on the island.',
+    ti:'One morning. The alliance is arguing, and may break up within days.'},
+  ground:[['Key terrain','The narrows, where the channel squeezes between Salamis and the mainland.',[175,165,40]],
+          ['Obstacle','The western channel, now blocked by Egyptian ships sent round in the night.',[20,85,30]],
+          ['Avenue of approach','The mouth of the strait, where the Persian fleet has gathered.',[296,333,40]]],
+  q:'The Persians have twice as many ships. Which toy, sent where, makes their numbers useless?',
+  qs:'Beat the bigger fleet: which toy goes where?',
+  toys:[['gr_fleet','Greek battle line'],['gr_west','Corinthian squadron'],['gr_hopl','Hoplites on the shore']],
+  zones:[['narrows','Line up across the narrows',175,165,24],['open','Row out to meet them',344,288,24],['isthmus','Slip away west to the Isthmus',30,83,20],['shore','Pull the ships up on the beach',108,175,20]],
+  ans:{u:'gr_fleet',z:'narrows'},
+  start:{gr_fleet:[150,150],gr_ath:[195,190],gr_west:[60,87],gr_them:[100,143],gr_hopl:[150,253],
+         pe_fleet:[296,333],pe_ion:[262,366],pe_egy:[10,85],pe_psy:[290,293],pe_xerxes:[300,160]},
+  fbU:{gr_fleet:'Right toy. Only the whole battle line can block the strait from shore to shore.',
+       gr_west:'Not this toy. The Corinthians are too few to block the strait, and they are watching the western channel.',
+       gr_hopl:'Not this toy. Soldiers on the beach cannot decide a battle at sea.'},
+  fbZ:{narrows:'Right place. In the narrows, only the front few Persian ships can fight. The rest get in the way.',
+       open:'Not here. In open water, the bigger Persian fleet can spread out and surround you.',
+       isthmus:'Not here. The Egyptian squadron blocked the western channel in the night. There is no way out.',
+       shore:'Not here. With no battle, the Greek alliance falls apart and the ships go home one city at a time.'},
+  fail:{
+    'gr_fleet@open':{fire:[['pe_fleet','$','arrows'],['pe_psy','$','arrows']],
+      b:'The Greek line rows out into the wide water at the mouth of the strait. The bigger Persian fleet spreads out around it and closes in.'},
+    'gr_fleet@isthmus':{fire:[['pe_egy','$','ram']],
+      b:'The Greek fleet tries to slip away west, but Egyptian ships sent round Salamis in the night are blocking the channel. Strung out and running, the Greeks are caught.'},
+    'gr_fleet@shore':{ko:[],idle:['$'],
+      b:'The fleet stays on the beaches. The Persians have no reason to row into the narrows, so they wait. Without a battle, the Greek alliance starts to break up.'},
+    'gr_west@narrows':{u:{pe_egy:[60,87]},fire:[['pe_egy','gr_fleet','arrows']],ko:[],idle:['$'],
+      b:'The Corinthians join the main line, but nobody is watching the western channel. The Egyptian squadron rows in behind the Greek fleet.'},
+    'gr_west@open':{fire:[['pe_fleet','$','arrows'],['pe_psy','$','arrows']],
+      b:'A small squadron rowing out alone into open water, straight at the whole Persian fleet. It does not last long.'},
+    'gr_west@isthmus':{fire:[['pe_egy','$','ram']],
+      b:'Sailing west takes the Corinthians straight into the Egyptian squadron blocking the channel.'},
+    'gr_west@shore':{u:{pe_egy:[60,87]},fire:[['pe_egy','gr_fleet','arrows']],ko:[],idle:['$'],
+      b:'With the Corinthians beached, the western channel is left open. The Egyptian squadron rows in behind the Greek fleet.'},
+    'gr_hopl@narrows':{ko:[],idle:['$'],
+      b:'The hoplites crowd onto the shore of the narrows, but soldiers on a beach cannot stop ships. The battle line has not formed up to fight.'},
+    'gr_hopl@open':{fire:[['pe_psy','$','arrows'],['pe_fleet','$','arrows']],
+      b:'The hoplites row out in small boats to the mouth of the strait, right in front of the Persian fleet.'},
+    'gr_hopl@isthmus':{fire:[['pe_egy','$','ram']],
+      b:'Loading the hoplites into boats for the Isthmus puts them in the path of the Egyptian squadron.'},
+    'gr_hopl@shore':{ko:[],idle:['$'],
+      b:'The hoplites wait on the beach. They will matter later, but right now the battle at sea decides everything, and the fleet has not lined up to fight.'}},
+  clues:[
+    {cat:'e',t:'Too many ships',b:'The Persians have far more ships than you. In open water they can spread out and surround you.'},
+    {cat:'e',card:'phoenician480'},
+    {cat:'t',t:'The strait',b:'Between Salamis and the mainland, the channel narrows sharply. A fleet that comes in has to squeeze together.'},
+    {cat:'tr',card:'trireme480'},
+    {cat:'m',t:'Make numbers useless',b:'In a narrow channel, only the front ships can fight. The rest just get in the way.'}],
+  deduce:[['The Persian fleet is much bigger than yours.','Do not fight where it can spread out.'],
+          ['The strait narrows sharply between Salamis and the mainland.','Only a few ships can fight there at once.'],
+          ['Your heavy triremes are built to ram, not to out-sail anyone.','Line them up across the narrows and let the Persians come to you.']],
+  /* The real battle. North is up. Salamis is to the southwest, the mainland to the northeast, open sea to the southeast. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={gr_fleet:[150,150],gr_ath:[195,190],gr_west:[60,87],gr_them:[100,143],gr_hopl:[150,253],
+           pe_fleet:[350,340],pe_ion:[310,376],pe_egy:[380,370],pe_psy:[380,300,'off'],pe_xerxes:[380,180]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{},{t:'Cornered',b:'Athens has been burned. About 370 Greek triremes wait in the strait beside Salamis, and many allied commanders want to fall back to the Isthmus. The Persian fleet lies out in open water.'});
+    add(0,{pe_egy:[10,392],pe_psy:[290,293],pe_xerxes:[300,160]},{a:[['t',380,370,14,390]],t:'A secret message',b:'Herodotus says Themistocles sent a slave to tell Xerxes the Greeks were about to flee. Xerxes sends a squadron round the island and lands troops on Psyttaleia.'});
+    add(1,{pe_egy:[10,85],pe_fleet:[296,333],pe_ion:[262,366]},{a:[['t',10,392,10,90],['t',350,340,300,334]],t:'All night at the oars',b:'Through the night, the Persian crews row to block every way out of the strait. By dawn they have been at their oars for hours.'});
+    add(1,{pe_fleet:[232,226],pe_ion:[262,262],gr_fleet:[175,165],gr_ath:[200,195]},{a:[['t',296,333,236,232],['t',262,366,262,268]],t:'Into the narrows',b:'At dawn the Persian ships row into the strait, squeezing together as it narrows. Xerxes watches from a throne on the mountainside.'});
+    add(2,{gr_fleet:[205,200],gr_ath:[240,205],pe_fleet:[226,220,'ko']},{a:[['g',175,165,203,196],['g',200,195,238,202]],t:'Rams',b:'The Greek line surges forward and rams. The crowded Persian ships in front cannot turn or back away.',
+      fire:[['gr_fleet','pe_fleet','ram'],['gr_ath','pe_fleet','ram']]});
+    add(2,{gr_ath:[245,215],pe_ion:[250,240,'ko']},{a:[['t',262,262,252,244]],t:'Jammed',b:'Ships behind push forward into the wrecks ahead. In the cramped strait the huge Persian numbers become a hindrance, and the fleet falls into confusion.',
+      fire:[['gr_ath','pe_ion','ram']]});
+    add(2,{gr_hopl:[282,284],pe_psy:[290,293,'ko']},{a:[['g',150,253,278,282]],t:'Psyttaleia',b:'Greek hoplites cross to the little island of Psyttaleia and kill the Persian troops who landed there.',
+      fire:[['gr_hopl','pe_psy','clash']]});
+    add(2,{pe_xerxes:[400,160,'exit'],pe_egy:[0,85,'exit']},{t:'Xerxes goes home',b:'The beaten Persian fleet pulls back. Without control of the sea, Xerxes soon heads back to Asia with much of his army.'});
+    return S;
+  })(),
+  video:{id:'Hwz56hBW9KI',t:'Salamis 480 BC: The Battle for Greece',ch:'Epic History',v:2940729},
+  sources:[['Britannica: Battle of Salamis','https://www.britannica.com/event/Battle-of-Salamis'],
+           ['Livius: Salamis (480 BCE)','https://livius.org/articles/battle/salamis-480-bce'],
+           ['History Skills: how did the Greeks win the Battle of Salamis?','https://www.historyskills.com/classroom/ancient-history/anc-salamis-reading'],
+           ['History Revealed: Salamis, 480 BC','https://www.historyrevealed.com/period/ancient-greece/battle-salamis-480-bc-facts-what-happened-who-won']],
+  cards:{gr_fleet:'trireme480',gr_ath:'trireme480',gr_west:'trireme480',gr_hopl:'marine480',pe_fleet:'phoenician480',pe_ion:'ionian480',pe_egy:'ionian480'}
 });

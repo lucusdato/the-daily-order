@@ -180,7 +180,63 @@ const CARDS = [
   {id:'axisinf1942', set:'alamein', name:'Axis infantry', era:'Second World War, 1942', t:'inf', side:'t', st:[2,3,4,3],
    good:'Holding positions behind deep minefields', beat:'Huge barrages, being cut off',
    fact:'They waited behind huge minefields that the Germans called the Devil\'s Gardens.'}
-];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23]};
+,
+  // Salamis, 480 BC
+  {id:'trireme480', set:'salamis', name:'Greek trireme', era:'Greco-Persian Wars, 480 BC', t:'gal', side:'g', st:[3,4,3,1],
+   good:'Ramming in a tight line', beat:'Being surrounded in open water',
+   fact:'Rowed by about 170 oarsmen in three banks, with a bronze ram at the bow.'},
+  {id:'marine480', set:'salamis', name:'Athenian hoplites', era:'Greco-Persian Wars, 480 BC', t:'hvy', side:'g', st:[2,4,5,1],
+   good:'Fighting hand to hand on land or on deck', beat:'Anything at sea without a ship under them',
+   fact:'At Salamis they crossed to Psyttaleia and destroyed the Persian troops landed there.'},
+  {id:'phoenician480', set:'salamis', name:'Phoenician warship', era:'Greco-Persian Wars, 480 BC', t:'gal', side:'t', st:[4,3,3,2],
+   good:'Fast turns and skilled crews in open water', beat:'A cramped channel with no room to turn',
+   fact:'Phoenician crews were the best sailors in the Persian navy.'},
+  {id:'ionian480', set:'salamis', name:'Ionian squadron', era:'Greco-Persian Wars, 480 BC', t:'gal', side:'t', st:[3,3,3,2],
+   good:'Seamanship, local knowledge of Greek waters', beat:'Fighting fellow Greeks with little reason to',
+   fact:'Greek-speaking subjects of Persia, from the cities of the Asian coast.'}
+,
+  // Alesia, 52 BC
+  {id:'legion52', set:'alesia', name:'Roman legionaries', era:'Gallic Wars, 52 BC', t:'hvy', side:'g', st:[2,4,4,2],
+   good:'Digging, building and holding fortifications', beat:'Being stretched thin along miles of wall',
+   fact:'Every legionary was a builder too. At Alesia they dug miles of ditches and walls in weeks.'},
+  {id:'germcav52', set:'alesia', name:'German cavalry', era:'Gallic Wars, 52 BC', t:'cav', side:'g', st:[5,4,2,1],
+   good:'Fast rides round a flank, hitting from behind', beat:'Fighting on foot inside a fort',
+   fact:'Horsemen hired from across the Rhine. They won several fights for Caesar in 52 BC.'},
+  {id:'gaul52', set:'alesia', name:'Gallic warriors', era:'Gallic Wars, 52 BC', t:'inf', side:'t', st:[3,4,2,2],
+   good:'Fierce massed attacks', beat:'Ditches, traps and walls, being hit from behind',
+   fact:'Caesar claimed a relief army of a quarter of a million. Modern historians think it was smaller.'},
+  {id:'picked52', set:'alesia', name:'Vercassivellaunus\'s picked men', era:'Gallic Wars, 52 BC', t:'spr', side:'t', st:[3,4,3,1],
+   good:'A hard blow on a weak point', beat:'Being caught between two attacks',
+   fact:'They marched round in the night to attack the hill camp, the weakest part of the outer wall.'}
+,
+  // Kursk, 1943
+  {id:'t34_1943', set:'kursk', name:'T-34 tank', era:'Second World War, 1943', t:'arm', side:'g', st:[4,3,3,3],
+   good:'Fast, tough and built in huge numbers', beat:'Heavy German tanks at long range',
+   fact:'The backbone of the Soviet tank force. Its crews tried to close in fast against heavier German tanks.'},
+  {id:'atgun1943', set:'kursk', name:'Anti-tank strongpoint', era:'Second World War, 1943', t:'art', side:'g', st:[1,4,4,4],
+   good:'Killing tanks from hidden positions', beat:'Being bypassed, heavy bombardment',
+   fact:'Guns were grouped together with mines in front so they could fire on the same tank at once.'},
+  {id:'rifle1943', set:'kursk', name:'Soviet rifle troops', era:'Second World War, 1943', t:'inf', side:'g', st:[2,3,3,3],
+   good:'Holding deep trench lines', beat:'Tanks in the open',
+   fact:'The Central and Voronezh Fronts held the bulge with well over a million men between them.'},
+  {id:'tiger1943', set:'kursk', name:'Tiger and Panther tanks', era:'Second World War, 1943', t:'arm', side:'t', st:[2,5,5,5],
+   good:'Knocking out enemy tanks from far away', beat:'Breakdowns, mines, being swarmed up close',
+   fact:'Germany delayed the attack for weeks so more of these new tanks could reach the front.'},
+  {id:'panzer1943', set:'kursk', name:'Panzer division', era:'Second World War, 1943', t:'arm', side:'t', st:[4,4,4,3],
+   good:'Breaking through a narrow front', beat:'Deep minefields and anti-tank belts',
+   fact:'In the north, the German attack gained only a few kilometres before it stalled.'}
+,
+  // Yorktown, 1781
+  {id:'frinf1781', set:'yorktown', name:'French regulars', era:'American Revolution, 1781', t:'inf-blk', side:'g', st:[2,4,3,3],
+   good:'Long marches, siege work, storming a fort', beat:'Being far from supplies',
+   fact:'Rochambeau\'s army marched with Washington\'s all the way from New York to Virginia.'},
+  {id:'frfleet1781', set:'yorktown', name:'De Grasse\'s fleet', era:'American Revolution, 1781', t:'ship', side:'g', st:[3,4,4,4],
+   good:'Closing a bay, beating off a rescue', beat:'Time: it could only stay until mid-October',
+   fact:'It sailed from the Caribbean with 28 warships and 3,200 soldiers.'},
+  {id:'rnfleet1781', set:'yorktown', name:'British fleet', era:'American Revolution, 1781', t:'ship', side:'t', st:[3,4,4,4],
+   good:'Moving armies along the coast, bringing supplies', beat:'Being outnumbered at the decisive moment',
+   fact:'After the Battle of the Capes, it went back to New York to refit, leaving Cornwallis cut off.'}
+];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();

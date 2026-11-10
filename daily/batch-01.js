@@ -125,15 +125,16 @@ PGD.add({
     {x:262,y:104,r:20,name:'Mt. Aigaleo',why:`Xerxes watched from a throne on these slopes, which put pressure on his captains to press forward into the crush.`}
   ],
   units:[
-    U('gr_fleet','g','gal',3,'Greek fleet (main body)',`Heavier triremes built to ram, not to out-maneuver.`,{0:[110,130],1:[110,130],2:[150,158]}),
-    U('gr_ath','g','gal',2,'Athenian squadron',`The largest contingent, fighting in sight of their evacuated city.`,{0:[150,170],1:[150,170],2:[194,214]}),
-    U('gr_west','g','gal',1,'Corinthian squadron',`Sailed off at the start, possibly to guard the western channel.`,{0:[60,110],1:[60,110],2:[30,60]}),
-    U('gr_them','g','cmd',1,'Themistocles',`The Athenian commander who built the fleet and pushed for battle in the narrows.`,{0:[86,150]}),
-    U('pe_fleet','t','gal',3,'Persian fleet (Phoenicians)',`Skilled crews in fast ships, the core of the Persian navy.`,{0:[360,350],1:[300,276],2:[224,212,'ko']}),
-    U('pe_ion','t','gal',3,'Persian fleet (Ionians)',`Greek-speaking subjects of Persia, also skilled sailors.`,{0:[330,380],1:[266,300],2:[248,246,'ko']}),
-    U('pe_egy','t','gal',2,'Egyptian squadron',`Sent around Salamis overnight to block the western exit.`,{0:[340,320],1:[30,232]}),
-    U('pe_psy','t','spr',1,'Troops on Psyttaleia',`Landed to kill or capture Greek sailors washed ashore.`,{0:[380,300,'off'],1:[306,298],2:[306,298,'ko']}),
-    U('pe_xerxes','t','cmd',1,'Xerxes',`Watched from Mt. Aigaleo, with scribes noting which captains fought well.`,{0:[380,180],1:[270,128]})
+    U('gr_fleet','g','gal',3,'Greek fleet (main body)',`Heavier triremes built to ram, not to out-maneuver.`,{0:[150,150]}),
+    U('gr_ath','g','gal',2,'Athenian squadron',`The largest contingent, fighting in sight of their evacuated city.`,{0:[195,190]}),
+    U('gr_west','g','gal',1,'Corinthian squadron',`Sailed off at the start, possibly to guard the western channel.`,{0:[60,87]}),
+    U('gr_them','g','cmd',1,'Themistocles',`The Athenian commander who built the fleet and pushed for battle in the narrows.`,{0:[100,143]}),
+    U('gr_hopl','g','hvy',2,'Athenian hoplites',`Soldiers waiting on Salamis. Late in the battle they crossed to Psyttaleia.`,{0:[150,253]}),
+    U('pe_fleet','t','gal',3,'Persian fleet (Phoenicians)',`Skilled crews in fast ships, the core of the Persian navy.`,{0:[350,340]}),
+    U('pe_ion','t','gal',3,'Persian fleet (Ionians)',`Greek-speaking subjects of Persia, also skilled sailors.`,{0:[310,376]}),
+    U('pe_egy','t','gal',2,'Egyptian squadron',`Sent around Salamis overnight to block the western exit.`,{0:[380,370]}),
+    U('pe_psy','t','spr',1,'Troops on Psyttaleia',`Landed to kill or capture Greek sailors washed ashore.`,{0:[380,300,'off']}),
+    U('pe_xerxes','t','cmd',1,'Xerxes',`Watched from Mt. Aigaleo, with scribes noting which captains fought well.`,{0:[380,180]})
   ],
   states:[
     {a:[]},

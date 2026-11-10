@@ -686,7 +686,7 @@ PGD.add({
     U('so_cen','g','inf',3,'Central Front (Rokossovsky)',`Held the northern face of the bulge.`,{0:[200,110],1:[200,110],2:[150,70]}),
     U('so_vor','g','inf',3,'Voronezh Front (Vatutin)',`Held the southern face, where the German attack went deepest.`,{0:[200,290],1:[230,280],2:[220,310]}),
     U('so_belts','g','art',3,'Anti-tank strongpoints',`Guns, mines and trenches arranged in deep belts.`,{0:[170,200],1:[180,200],2:[180,200]}),
-    U('so_steppe','g','arm',3,'Steppe Front (reserve)',`Held back east of the bulge.`,{0:[360,200],1:[300,270],2:[260,330]}),
+    U('so_steppe','g','arm',3,'Steppe Front (reserve)',`Held back east of the bulge.`,{0:[250,200]}),
     U('so_zhukov','g','cmd',1,'Zhukov',`Argued for defending first, then counterattacking.`,{0:[340,120]}),
     U('ge_model','t','arm',3,'9th Army (Model), north',`Attacked from the north. Gained only a few kilometres.`,{0:[150,30],1:[180,80],2:[130,20,'exit']}),
     U('ge_hoth','t','arm',3,'4th Panzer Army, south',`Attacked from the south with the strongest panzer forces.`,{0:[220,380],1:[250,300],2:[240,390,'exit']}),

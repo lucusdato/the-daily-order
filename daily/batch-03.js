@@ -271,15 +271,15 @@ PGD.add({
     {x:80,y:330,r:30,name:'The weak point',why:`A Roman camp on lower ground below a hill, hard to include in the lines. The Gauls found it and attacked it hardest.`}
   ],
   units:[
-    U('ro_inner','g','hvy',3,'Legions on the inner line',`Faced the town.`,{0:[150,260],1:[130,250],2:[130,250]}),
-    U('ro_outer','g','hvy',3,'Legions on the outer line',`Faced the relief army.`,{0:[260,140],1:[300,100],2:[300,100]}),
-    U('ro_res','g','hvy',2,'Labienus and the reserve',`Rushed to the threatened camp.`,{0:[250,250],1:[260,260],2:[110,310]}),
-    U('ro_cav','g','cav',2,'German cavalry',`Sent outside the walls to hit the relief army from behind.`,{0:[230,270],1:[240,290],2:[40,370]}),
-    U('ro_cmd','g','cmd',1,'Caesar',`Wore a distinctive red cloak so his men could see him arrive at the crisis point.`,{0:[280,230],2:[120,300]}),
-    U('ga_town','t','inf',3,'Vercingetorix\'s army',`Inside Alesia, attacking outward.`,{0:[200,200],2:[150,250]}),
-    U('ga_rel','t','inf',3,'Relief army',`Attacked the outer wall from outside.`,{0:[380,40,'off'],1:[360,40],2:[60,370]}),
-    U('ga_vas','t','spr',2,'Vercassivellaunus\'s picked force',`Attacked the weak camp on the low ground.`,{0:[380,380,'off'],1:[20,380],2:[80,350,'ko']}),
-    U('ga_cmd','t','cmd',1,'Vercingetorix',`Surrendered to Caesar after the relief army broke.`,{0:[210,186]})
+    U('ro_inner','g','hvy',3,'Legions on the inner line',`Faced the town.`,{0:[125,262]}),
+    U('ro_outer','g','hvy',3,'Legions on the outer line',`Faced the relief army.`,{0:[100,95]}),
+    U('ro_res','g','hvy',2,'Labienus and the reserve',`Rushed to the threatened camp.`,{0:[300,60]}),
+    U('ro_cav','g','cav',2,'German cavalry',`Sent outside the walls to hit the relief army from behind.`,{0:[230,70]}),
+    U('ro_cmd','g','cmd',1,'Caesar',`Wore a distinctive red cloak so his men could see him arrive at the crisis point.`,{0:[330,100]}),
+    U('ga_town','t','inf',3,'Vercingetorix\'s army',`Inside Alesia, attacking outward.`,{0:[200,200]}),
+    U('ga_rel','t','inf',3,'Relief army',`Attacked the outer wall from outside.`,{0:[24,330,'off']}),
+    U('ga_vas','t','spr',2,'Vercassivellaunus\'s picked force',`Attacked the weak camp on the low ground.`,{0:[20,20,'off']}),
+    U('ga_cmd','t','cmd',1,'Vercingetorix',`Surrendered to Caesar after the relief army broke.`,{0:[216,190]})
   ],
   states:[
     {a:[]},
