@@ -22,7 +22,7 @@ function applyMystery(sc,m){
 }
 const MAXTRY = 5;
 const MS = { sel:{u:null,z:null}, busy:false, dirty:false, newClue:-1, phase:'brief' };
-const SQ = {g:'🟩',y:'🟨',w:'⬜'};
+const SQ = {g:'🟩',y:'🟨',w:'🟥'};
 const mKey = () => D.preview ? 'p'+D.n : D.n;
 function mres(){ const k=mKey(); RES[k]=RES[k]||{tries:[],done:false}; RES[k].tries=RES[k].tries||[]; return RES[k]; }
 const mz = id => D.sc.m.zones.find(z=>z[0]===id);
@@ -32,7 +32,7 @@ function mSquares(t){ const m=D.sc.m, a=m.ans;
   const su = t.u===a.u?'g':'w';
   const sz = t.z===a.z?'g':'w';
   return [su,sz]; }
-function mGrid(tries){ return ['🪖📍'].concat(tries.map(t=>mSquares(t).map(s=>SQ[s]).join(''))).join('\n'); }
+function mGrid(tries){ return tries.map(t=>mSquares(t).map(s=>SQ[s]).join('')).join('\n'); }
 const mGeneral = () => (D.sc.m.general || D.sc.you);
 function siteUrl(){ if(!/^https?:/.test(location.protocol)) return ''; return location.origin+location.pathname.replace(/index\.html$/,''); }
 function mScoreTxt(r){ return r.won ? `${r.tries.length}/${MAXTRY}` : `X/${MAXTRY}`; }
@@ -327,18 +327,18 @@ function mVideoHtml(v){
     <span class="mv-th"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><i aria-hidden="true">▶</i></span>
     <span class="mv-tx"><span class="msl">Go deeper · the most watched video on this battle</span><b>${v.t}</b><em>${v.ch} · ${mViews(v.v)} views on YouTube</em></span></a>`;
 }
-/* the share text: who you matched, how fast, a labelled grid (🪖 the toy, 📍 the place), a dare and the link */
+/* the share text: score and who you matched, one row per try (toy square, place square), streak, a dare and the link */
 function mShare(){
-  const sc=D.sc, r=mres(), F=r.first||r, s=streak(), g=mGeneral(), n=F.tries.length, url=siteUrl();
-  const line = F.won ? (n===1 ? `Matched ${g} on the first try 🎖️` : `Matched ${g} in ${n}/${MAXTRY} 🎖️`) : `${g} out-thought me (X/${MAXTRY})`;
-  return [`The Daily Order ${D.preview?'(preview)':'#'+D.n}: ${sc.name}, ${sc.year}`, line, '', mGrid(F.tries), '',
-    (!D.preview&&s>1?`🔥 ${s} day streak\n`:'')+`Think you're smarter than history's greatest generals?${url?'\n'+url:''}`].join('\n');
+  const sc=D.sc, r=mres(), F=r.first||r, s=streak(), g=mGeneral(), n=F.tries.length, url=siteUrl().replace(/\/$/,'');
+  const line = F.won ? `🎖️ ${n}/${MAXTRY} · ${n===1?`Matched ${g} on the first try`:`Matched ${g}`}` : `❌ X/${MAXTRY} · ${g} out-thought me`;
+  return [`The Daily Order ${D.preview?'(preview)':'#'+D.n} · ${sc.name}, ${sc.year}`, line, '', mGrid(F.tries), '',
+    ...(!D.preview&&s>1?[`🔥 ${s}-day streak`]:[]), `Think you're smarter than history's greatest generals?`, ...(url?[url]:[])].join('\n');
 }
 function mShareDo(btn){
   const tx=mShare(), done=t=>{ btn.textContent=t; setTimeout(()=>{ btn.textContent='Share result'; },2400); };
   try{
     if(navigator.share && matchMedia('(pointer:coarse)').matches){ navigator.share({text:tx}).catch(()=>{}); return; }
-    navigator.clipboard.writeText(tx).then(()=>done('Copied. Paste it anywhere'),()=>done('Could not copy'));
+    navigator.clipboard.writeText(tx).then(()=>done('Copied ✓'),()=>done('Could not copy'));
   }catch(err){ done('Could not copy'); }
 }
 
