@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <pattern id="w" width="64" height="32" patternUnits="userSpaceOnUse"><path d="M0 24 Q16 6 32 24 T64 24" fill="none" stroke="#2c8ea3" stroke-width="6"/></pattern>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#46b3c4"/>
+  <rect width="512" height="512" rx="112" fill="url(#w)" opacity=".35"/>
+  <g stroke="#1c1a17" stroke-width="13" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M334 70 V418" fill="none" stroke-width="15"/>
+    <path d="M340 72 L448 106 L340 140 Z" fill="#c3311d"/>
+    <ellipse cx="248" cy="428" rx="132" ry="34" fill="#2f6f2b"/>
+    <path d="M196 330 L188 422 H228 L240 352 L252 422 H292 L284 330 Z" fill="#3f8f3a"/>
+    <path d="M178 216 Q178 190 204 190 H276 Q302 190 302 216 L294 340 H186 Z" fill="#3f8f3a"/>
+    <path d="M290 222 L330 248 L322 270 L284 250 Z" fill="#3f8f3a"/>
+    <circle cx="240" cy="148" r="40" fill="#3f8f3a"/>
+    <path d="M186 138 Q190 86 240 86 Q290 86 294 138 Z" fill="#2f6f2b"/>
+  </g>
+</svg>

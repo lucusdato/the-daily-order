@@ -1,0 +1,14 @@
+{
+  "name": "The Daily Order",
+  "short_name": "Daily Order",
+  "description": "A new battle every day. Can you match history's greatest generals?",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#46b3c4",
+  "theme_color": "#1d6b68",
+  "icons": [
+    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}

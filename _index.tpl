@@ -6,6 +6,15 @@
 <title>The Daily Order</title>
 <meta name="description" content="A new battle every day. Read the general's briefing, make one move, and see if you can match history's greatest generals.">
 <link rel="canonical" href="https://thedailyorder.io/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#1d6b68">
+<meta name="apple-mobile-web-app-title" content="Daily Order">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="The Daily Order">
 <meta property="og:url" content="https://thedailyorder.io/">
