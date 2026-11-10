@@ -4,7 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Daily Order</title>
-<meta name="description" content="A daily military strategy puzzle. Read the situation like a real commander, make one call, and watch history play out on a toy board.">
+<meta name="description" content="A new battle every day. Read the general's briefing, make one move, and see if you can match history's greatest generals.">
+<link rel="canonical" href="https://thedailyorder.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Daily Order">
+<meta property="og:url" content="https://thedailyorder.io/">
+<meta property="og:title" content="The Daily Order: think you're smarter than history's greatest generals?">
+<meta property="og:description" content="A new battle every day. Read the general's briefing, make one move, and see if you can match the general who won it.">
+<meta property="og:image" content="https://thedailyorder.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://thedailyorder.io/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Stardos+Stencil:wght@400;700&family=Special+Elite&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
