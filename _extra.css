@@ -964,3 +964,6 @@ form.rem.done input{display:none}
   body.mys:not(.mbrief) .sheet .dock:not([hidden]) + .card .card-in > .ohead:first-child,
   body.mys:not(.mbrief) .sheet .card .card-in > .ohead:first-child{border-top:0!important;padding-top:2px!important}
 }
+/* v18: the order panel scrolls without showing a scroll bar, on every device */
+.card,.sheet,.sheet .card,body.mys .card,body.mys.mbrief .sheet .card{scrollbar-width:none!important;-ms-overflow-style:none!important}
+.card::-webkit-scrollbar,.sheet::-webkit-scrollbar,.sheet .card::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
