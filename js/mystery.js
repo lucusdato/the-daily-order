@@ -76,6 +76,7 @@ function pulseAt(x,y,r,label){
 
 /* ---------- open ---------- */
 function openMystery(){
+  if(!D.preview) window.track&&track('open-order');
   if(window.scStop) scStop();
   MS.sel={u:null,z:null}; MS.busy=false; MS.newClue=-1;
   const r=mres(), K=D.sc.states.length-1;
@@ -198,7 +199,7 @@ function mCardPlay(){
   </div>`;
   if(MS.newClue<0) card.scrollTop=0;
 }
-function mGo(){ MS.phase='play'; mRender(); if(window.sheetTo) sheetTo('peek'); }
+function mGo(){ window.track&&track('to-map'); MS.phase='play'; mRender(); if(window.sheetTo) sheetTo('peek'); }
 
 /* ---------- what a wrong order plays out as ----------
    m.fail['toy@zone'] is the specific outcome for that combination; m.fail[zone] is the fallback.
@@ -218,7 +219,8 @@ function mCommit(){
   const r=mres(), m=D.sc.m, {u,z}=MS.sel; if(!u||!z||MS.busy||r.done) return;
   MS.busy=true; r.tries.push({u,z});
   const win = u===m.ans.u && z===m.ans.z, out = !win && r.tries.length>=MAXTRY;
-  if(win||out){ r.done=true; r.won=win; if(!r.first) r.first={tries:r.tries.slice(),won:win,playedOn:ymd(gameNow())}; r.newCards=unlockCards([...new Set(Object.values(m.cards))]); }
+  if(r.tries.length===1) window.track&&track('first-move');
+  if(win||out){ window.track&&track(win?'won':'lost'); if(window.keepData) keepData(); r.done=true; r.won=win; if(!r.first) r.first={tries:r.tries.slice(),won:win,playedOn:ymd(gameNow())}; r.newCards=unlockCards([...new Set(Object.values(m.cards))]); }
   saveRes(RES);
   const Z=mz(z), placed={[u]:[Z[2],Z[3]]};
   const old=$('#mzones'); if(old) old.remove(); const oh=$('#mzhit'); if(oh) oh.remove();
@@ -313,6 +315,8 @@ function mCardDebrief(){
   card.innerHTML=`<div class="card-in mys"><div class="kicker">Debrief · ${D.preview?'Preview':'Order #'+D.n}</div>
     <h2>${db.title}</h2>
     <div class="sharebox"><span class="msl">Your result</span><pre>${mShare().replace(/&/g,'&amp;').replace(/</g,'&lt;')}</pre><button type="button" class="commit mshare">Share result</button></div>
+    ${(!D.preview && D.n===todayN() && window.teaserHtml) ? teaserHtml(D.n) : ''}
+    ${window.homeNudgeHtml ? homeNudgeHtml() : ''}
     <p class="now">${oHead}</p>
     ${m.deduce?`<div class="sec est"><h3>What the winning commander read</h3>${m.deduce.map(([f,d])=>`<div class="ded"><p class="df">${f}</p><p class="dd"><span>So</span>${d}</p></div>`).join('')}</div>`:''}
     ${cards.length?`<div class="sec"><h3>Troop cards from this battle</h3><div class="cgrid sm">${cards.filter(id=>CARDBY[id]).map(id=>{const C=CARDBY[id]; return `<button type="button" class="cmini ${C.side}" data-card="${id}">${nw.has(id)?'<i class="newb">New</i>':''}${toySvg(C,46)}<b>${C.name}</b></button>`;}).join('')}</div></div>`:''}
@@ -340,6 +344,7 @@ function mShare(){
     ...(!D.preview&&s>1?[`🔥 ${s}-day streak`]:[]), `Think you're smarter than history's greatest generals?`, ...(url?[url]:[])].join('\n');
 }
 function mShareDo(btn){
+  window.track&&track('share');
   const tx=mShare(), done=t=>{ btn.textContent=t; setTimeout(()=>{ btn.textContent='Share result'; },2400); };
   try{
     if(navigator.share && matchMedia('(pointer:coarse)').matches){ navigator.share({text:tx}).catch(()=>{}); return; }

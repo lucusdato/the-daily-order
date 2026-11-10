@@ -1,0 +1,50 @@
+{
+ "start": "2026-11-08",
+ "rollHour": 4,
+ "tz": "America/Toronto",
+ "site": "https://thedailyorder.io",
+ "days": [
+  {
+   "day": 1,
+   "war": "American Revolution",
+   "year": "1781",
+   "place": "South Carolina"
+  },
+  {
+   "day": 2,
+   "war": "Second World War",
+   "year": "1940",
+   "place": "France and Belgium border"
+  },
+  {
+   "day": 3,
+   "war": "Napoleonic Wars",
+   "year": "1815",
+   "place": "Belgium"
+  },
+  {
+   "day": 4,
+   "war": "Norman Conquest",
+   "year": "1066",
+   "place": "England"
+  },
+  {
+   "day": 5,
+   "war": "French Revolutionary Wars",
+   "year": "1798",
+   "place": "Aboukir Bay, Egypt"
+  },
+  {
+   "day": 6,
+   "war": "Second World War",
+   "year": "1940",
+   "place": "Southern England"
+  },
+  {
+   "day": 7,
+   "war": "Wars of Alexander the Great",
+   "year": "331 BC",
+   "place": "Near Mosul, Iraq"
+  }
+ ]
+}

@@ -102,6 +102,7 @@
   <section id="cards" class="view" hidden aria-label="Troop cards"></section>
 </div>
 
+<script src="js/config.js"></script>
 <script src="js/helpers.js"></script>
 <script src="battles/thermopylae.js"></script>
 <script src="battles/cannae.js"></script>
@@ -123,6 +124,7 @@
 <script src="js/cards.js"></script>
 <script src="js/daily.js"></script>
 <script src="js/mystery.js"></script>
+<script src="js/retain.js"></script>
 <script>initSheet(); (function(){ const d=display; display=function(){ sheetRevealBoard(); return d.apply(this,arguments); }; })();</script>
 <div id="gloss" class="gloss" hidden role="dialog"></div>
 </body>

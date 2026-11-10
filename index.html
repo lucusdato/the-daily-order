@@ -1134,6 +1134,38 @@ body.mys .mshare{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body.mys #tlabels text.lbl{text-rendering:geometricPrecision}
 #home .lname{align-items:center!important}
 #home .lname span{color:#1c1a17!important}
+/* ====================== v16: tomorrow teaser, reminders, home screen nudge, backup ====================== */
+.tease{display:flex;flex-direction:column;gap:6px;margin:14px 0 4px;padding:14px 16px;background:#1d6b68;color:#f7f1e1;border:2px solid #1c1a17;border-radius:12px;box-shadow:0 4px 0 #1c1a17}
+.tease .msl{color:#f4c430!important}
+.tease b{font:600 22px/1.1 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.02em}
+.tease p{margin:0;font-size:15px;line-height:1.4;color:#d9efe9}
+.rem{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:6px}
+.rem-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border:2px solid #1c1a17;border-radius:22px;background:#f4c430;color:#1c1a17!important;text-decoration:none;font:600 15px/1 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.04em;box-shadow:0 3px 0 #1c1a17;cursor:pointer}
+.rem-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #1c1a17}
+.rem-alt{font:500 13px/1.2 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#f7f1e1!important;text-decoration:underline;text-underline-offset:3px;background:none;border:0;padding:6px 0;cursor:pointer}
+.hsn{display:flex;gap:12px;align-items:flex-start;margin:12px 0 4px;padding:12px 14px;background:#fbf7ec;border:2px dashed #1c1a17;border-radius:12px;color:#1c1a17}
+.hsn b{font:600 16px/1.2 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.02em}
+.hsn p{margin:4px 0 0;font-size:14px;line-height:1.45}
+.hsn p b{font:inherit;font-weight:700;text-transform:none;letter-spacing:0}
+.hs-ico{display:inline-block;padding:0 6px;border:1.5px solid #1c1a17;border-radius:5px;font-size:12px;font-weight:700}
+.hsn-x{flex-shrink:0;width:30px;height:30px;border:1.5px solid #1c1a17;border-radius:50%;background:#fff;cursor:pointer;font-size:13px}
+.pg2 .bkp{margin-top:6px;background:#fbf7ec;border:2px solid #1c1a17;border-radius:12px;padding:0 16px}
+.pg2 .bkp summary{cursor:pointer;padding:14px 0;font:600 15px/1.2 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.04em;list-style:none}
+.pg2 .bkp summary::-webkit-details-marker{display:none}
+.pg2 .bkp summary::after{content:' +';color:#c3311d}
+.pg2 .bkp[open] summary::after{content:' −'}
+.pg2 .bkp-in{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:0 0 16px}
+.pg2 .bkp-in p{margin:0;font-size:14px;line-height:1.45}
+.pg2 .bkp-code{width:100%;box-sizing:border-box;font:12px/1.4 ui-monospace,monospace;border:1.5px solid #1c1a17;border-radius:8px;padding:8px;background:#fff}
+.pg2 .bkp .rem-alt{color:#1d6b68!important}
+#home .ltease{margin-top:4px;color:#1d6b68!important}
+form.rem{flex-direction:column;align-items:stretch;gap:8px}
+form.rem input[type=email]{height:46px;padding:0 14px;border:2px solid #1c1a17;border-radius:12px;font:500 16px 'IBM Plex Sans',sans-serif;background:#fbf7ec;color:#1c1a17}
+form.rem .rem-btn{width:100%}
+form.rem.done input{display:none}
+.rem-msg{margin:0;font-size:13px;line-height:1.4;color:#d9efe9}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (min-width:600px){ form.rem{flex-direction:row;flex-wrap:wrap} form.rem input[type=email]{flex:1;min-width:200px} form.rem .rem-btn{width:auto} form.rem .rem-msg{flex-basis:100%} }
 
 </style>
 <script>
@@ -1261,6 +1293,7 @@ body.mys #tlabels text.lbl{text-rendering:geometricPrecision}
   <section id="cards" class="view" hidden aria-label="Troop cards"></section>
 </div>
 
+<script src="js/config.js"></script>
 <script src="js/helpers.js"></script>
 <script src="battles/thermopylae.js"></script>
 <script src="battles/cannae.js"></script>
@@ -1282,6 +1315,7 @@ body.mys #tlabels text.lbl{text-rendering:geometricPrecision}
 <script src="js/cards.js"></script>
 <script src="js/daily.js"></script>
 <script src="js/mystery.js"></script>
+<script src="js/retain.js"></script>
 <script>initSheet(); (function(){ const d=display; display=function(){ sheetRevealBoard(); return d.apply(this,arguments); }; })();</script>
 <div id="gloss" class="gloss" hidden role="dialog"></div>
 </body>

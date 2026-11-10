@@ -98,7 +98,8 @@ function renderDailySlot(){
       <div class="lthumb">${thumb(sc,true)}</div>
       <p>${m.pitch||sc.brief.hook}</p>
       <span class="lcta">${cta}</span></div></a>
-    <p class="lnext">Next order in ${untilTomorrow()}${st>1?` · 🔥 ${st} day streak`:''}</p>`;
+    <p class="lnext">Next order in ${untilTomorrow()}${st>1?` · 🔥 ${st} day streak`:''}</p>
+    ${r&&r.done&&window.nextOrderInfo&&nextOrderInfo(n)?`<p class="lnext ltease">Tomorrow: ${nextOrderInfo(n).war}, ${nextOrderInfo(n).year}</p>`:''}`;
   requestAnimationFrame(()=>cleanThumbs(el));
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>cleanThumbs(el));
 }
@@ -143,7 +144,7 @@ function renderArchive(){
     rows+=`<a class="prow" href="#daily-${k}"><span class="pn">#${k}</span><span class="ptx"><b>${sc.name} <i>${sc.year}</i></b><span>${fmtDate(d)} · ${(sc.m&&sc.m.war)||sc.place}</span></span>${st}</a>`;
   }
   const el=$('#archive');
-  el.innerHTML=`<div class="pg2">${pgHead('Past orders','Every daily order so far. Your scores stay on this device.')}<div class="pbody"><a class="pb-link" href="#playbook"><b>The Playbook</b><span>The principles behind every order you have finished ›</span></a>${rows||'<p class="pempty">The first order arrives at 4 AM.</p>'}</div></div>`;
+  el.innerHTML=`<div class="pg2">${pgHead('Past orders','Every daily order so far. Your scores stay on this device.')}<div class="pbody"><a class="pb-link" href="#playbook"><b>The Playbook</b><span>The principles behind every order you have finished ›</span></a>${rows||'<p class="pempty">The first order arrives at 4 AM.</p>'}${window.backupHtml?backupHtml():''}</div></div>`;
   el.scrollTop=0;
 }
 $('#archive').addEventListener('click',e=>{ if(e.target.closest('[data-home]')) location.hash='home'; });
