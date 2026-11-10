@@ -99,6 +99,36 @@ function renderDailySlot(){
       <p>${m.pitch||sc.brief.hook}</p>
       <span class="lcta">${cta}</span></div></a>
     <p class="lnext">Next order in ${untilTomorrow()}${st>1?` · 🔥 ${st} day streak`:''}</p>`;
+  requestAnimationFrame(()=>cleanThumbs(el));
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>cleanThumbs(el));
+}
+/* the landing preview gets the same care as the board: crisp names, and no tree under a name */
+function cleanThumbs(root){
+  (root||document).querySelectorAll('.lthumb svg').forEach(svg=>{
+    const terr=svg.querySelector('g[filter]'); if(!terr) return;
+    let L=svg.querySelector('g.tlbl');
+    if(!L){ L=document.createElementNS('http://www.w3.org/2000/svg','g'); L.setAttribute('class','tlbl'); L.setAttribute('pointer-events','none');
+      terr.querySelectorAll('text.lbl').forEach(t=>L.appendChild(t)); terr.after(L); }
+    const m=svg.getScreenCTM(); if(!m||!m.a) return; const k=1/m.a, sr=svg.getBoundingClientRect();
+    const U=[...svg.querySelectorAll(':scope > g:not([filter]):not(.tlbl)')].map(g=>g.getBoundingClientRect()).filter(r=>r.width);
+    const hit=(a,b)=>a.left<b.right+2 && a.right>b.left-2 && a.top<b.bottom+1 && a.bottom>b.top-1;
+    const mv=(r,dx,dy)=>({left:r.left+dx,right:r.right+dx,top:r.top+dy,bottom:r.bottom+dy});
+    const done=[];
+    L.querySelectorAll('text').forEach(t=>{
+      if(t.dataset.fit){ t.setAttribute('transform',(t.getAttribute('transform')||'').replace(/^translate\([^)]*\)\s*/,'')); delete t.dataset.fit; }
+      const r=t.getBoundingClientRect(); if(!r.width) return;
+      if(U.some(u=>hit(r,u))||done.some(u=>hit(r,u))){
+        const h=r.height+2, opts=[[0,-h],[0,h],[-40,0],[40,0],[-60,-h],[60,-h],[-60,h],[60,h],[0,-2*h],[0,2*h]];
+        for(const [dx,dy] of opts){ const c=mv(r,dx,dy); if(c.left>=sr.left+4 && c.right<=sr.right-4 && c.top>=sr.top+4 && c.bottom<=sr.bottom-4 && !U.some(u=>hit(c,u)) && !done.some(u=>hit(c,u))){
+          t.setAttribute('transform',`translate(${(dx*k).toFixed(1)} ${(dy*k).toFixed(1)}) `+(t.getAttribute('transform')||'')); t.dataset.fit='1'; break; } }
+      }
+      done.push(t.getBoundingClientRect());
+    });
+    const R=done.filter(r=>r.width);
+    if(!R.length) return;
+    terr.querySelectorAll('g.tree').forEach(g=>{ g.style.display=''; const b=g.getBoundingClientRect();
+      if(R.some(l=>b.left<l.right+1 && b.right>l.left-1 && b.top<l.bottom+1 && b.bottom>l.top-1)) g.style.display='none'; });
+  });
 }
 
 /* ---------- archive ---------- */
@@ -329,3 +359,4 @@ card.addEventListener('click',e=>{
 });
 
 loadDaily();
+addEventListener('resize',()=>{ clearTimeout(cleanThumbs.t); cleanThumbs.t=setTimeout(()=>cleanThumbs(document),250); });
