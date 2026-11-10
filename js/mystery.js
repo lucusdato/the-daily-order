@@ -232,7 +232,8 @@ function mCommit(){
     ? [{t:r.tries.length===1?'First try!':'Order carried out',b:`${mClean(m.fbU[u])} ${mClean(m.fbZ[z])}`,verdict:'good',cur:startCur(placed),fire:(m.win&&m.win.fire)||[]}]
     : mFailList(u,z,out);
   mVerdict(win, win?(r.tries.length===1?'First try!':'Order carried out'):(out?'Out of orders':'Wrong move'), win?`${r.tries.length===1?'Solved first time':`Solved in ${r.tries.length}`} · ${MRANK[r.tries.length]}`:(out?`${mGeneral()} wins this one`:`Round ${r.tries.length} of ${MAXTRY}`), Z);
-  scenesPlay(list,{autoEnd:win?2400:1700,onEnd:()=>{
+  /* a miss: the stamp shows on its own first, then clears before the "what would have happened" scene plays */
+  const play=()=>scenesPlay(list,{autoEnd:win?2400:1700,onEnd:()=>{
     MS.busy=false; MS.sel={u:null,z:null};
     const k=r.tries.length; MS.newClue = (win||out||k>=m.clues.length)?-1:k;
     MS.phase = r.done ? 'done' : 'clue';
@@ -241,6 +242,8 @@ function mCommit(){
     const c=MS.newClue>=0 && m.clues[MS.newClue];
     if(c && c.card) setTimeout(()=>showCard(c.card,'<p class="tc-new">New intel unlocked</p>'),380);
   }});
+  if(win) play();
+  else setTimeout(()=>{ mVerdictOff(); document.querySelectorAll('#fx .vcross').forEach(g=>g.remove()); play(); },1300);
 }
 /* the verdict: an unmissable stamp over the board the moment the order goes out */
 function mVerdict(win,title,sub,Z){

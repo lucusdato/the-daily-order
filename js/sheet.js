@@ -13,6 +13,13 @@ function sizeMap(avail){
   const wide=!sheetOn();
   const sw=(document.querySelector('#battle .sheet')||{}).offsetWidth||470;
   const maxW = wide ? Math.min(W-sw-28, 1100) : W-12;
+  if(!wide){
+    /* phones: the map is locked to one size for the whole order, so it never jumps when the panel below changes.
+       It leaves a fixed band for the order panel, and only changes if the screen itself changes size. */
+    const H=st.clientHeight, key=W+'x'+H+'x'+k;
+    if(sizeMap.key!==key){ const band=Math.round(Math.min(300,Math.max(236,H*.34))); sizeMap.w=Math.round(Math.max(220,Math.min(maxW,(H-band-30)*k))); sizeMap.key=key; }
+    bw.style.width=sizeMap.w+'px'; return;
+  }
   bw.style.width=Math.max(220,Math.min(maxW,(avail-12)*k))+'px';
 }
 function sheetMeasure(){
@@ -25,7 +32,9 @@ function sheetMeasure(){
     sizeMap(peek-4);
     /* a map that is wider than tall leaves a gap: raise the sheet to meet it */
     const bw=document.querySelector('#battle .board-wrap');
-    if(bw && sheetOn()){ const bot=bw.getBoundingClientRect().bottom-st.getBoundingClientRect().top; if(bot>0 && bot+14<peek) peek=Math.round(bot+14); }
+    if(bw && sheetOn()){ const bot=bw.getBoundingClientRect().bottom-st.getBoundingClientRect().top; if(bot>0) peek=Math.round(bot+14);
+      /* the order panel scrolls inside the space under the map rather than pushing the map */
+      const top=dock&&!dock.hidden?dock.offsetTop:24; SHEET.el.style.setProperty('--dockmax', Math.max(160, H-peek-top-10)+'px'); }
     SHEET.snaps={ full:Math.min(40,H*.06), mid:Math.round(Math.min(H*.42,peek)), peek };
   } else {
     const ctrlBottom=left.offsetHeight;

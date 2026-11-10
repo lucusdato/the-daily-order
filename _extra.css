@@ -973,3 +973,8 @@ form.rem.done input{display:none}
   body.mys.mbrief .sheet .card{flex:1 1 auto;min-height:0;margin:0 auto!important;border:2px solid #1c1a17!important;border-radius:18px!important;box-shadow:0 6px 0 #1c1a17!important}
   body.mys.mbrief .sheet .card .card-in > .ohead:first-child{border-top:0!important;padding-top:0!important}
 }
+/* v20: phones. The order panel under the locked map scrolls inside its own space */
+@media not all and (min-width:900px) and (min-height:520px){
+  body.mys #dock{max-height:var(--dockmax,62svh)!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:none}
+  body.mys #dock::-webkit-scrollbar{display:none}
+}
