@@ -368,7 +368,7 @@ function thumb(b,sq){
   return s+'</svg>';
 }
 function renderHome(){
-  const how=[['r','1','Read the general\'s briefing.'],['y','2','Make one move: a toy and a place.'],['b','3','Watch what really happened.']];
+  const how=[['r','1','Read the general\'s briefing.'],['y','2','Give your order: one toy, one place.'],['b','3','Watch what really happened.']];
   let h=`<div class="land">
     <header class="lbar"><span class="lword">The Daily Order</span><nav class="lnav"><a href="#archive">Past orders</a><a href="#cards">Troop cards</a><a class="lnav-pb" href="#playbook">Playbook</a></nav></header>
     <div class="lwrap">
