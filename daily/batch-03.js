@@ -191,16 +191,16 @@ PGD.add({
     {x:100,y:280,r:40,name:'The southern dummy army',why:`Fake tanks, guns and a dummy water pipeline built to suggest an attack in the south.`}
   ],
   units:[
-    U('gb_inf','g','inf',3,'XXX Corps infantry',`Cleared paths through the minefields in the northern sector.`,{0:[150,110],1:[220,110],2:[230,110]}),
-    U('gb_arm','g','arm',3,'X Corps armor',`Hidden as trucks before the battle, then pushed through the cleared corridors.`,{0:[100,130],1:[200,130],2:[260,150]}),
-    U('gb_res','g','arm',2,'New Zealand and reserve armor',`Regrouped for Operation Supercharge.`,{0:[60,110],1:[120,110],2:[290,110]}),
-    U('gb_dummy','g','arm',2,'Dummy army in the south',`Plywood and canvas tanks, fake guns and a half-built fake pipeline.`,{0:[160,280],1:[160,280,'decoy']}),
-    U('gb_guns','g','art',3,'Massed artillery',`Opened with a huge night barrage on 23 October.`,{0:[130,90]}),
-    U('gb_monty','g','cmd',1,'Montgomery',`Insisted on detailed rehearsal and a battle of attrition, then a decisive breakout.`,{0:[60,80]}),
-    U('ax_north','t','inf',3,'Axis infantry, north',`German and Italian infantry behind the minefields.`,{0:[260,100],2:[290,100,'ko']}),
-    U('ax_panz','t','arm',3,'German panzer divisions',`Shifted north to counterattack the breakthrough, burning scarce fuel.`,{0:[320,250],1:[290,140],2:[380,90,'exit']}),
-    U('ax_ital','t','arm',2,'Italian armored divisions',`Fought hard and were largely destroyed.`,{0:[300,300],1:[300,280],2:[300,200,'ko']}),
-    U('ax_cmd','t','cmd',1,'Rommel',`Returned from sick leave on 25 October to find the battle under way.`,{0:[360,60,'off'],1:[340,60]})
+    U('gb_inf','g','inf',3,'XXX Corps infantry',`Cleared paths through the minefields in the northern sector.`,{0:[250,110]}),
+    U('gb_arm','g','arm',3,'X Corps armor',`Hidden as trucks before the battle, then pushed through the cleared corridors.`,{0:[320,140]}),
+    U('gb_res','g','arm',2,'New Zealand and reserve armor',`Regrouped for Operation Supercharge.`,{0:[340,220]}),
+    U('gb_dummy','g','arm',2,'Dummy army in the south',`Plywood and canvas tanks, fake guns and a half-built fake pipeline.`,{0:[330,280]}),
+    U('gb_guns','g','art',3,'Massed artillery',`Opened with a huge night barrage on 23 October.`,{0:[285,70]}),
+    U('gb_monty','g','cmd',1,'Montgomery',`Insisted on detailed rehearsal and a battle of attrition, then a decisive breakout.`,{0:[370,50]}),
+    U('ax_north','t','inf',3,'Axis infantry, north',`German and Italian infantry behind the minefields.`,{0:[140,105]}),
+    U('ax_panz','t','arm',3,'Axis armour, south',`21st Panzer and Ariete divisions, held in the south by the deception, then rushed north, burning scarce fuel.`,{0:[120,300]}),
+    U('ax_ital','t','arm',2,'Axis armour, north',`15th Panzer and Littorio divisions, which counterattacked the breakthrough and were worn down.`,{0:[120,170]}),
+    U('ax_cmd','t','cmd',1,'Rommel',`Returned from sick leave on 25 October to find the battle under way.`,{0:[40,40,'off']})
   ],
   states:[
     {a:[]},
@@ -639,20 +639,20 @@ PGD.add({
 
 /* ===== 29. LITTLE BIGHORN ===== */
 PGD.add({
-  n:29, id:'bighorn', name:'Little Bighorn', year:'1876', place:'Montana Territory, United States', side:'g', you:'Lieutenant Colonel George Armstrong Custer', minutes:5,
-  face:{g:-1,t:1},
-  g:{short:'7th Cavalry', tab:'US Army', name:'US 7th Cavalry Regiment', cmdr:'Lieutenant Colonel George Armstrong Custer', str:'About 600 soldiers plus civilians and Arikara and Crow scouts', eyes:'Through 7th Cavalry eyes'},
-  t:{short:'Lakota and Cheyenne', tab:'Lakota', name:'Lakota, Northern Cheyenne and Arapaho', cmdr:'Leaders including Sitting Bull, Crazy Horse and Gall', str:'A very large camp; perhaps 1,500 to 2,000 or more warriors', eyes:'Through Lakota and Cheyenne eyes'},
+  n:29, id:'bighorn', name:'Little Bighorn', year:'1876', place:'Montana Territory, United States', side:'g', you:'Crazy Horse', minutes:5,
+  face:{g:1,t:-1},
+  g:{short:'Lakota and Cheyenne', tab:'Lakota', name:'Lakota, Northern Cheyenne and Arapaho', cmdr:'Leaders including Sitting Bull, Crazy Horse and Gall', str:'A very large camp; perhaps 1,500 to 2,000 or more warriors', eyes:'Through Lakota and Cheyenne eyes'},
+  t:{short:'7th Cavalry', tab:'US Army', name:'US 7th Cavalry Regiment', cmdr:'Lieutenant Colonel George Armstrong Custer', str:'About 600 soldiers plus civilians and Arikara and Crow scouts', eyes:'Through 7th Cavalry eyes'},
   brief:{
-    hook:`Your scouts say the village is the biggest they have ever seen. You think you've been spotted. This is a day where the history is a lesson in what not to do.`,
-    situation:`June 1876. The US government has ordered the Lakota and their allies onto reservations, after gold was found in the Black Hills, land guaranteed to them by the 1868 Fort Laramie treaty. Three Army columns are converging on the region. The 7th Cavalry, part of General Terry's column, has been sent ahead to find the camp. Another column under Colonel Gibbon is expected near the Little Bighorn around 26 June.`,
-    forces:`Twelve companies of cavalry, armed with single-shot carbines and revolvers, tired from a long night march.`,
-    enemy:`A huge camp of several Lakota bands, Northern Cheyenne and Arapaho, gathered for the summer. Many warriors are well armed, some with repeating rifles, and fighting to defend their families.`,
-    ground:`The camp stretches for kilometres along the Little Bighorn River, under bluffs and ravines on the east bank, which hide much of it from view.`,
-    supply:`Your pack train of ammunition and supplies moves slowly behind the regiment.`,
-    intel:`Your scouts report a very large camp, and warn you there are more warriors than your men have bullets. Some of your soldiers have been seen by Lakota warriors.`,
-    objective:`In your orders from the Army: find the camp and prevent its people from escaping, in coordination with the other columns.`,
-    notes:[`Army commanders often feared the camp would scatter before it could be attacked.`,`A regiment split into separate battalions cannot support itself across rough ground.`,`Intelligence that contradicts your expectations is the most valuable kind.`]
+    hook:`Soldiers have attacked the camp without warning. Your families are behind you.`,
+    situation:`June 1876. Gold has been found in the Black Hills, land promised to the Lakota by the 1868 Fort Laramie treaty, and the US government has ordered the free bands onto reservations. Many have refused. Several Lakota bands, with Northern Cheyenne and Arapaho, have gathered for the summer in a great camp along the Little Bighorn River. Three Army columns are closing in.`,
+    forces:`Warriors from many bands, some with repeating rifles, others with older guns and bows. They know the ground, and they are fighting to protect their families.`,
+    enemy:`The 7th Cavalry, about 600 soldiers with single-shot carbines and revolvers. Its commander, Custer, has split the regiment into separate battalions.`,
+    ground:`The camp stretches for kilometres along the west bank of the river. On the east bank, bluffs, ravines and long ridges hide much of the camp from view, and hide riders from each other too.`,
+    supply:`The camp is full of families, elders and children. Protecting them comes first.`,
+    intel:`One group of soldiers has attacked the south end of the camp. Another has been seen on the bluffs to the east.`,
+    objective:`Protect the camp and drive the soldiers off.`,
+    notes:[`Soldiers spread out across rough ground cannot easily help each other.`,`The ridges east of the river can hide a large party of riders.`,`A force pressed from one side can still fall back the other way.`]
   },
   terrain(){
     let s=felt('#b4a978');
@@ -669,15 +669,16 @@ PGD.add({
     {x:240,y:300,r:30,name:'Reno Hill',why:`Where Reno's and Benteen's men dug in and held out until relieved on 27 June.`}
   ],
   units:[
-    U('us_custer','g','cav',3,'Custer\'s battalion',`Five companies that rode north along the bluffs. All were killed.`,{0:[300,300],1:[240,180],2:[270,50,'ko']}),
-    U('us_reno','g','cav',2,'Reno\'s battalion',`Attacked the south end of the camp, then retreated to the bluffs.`,{0:[320,320],1:[100,370],2:[240,300]}),
-    U('us_benteen','g','cav',2,'Benteen\'s battalion',`Sent to scout southwest, away from the camp.`,{0:[330,340],1:[380,380],2:[250,310]}),
-    U('us_pack','g','truck',1,'Pack train',`Slow mule train with the reserve ammunition.`,{0:[360,360],1:[340,350],2:[260,320]}),
-    U('us_cmd','g','cmd',1,'Custer',`A famous Civil War cavalry commander, known for aggressive attacks.`,{0:[300,280],1:[230,170],2:[266,44,'ko']}),
-    U('na_south','t','cav',3,'Warriors at the south end',`Stopped Reno's attack and drove his men back across the river.`,{0:[40,340],1:[60,350],2:[120,320]}),
-    U('na_north','t','cav',3,'Warriors at the north',`Led by Crazy Horse, Gall and others, they surrounded Custer's battalion.`,{0:[30,120],1:[40,140],2:[240,70]}),
-    U('na_camp','t','spr',2,'The camp',`Families, elders and children.`,{0:[30,220]}),
-    U('na_cmd','t','cmd',1,'Sitting Bull',`Hunkpapa Lakota leader whose vision before the battle foretold soldiers falling into camp.`,{0:[24,200]})
+    U('us_custer','t','cav',3,'Custer\'s battalion',`Five companies that rode north along the bluffs. All were killed.`,{0:[300,300],1:[240,180],2:[270,50,'ko']}),
+    U('us_reno','t','cav',2,'Reno\'s battalion',`Attacked the south end of the camp, then retreated to the bluffs.`,{0:[320,320],1:[100,370],2:[240,300]}),
+    U('us_benteen','t','cav',2,'Benteen\'s battalion',`Sent to scout southwest, away from the camp.`,{0:[330,340],1:[380,380],2:[250,310]}),
+    U('us_pack','t','truck',1,'Pack train',`Slow mule train with the reserve ammunition.`,{0:[360,360],1:[340,350],2:[260,320]}),
+    U('us_cmd','t','cmd',1,'Custer',`A famous Civil War cavalry commander, known for aggressive attacks.`,{0:[300,280],1:[230,170],2:[266,44,'ko']}),
+    U('na_south','g','cav',3,'Warriors at the south end',`Stopped Reno's attack and drove his men back across the river.`,{0:[40,340],1:[60,350],2:[120,320]}),
+    U('na_north','g','cav',3,'Warriors at the north',`Led by Crazy Horse, Gall and others, they surrounded Custer's battalion.`,{0:[30,120],1:[40,140],2:[240,70]}),
+    U('na_ford','g','cav',2,'Warriors at the ford',`Met Custer's men at the river crossing and pushed them back up the ridge.`,{0:[60,210],1:[110,215],2:[250,190]}),
+    U('na_camp','g','spr',2,'The camp',`Families, elders and children.`,{0:[30,220]}),
+    U('na_cmd','g','cmd',1,'Sitting Bull',`Hunkpapa Lakota leader whose vision before the battle foretold soldiers falling into camp.`,{0:[24,200]})
   ],
   states:[
     {a:[]},
@@ -705,12 +706,12 @@ PGD.add({
      result:`Custer sends an urgent message for Benteen to come quickly and bring ammunition, then continues north. Warriors led by Crazy Horse, Gall and others surround his battalion on the ridges, and within a short time all of Custer's men are killed. Reno and Benteen unite on the bluffs and hold out until Terry's column arrives on 27 June.`}
   ],
   debrief:{
-    title:'Ignoring the scouts',
-    outcome:`Custer and about 210 men of his battalion are killed, and the 7th Cavalry loses around 268 in total. It is a major victory for the Lakota, Cheyenne and Arapaho. The US government responds with a larger military campaign, and within a year most of the bands are forced onto reservations and the Black Hills are taken.`,
-    why:`The 7th Cavalry was defeated by its own assumptions: that the camp would flee rather than fight, that intelligence from its scouts was exaggerated, and that a divided regiment could still win. The warriors fought on familiar ground, defending their families, with strong leaders and great numbers.`,
-    them:`From the camp's side: warriors responded quickly to each attack, turned back Reno first, then concentrated against Custer. They had come together in great numbers precisely so that they could defend themselves.`,
-    board:{h:`Listen to the people closest to the ground`, b:`Custer's scouts told him clearly what he was facing. He heard it through his assumptions. Leaders often discount warnings from the front line when they clash with the plan. The bigger the stakes, the more those warnings deserve a real hearing.`, try:`Ask the person on your team closest to the client what worries them most about your current plan. Then act on at least one thing they say.`},
-    principles:['intel','mass','habits']
+    title:'Closing the ring',
+    outcome:`Custer and about 210 men of his five companies are killed on the ridges, and the 7th Cavalry loses around 268 in total. It is a major victory for the Lakota, Cheyenne and Arapaho. The US government answers with a larger campaign, and within a year most of the free bands are forced onto reservations and the Black Hills are taken.`,
+    why:`The warriors turned back each attack in turn, Reno's first and then Custer's, and came together against each one. The soldiers on the ridge were pressed from the ford and then hit from the north, so they had nowhere left to fall back to.`,
+    them:`From the 7th Cavalry's side: Custer expected the camp to scatter, not fight. He split his regiment, and its battalions ended up too far apart to help each other.`,
+    board:{h:`Close the way out`, b:`Pushing a problem from one side often just moves it. The camp's warriors did not only push Custer's men back; they got round to the side they would have retreated to. When you go after something, ask where it will go next, and be there.`, try:`Next time you push for a decision, think about the easiest way for the other side to say "not now", and deal with that before you ask.`},
+    principles:['flank','mass','ground']
   }
 });
 

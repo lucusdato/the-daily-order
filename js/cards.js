@@ -129,8 +129,58 @@ const CARDS = [
   {id:'pcav331', set:'gaugamela', name:'Persian cavalry', era:'Wars of Alexander, 331 BC', t:'cav', side:'t', st:[4,3,2,2],
    good:'Wrapping around a shorter line', beat:'Leaving a gap when they ride out',
    fact:'At Gaugamela they were drawn so far out that a gap opened beside Darius.'}
-];
-const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9]};
+,
+  // Marathon, 490 BC
+  {id:'hoplite490', set:'marathon', name:'Athenian hoplites', era:'Greco-Persian Wars, 490 BC', t:'hvy', side:'g', st:[2,4,5,1],
+   good:'Pushing in a tight block of shields and spears', beat:'Arrows while crossing open ground',
+   fact:'Citizen soldiers who paid for their own bronze armour and big round shields.'},
+  {id:'plataean490', set:'marathon', name:'Plataean hoplites', era:'Greco-Persian Wars, 490 BC', t:'hvy', side:'g', st:[2,4,5,1],
+   good:'Holding the end of the line, hitting a flank', beat:'Being outflanked themselves',
+   fact:'About a thousand men from the small town of Plataea, the only Greeks who came to help Athens.'},
+  {id:'sparabara490', set:'marathon', name:'Persian infantry', era:'Greco-Persian Wars, 490 BC', t:'inf', side:'t', st:[3,3,2,4],
+   good:'Volleys of arrows from behind a wall of wicker shields', beat:'Heavy infantry at close quarters',
+   fact:'Their best men stood in the center at Marathon, and broke through the thin Athenian middle.'},
+  {id:'parcher490', set:'marathon', name:'Persian archers', era:'Greco-Persian Wars, 490 BC', t:'arch', side:'t', st:[3,2,1,5],
+   good:'Shooting down an enemy as it crosses open ground', beat:'An enemy who reaches them fast',
+   fact:'Persian armies relied on archery. The Athenians ran the last stretch to get through it.'},
+  {id:'levy490', set:'marathon', name:'Persian wing troops', era:'Greco-Persian Wars, 490 BC', t:'spr', side:'t', st:[3,2,2,2],
+   good:'Filling out a long line', beat:'Deep ranks of armoured hoplites',
+   fact:'Weaker troops than the center. Both wings broke when the deep Athenian wings hit them.'}
+,
+  // Little Bighorn, 1876
+  {id:'warrior1876', set:'bighorn', name:'Lakota and Cheyenne horsemen', era:'Great Sioux War, 1876', t:'cav', side:'g', st:[5,3,2,3],
+   good:'Fast moves over ground they know well', beat:'Charging soldiers dug in on a hilltop',
+   fact:'Some carried repeating rifles, which could fire far faster than the soldiers\' single-shot carbines.'},
+  {id:'defender1876', set:'bighorn', name:'Camp defenders', era:'Great Sioux War, 1876', t:'cav', side:'g', st:[4,3,3,3],
+   good:'Holding a river crossing in front of their homes', beat:'Being drawn away from the camp',
+   fact:'Accounts say only a small group met Custer\'s men at the ford at first. Many more soon joined them.'},
+  {id:'trooper1876', set:'bighorn', name:'7th Cavalry trooper', era:'Great Sioux War, 1876', t:'cav', side:'t', st:[3,3,2,3],
+   good:'Fighting dismounted in a tight position', beat:'Being split up and surrounded',
+   fact:'Armed with single-shot Springfield carbines and Colt revolvers. Many were new recruits.'},
+  {id:'pack1876', set:'bighorn', name:'Pack train', era:'Great Sioux War, 1876', t:'truck', side:'t', st:[1,1,1,1],
+   good:'Carrying the reserve ammunition', beat:'Keeping up with fast-moving cavalry',
+   fact:'Custer\'s last message asked Benteen to come quickly and bring the ammunition packs.'}
+,
+  // El Alamein, 1942
+  {id:'dummy1942', set:'alamein', name:'Dummy tanks', era:'Second World War, 1942', t:'arm', side:'g', st:[1,1,1,1],
+   good:'Fooling enemy pilots and their cameras', beat:'Anyone who gets close enough to touch them',
+   fact:'Built from wood, canvas and paint. Real tanks in the north were dressed up to look like trucks.'},
+  {id:'sherman1942', set:'alamein', name:'British armour', era:'Second World War, 1942', t:'arm', side:'g', st:[3,4,4,3],
+   good:'Pushing through a gap once one is cleared', beat:'Mines and dug-in anti-tank guns',
+   fact:'The Eighth Army had over 1,000 tanks at Alamein, including new American Shermans.'},
+  {id:'tommy1942', set:'alamein', name:'Eighth Army infantry', era:'Second World War, 1942', t:'inf', side:'g', st:[2,3,3,3],
+   good:'Clearing minefields at night, holding ground', beat:'Tanks caught them in the open',
+   fact:'Men from Britain, Australia, New Zealand, South Africa and India fought in the Eighth Army.'},
+  {id:'gun1942', set:'alamein', name:'Field artillery', era:'Second World War, 1942', t:'art', side:'g', st:[1,5,2,5],
+   good:'A huge barrage on a known target', beat:'Being spotted and bombed',
+   fact:'The opening barrage on 23 October used about a thousand guns.'},
+  {id:'panzer1942', set:'alamein', name:'Axis armour', era:'Second World War, 1942', t:'arm', side:'t', st:[4,4,4,3],
+   good:'Fast counterattacks against a break-in', beat:'Running out of fuel',
+   fact:'German and Italian tanks were short of fuel, so every move north or south was costly.'},
+  {id:'axisinf1942', set:'alamein', name:'Axis infantry', era:'Second World War, 1942', t:'inf', side:'t', st:[2,3,4,3],
+   good:'Holding positions behind deep minefields', beat:'Huge barrages, being cut off',
+   fact:'They waited behind huge minefields that the Germans called the Devil\'s Gardens.'}
+];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();

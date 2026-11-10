@@ -19,6 +19,9 @@ function applyMystery(sc,m){
   Object.values(m.fail||{}).forEach(f=>{ if(f.u) f.u=um(f.u); if(f.a) f.a=arr(f.a); });
   (m.scenes||[]).forEach(s=>{ if(s.u) s.u=um(s.u); if(s.a) s.a=arr(s.a); });
   (m.ground||[]).forEach(g=>{ if(g[2]) g[2]=[g[2][0],Y(g[2][1]),g[2][2]]; });
+  /* the board left after the reveal matches the last scene of the real battle */
+  const last=(m.scenes||[]).slice(-1)[0], K=sc.states.length-1;
+  if(last&&last.u) sc.units.forEach(u=>{ if(last.u[u.id]) u.p[K]=last.u[u.id].slice(); });
 }
 const MAXTRY = 5;
 const MS = { sel:{u:null,z:null}, busy:false, dirty:false, newClue:-1, phase:'brief' };

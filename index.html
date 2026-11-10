@@ -8,6 +8,7 @@
 <link rel="canonical" href="https://thedailyorder.io/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#1d6b68">
@@ -20,11 +21,11 @@
 <meta property="og:url" content="https://thedailyorder.io/">
 <meta property="og:title" content="The Daily Order: think you're smarter than history's greatest generals?">
 <meta property="og:description" content="A new battle every day. Read the general's briefing, make one move, and see if you can match the general who won it.">
-<meta property="og:image" content="https://thedailyorder.io/og.png">
+<meta property="og:image" content="https://thedailyorder.io/og.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://thedailyorder.io/og.png">
+<meta name="twitter:image" content="https://thedailyorder.io/og.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Stardos+Stencil:wght@400;700&family=Special+Elite&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
