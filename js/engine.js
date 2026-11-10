@@ -308,6 +308,13 @@ function fitLabels(root){
     if(dx||dy) shift(t,dx,dy);
     placed.push(mv(0));
   });
+  /* no tree grows through a name: clear any tree that would sit under a label once labels are placed */
+  if(document.body.classList.contains('mys')){
+    const trees=[...root.querySelectorAll('#field .terr g.tree')];
+    trees.forEach(g=>g.style.display='');
+    const L=all.map(t=>box(t)).filter(b=>b.w);
+    trees.forEach(g=>{ const b=box(g); if(L.some(l=>b.x0<l.x1+1 && b.x1>l.x0-1 && b.y0<l.y1+1 && b.y1>l.y0-1)) g.style.display='none'; });
+  }
 }
 function refitLabels(){ requestAnimationFrame(()=>fitLabels($('#board'))); }
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(refitLabels);
