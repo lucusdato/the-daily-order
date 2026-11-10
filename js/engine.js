@@ -354,7 +354,7 @@ function thumb(b,sq){
 function renderHome(){
   const how=[['r','1','Read the general\'s briefing.'],['y','2','Make one move: a toy and a place.'],['b','3','Watch what really happened.']];
   let h=`<div class="land">
-    <header class="lbar"><span class="lword">The Daily Order</span><nav class="lnav"><a href="#archive">Past orders</a><a href="#cards">Troop cards</a></nav></header>
+    <header class="lbar"><span class="lword">The Daily Order</span><nav class="lnav"><a href="#archive">Past orders</a><a href="#cards">Troop cards</a><a class="lnav-pb" href="#playbook">Playbook</a></nav></header>
     <div class="lwrap">
       <section class="lhero"><span class="lchip">A new battle every day</span>
         <h1>Think you're smarter than history's greatest generals?</h1>
@@ -369,18 +369,30 @@ function renderHome(){
   if(window.renderDailySlot) renderDailySlot();
 }
 function renderPlaybook(){
-  let h=`<div class="pb-head"><header class="bar"><button class="back" type="button" data-home>‹ Battles</button><div class="bt"><div class="bt-name">The Playbook</div><div class="bt-sub">${PRINCIPLES.length} principles, from the board to the boardroom</div></div></header></div><div class="pb-inner"><p class="pb-intro">The same ideas keep showing up across 2,400 years of battles. Each one below has a military meaning and a working meaning. Tap a battle to watch it happen on the board.</p>`;
-  PRINCIPLES.forEach(p=>{
-    h+=`<article class="pr" id="pr-${p.id}"><h3>${p.name}</h3><div class="row"><span class="k">On the board</span><p>${p.mil}</p></div><div class="row"><span class="k">At work</span><p>${p.biz}</p></div><div class="see">${p.refs.map(([bid,ph])=>`<button type="button" data-b="${bid}" data-ph="${ph}">${BMAP[bid].name}: ${BMAP[bid].phases[ph].title} ›</button>`).join('')}</div></article>`;
-  });
-  h+=`</div>`;
+  /* principles unlock as you finish daily orders: each lists the orders that taught it */
+  const got=new Map(), n=window.todayN?todayN():0;
+  for(let k=1;k<=n;k++){
+    const sc=window.scFor&&scFor(k), r=(typeof RES!=='undefined')&&RES[k];
+    if(!sc||!r||!(r.done||r.first)) continue;
+    ((sc.debrief&&sc.debrief.principles)||[]).forEach(id=>{ if(!got.has(id)) got.set(id,[]); got.get(id).push([k,sc]); });
+  }
+  const list=PRINCIPLES.filter(p=>got.has(p.id)), left=PRINCIPLES.length-list.length;
+  let h=`<div class="pg2">${pgHead('The Playbook', list.length?`${list.length} of ${PRINCIPLES.length} principles unlocked. Finish an order to learn its lessons.`:'Finish an order to unlock the lessons behind it.')}<div class="pbody">`;
+  if(!list.length){
+    h+=`<div class="prc prc-empty"><span class="prc-k">Nothing here yet</span><h2>Every order teaches a principle</h2><p>Win or lose today's order and the ideas behind the real general's move are added here, with the battles that show them.</p><a class="prc-go" href="#daily">Take today's order ›</a></div>`;
+  } else {
+    list.forEach(p=>{
+      h+=`<article class="prc" id="pr-${p.id}"><span class="prc-k">Principle</span><h2>${p.name}</h2><p>${p.mil}</p>
+        <div class="prc-seen"><span>Seen in</span>${got.get(p.id).map(([k,sc])=>`<a href="#daily-${k}">${sc.name} <i>${sc.year}</i></a>`).join('')}</div></article>`;
+    });
+    if(left>0) h+=`<p class="prc-left">${left} more ${left===1?'principle':'principles'} to discover in future orders.</p>`;
+  }
+  h+=`</div></div>`;
   const el=$('#playbook'); el.innerHTML=h; el.scrollTop=0;
-  if(state.pbFocus){ const t=document.getElementById('pr-'+state.pbFocus); if(t){ t.classList.add('flash'); requestAnimationFrame(()=>t.scrollIntoView({block:'start'})); setTimeout(()=>t.classList.remove('flash'),2200);} state.pbFocus=null; }
+  if(state.pbFocus){ const t=document.getElementById('pr-'+state.pbFocus); if(t){ t.classList.add('flash'); requestAnimationFrame(()=>t.scrollIntoView({block:'center'})); setTimeout(()=>t.classList.remove('flash'),2200);} state.pbFocus=null; }
 }
 $('#playbook').addEventListener('click',e=>{
-  if(e.target.closest('[data-home]')){ location.hash='home'; return; }
-  const b=e.target.closest('[data-b]');
-  if(b){ state.pending=+b.dataset.ph; location.hash=b.dataset.b; }
+  if(e.target.closest('[data-home]')){ if(state.pbBack){ state.pbBack=false; history.back(); } else location.hash='home'; return; }
 });
 
 /* ---------- battle flow ---------- */
@@ -577,7 +589,7 @@ card.addEventListener('click',e=>{
   if(!daily&&e.target.closest('.play')){ playReal(); return; }
   const u=e.target.closest('[data-u]'); if(u){ selectUnit(u.dataset.u); return; }
   const ft=e.target.closest('[data-feat]'); if(ft){ selectFeature(+ft.dataset.feat); return; }
-  const pr=e.target.closest('[data-pr]'); if(pr){ state.pbFocus=pr.dataset.pr; location.hash='playbook'; return; }
+  const pr=e.target.closest('[data-pr]'); if(pr){ state.pbFocus=pr.dataset.pr; state.pbBack=true; location.hash='playbook'; return; }
   if(!daily&&e.target.closest('.nextbig')) advance();
 });
 $('#dots').addEventListener('click',e=>{ const d=e.target.closest('[data-k]'); if(!d) return; if(state.mode==='daily') dailyDot(+d.dataset.k); else goTo(+d.dataset.k); });

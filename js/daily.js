@@ -113,7 +113,7 @@ function renderArchive(){
     rows+=`<a class="prow" href="#daily-${k}"><span class="pn">#${k}</span><span class="ptx"><b>${sc.name} <i>${sc.year}</i></b><span>${fmtDate(d)} · ${(sc.m&&sc.m.war)||sc.place}</span></span>${st}</a>`;
   }
   const el=$('#archive');
-  el.innerHTML=`<div class="pg2">${pgHead('Past orders','Every daily order so far. Your scores stay on this device.')}<div class="pbody">${rows||'<p class="pempty">The first order arrives at 4 AM.</p>'}</div></div>`;
+  el.innerHTML=`<div class="pg2">${pgHead('Past orders','Every daily order so far. Your scores stay on this device.')}<div class="pbody"><a class="pb-link" href="#playbook"><b>The Playbook</b><span>The principles behind every order you have finished ›</span></a>${rows||'<p class="pempty">The first order arrives at 4 AM.</p>'}</div></div>`;
   el.scrollTop=0;
 }
 $('#archive').addEventListener('click',e=>{ if(e.target.closest('[data-home]')) location.hash='home'; });
