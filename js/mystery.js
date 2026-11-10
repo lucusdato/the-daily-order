@@ -44,12 +44,17 @@ const startCur = extra => ({i:0,ph:0,alt:{u:Object.assign({},D.sc.m.start||{},ex
 function mBoardStart(anim){ MS.dirty=false; hideBanner(); display(startCur(),anim,[]); state.phase=0; drawZones(); }
 function drawZones(){
   const f=$('#field'); if(!f) return;
-  const old=$('#mzones'); if(old) old.remove();
+  const old=$('#mzones'); if(old) old.remove(); const oh=$('#mzhit'); if(oh) oh.remove();
   if(mres().done || SC.active) return;
   const g=document.createElementNS(NS,'g'); g.id='mzones';
   g.innerHTML=D.sc.m.zones.map(([id,lab,x,y,r],k)=>`<g class="mz${MS.sel.z===id?' sel':''}" data-z="${id}" role="button" aria-label="${lab}"><circle cx="${x}" cy="${y}" r="${r}"/><g transform="translate(${x} ${y-r})"><circle r="8.5"/><text y="3.4" text-anchor="middle">${k+1}</text></g><text class="mzl" x="${x}" y="${y+r+11}" text-anchor="middle">${lab}</text></g>`).join('');
-  f.insertBefore(g,$('#fx')); if(window.refitLabels) refitLabels();
-  g.addEventListener('click',e=>{ const z=e.target.closest('.mz'); if(z){ e.stopPropagation(); mPickZone(z.dataset.z); } });
+  /* the circles, numbers and names sit under the troops; an invisible copy of each circle on top keeps them easy to tap */
+  g.setAttribute('pointer-events','none'); f.insertBefore(g,$('#units'));
+  const old2=$('#mzhit'); if(old2) old2.remove();
+  const h=document.createElementNS(NS,'g'); h.id='mzhit';
+  h.innerHTML=D.sc.m.zones.map(([id,lab,x,y,r])=>`<circle data-z="${id}" cx="${x}" cy="${y}" r="${Math.max(r,18)}" fill="transparent" role="button" aria-label="${lab}" style="cursor:pointer"/>`).join('');
+  f.insertBefore(h,$('#fx')); if(window.refitLabels) refitLabels();
+  h.addEventListener('click',e=>{ const z=e.target.closest('[data-z]'); if(z){ e.stopPropagation(); mPickZone(z.dataset.z); } });
 }
 function mPreview(){
   const {u,z}=MS.sel;
@@ -216,7 +221,7 @@ function mCommit(){
   if(win||out){ r.done=true; r.won=win; if(!r.first) r.first={tries:r.tries.slice(),won:win,playedOn:ymd(gameNow())}; r.newCards=unlockCards([...new Set(Object.values(m.cards))]); }
   saveRes(RES);
   const Z=mz(z), placed={[u]:[Z[2],Z[3]]};
-  const old=$('#mzones'); if(old) old.remove();
+  const old=$('#mzones'); if(old) old.remove(); const oh=$('#mzhit'); if(oh) oh.remove();
   figs.forEach(f=>f.g.classList.remove('sel'));
   const list = win
     ? [{t:r.tries.length===1?'First try!':'Order carried out',b:`${mClean(m.fbU[u])} ${mClean(m.fbZ[z])}`,verdict:'good',cur:startCur(placed),fire:(m.win&&m.win.fire)||[]}]
@@ -278,7 +283,7 @@ function mCardResult(){
 /* ---------- the real battle, play by play ---------- */
 function mReveal(){
   const sc=D.sc, m=sc.m;
-  const old=$('#mzones'); if(old) old.remove(); hideBanner(); selectUnit(null);
+  const old=$('#mzones'); if(old) old.remove(); const oh=$('#mzhit'); if(oh) oh.remove(); hideBanner(); selectUnit(null);
   figs.forEach(f=>f.g.classList.remove('sel'));
   card.innerHTML=`<div class="card-in mys"><div class="kicker">${sc.name} · what really happened</div>
     <ol class="revl">${m.scenes.map((x,k)=>`<li data-rk="${k}"><b>${x.t}.</b> ${x.b}</li>`).join('')}</ol>

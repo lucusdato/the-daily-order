@@ -291,15 +291,19 @@ function fitLabels(root){
   const shift=(t,dx,dy)=>{ t.setAttribute('transform',`translate(${dx.toFixed(1)} ${dy.toFixed(1)}) `+(t.getAttribute('transform')||'')); t.dataset.fit='1'; };
   const all=[...root.querySelectorAll('text.lbl'),...root.querySelectorAll('text.mzl')].filter(t=>!t.closest('[style*="display:none"]')&&!t.closest('#theater'));
   all.forEach(t=>{ if(t.dataset.fit){ t.setAttribute('transform',(t.getAttribute('transform')||'').replace(/^translate\([^)]*\)\s*/,'')); delete t.dataset.fit; if(!t.getAttribute('transform')) t.removeAttribute('transform'); } });
+  /* troops count as obstacles too, so a name never hides under (or behind) a toy */
+  if(document.body.classList.contains('mys')) root.querySelectorAll('#units > g').forEach(g=>{ const cs=getComputedStyle(g); if(cs.display==='none'||+cs.opacity<.2) return; const b=box(g); if(b.w>2) placed.push({x0:b.x0+2,x1:b.x1-2,y0:b.y0+2,y1:b.y1-1}); });
   all.forEach(t=>{
     let b=box(t); if(!b.w) return;
     let dx=0, dy=0;
     if(b.x0<pad) dx=pad-b.x0; else if(b.x1>400-pad) dx=400-pad-b.x1;
     if(b.y0<pad) dy=pad-b.y0; else if(b.y1>H-pad) dy=H-pad-b.y1;
-    const mv=o=>({x0:b.x0+dx,x1:b.x1+dx,y0:b.y0+dy+o,y1:b.y1+dy+o});
+    const mv=(o,h=0)=>({x0:b.x0+dx+h,x1:b.x1+dx+h,y0:b.y0+dy+o,y1:b.y1+dy+o});
     if(placed.some(p=>hit(mv(0),p))){
-      const step=(b.y1-b.y0)+1;
-      for(const o of [step,-step,2*step,-2*step,3*step,-3*step]){ const c=mv(o); if(c.y0>=pad && c.y1<=H-pad && !placed.some(p=>hit(c,p))){ dy+=o; break; } }
+      const step=(b.y1-b.y0)+1, tries=[];
+      [step,-step,2*step,-2*step,3*step,-3*step].forEach(o=>tries.push([o,0]));
+      [36,-36,64,-64].forEach(h=>[0,step,-step,2*step,-2*step].forEach(o=>tries.push([o,h])));
+      for(const [o,h] of tries){ const c=mv(o,h); if(c.y0>=pad && c.y1<=H-pad && c.x0>=pad && c.x1<=400-pad && !placed.some(p=>hit(c,p))){ dy+=o; dx+=h; break; } }
     }
     if(dx||dy) shift(t,dx,dy);
     placed.push(mv(0));
@@ -309,7 +313,12 @@ function refitLabels(){ requestAnimationFrame(()=>fitLabels($('#board'))); }
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(refitLabels);
 addEventListener('resize',()=>{ clearTimeout(refitLabels.t); refitLabels.t=setTimeout(refitLabels,200); });
 
-function buildBoard(b){ TOON=document.body.classList.contains('mys'); TREE_AVOID=treeAvoid(b); buildBoard0(b); TOON=false; TREE_AVOID=[]; refitLabels(); }
+function buildBoard(b){ const toon=TOON=document.body.classList.contains('mys'); TREE_AVOID=treeAvoid(b); buildBoard0(b); TOON=false; TREE_AVOID=[];
+  /* crisp map text: lift place names out of the sketchy terrain filter, into their own layer that still sits below the troops */
+  if(toon){ const svg=$('#board'), terr=svg.querySelector('#field > .terr'), arr=svg.querySelector('#arrows');
+    if(terr&&arr){ const L=document.createElementNS(NS,'g'); L.id='tlabels'; L.setAttribute('pointer-events','none');
+      terr.querySelectorAll('text.lbl').forEach(t=>L.appendChild(t)); arr.parentNode.insertBefore(L,arr); } }
+  refitLabels(); }
 function buildBoard0(b){
   const svg=$('#board');
   const P=b.prologue, box=P?P.box:[0,0,400], [bx,by,bw]=box, H=b.H||400;

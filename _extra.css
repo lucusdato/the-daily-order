@@ -922,3 +922,6 @@ body.mys .dock.dk-clue .dk-what{font-size:14px}
 @media (min-width:700px){ #home .lnav-pb{display:inline} }
 #home .lhow li{font-weight:700}
 body.mys .mshare{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.mys #tlabels text.lbl{text-rendering:geometricPrecision}
+#home .lname{align-items:center!important}
+#home .lname span{color:#1c1a17!important}
