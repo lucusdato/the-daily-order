@@ -12,6 +12,13 @@
 {{CSS}}
 {{EXTRA}}
 </style>
+<script>
+/* big screens: scale the whole layout up so it fills the screen like a 1320px wide window */
+(function(){ function z(){ var w=innerWidth,h=innerHeight,fine=matchMedia('(pointer:fine)').matches;
+  var f=fine&&w>=1400?Math.max(1,Math.min(w/1320,h/820,1.9)):1;
+  document.documentElement.style.zoom=f>1.03?f.toFixed(3):''; window.PG_Z=f>1.03?f:1; }
+  z(); addEventListener('resize',z); })();
+</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">

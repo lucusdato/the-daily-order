@@ -309,7 +309,7 @@ function refitLabels(){ requestAnimationFrame(()=>fitLabels($('#board'))); }
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(refitLabels);
 addEventListener('resize',()=>{ clearTimeout(refitLabels.t); refitLabels.t=setTimeout(refitLabels,200); });
 
-function buildBoard(b){ TOON=document.body.classList.contains('mys'); buildBoard0(b); TOON=false; refitLabels(); }
+function buildBoard(b){ TOON=document.body.classList.contains('mys'); TREE_AVOID=treeAvoid(b); buildBoard0(b); TOON=false; TREE_AVOID=[]; refitLabels(); }
 function buildBoard0(b){
   const svg=$('#board');
   const P=b.prologue, box=P?P.box:[0,0,400], [bx,by,bw]=box, H=b.H||400;
@@ -334,7 +334,7 @@ function buildBoard0(b){
 const views=['home','battle','playbook','archive','cards'];
 const BACK_SVG='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const pgHead=(t,sub)=>`<header class="pbar"><button class="back bk-ico" type="button" data-home aria-label="Back to today's order">${BACK_SVG}</button><div class="pbt"><h1>${t}</h1>${sub?`<p>${sub}</p>`:''}</div></header>`;
-function show(v){ views.forEach(x=>{$('#'+x).hidden=(x!==v);}); if(v!=='battle') document.body.classList.remove('mys'); if(v==='battle' && window.sheetTo) requestAnimationFrame(()=>sheetTo('mid',false)); }
+function show(v){ views.forEach(x=>{$('#'+x).hidden=(x!==v);}); if(v!=='battle') document.body.classList.remove('mys','mbrief'); if(v==='battle' && window.sheetTo) requestAnimationFrame(()=>sheetTo('mid',false)); }
 function strip(){
   let s=`<svg viewBox="0 0 400 74" aria-hidden="true"><rect x="0" y="58" width="400" height="16" rx="2" fill="#5a3a20"/><rect x="0" y="58" width="400" height="3" fill="#8a6230"/><rect x="0" y="71" width="400" height="3" fill="#2c1a0d"/>`;
   const xs=[[22,'g','hvy'],[52,'g','inf-blk'],[84,'g','cav-blk'],[118,'g','cmd-blk'],[152,'g','arm'],[188,'g','plane'],[226,'t','ship'],[262,'t','gal'],[296,'t','spr'],[326,'t','cav'],[356,'t','art'],[384,'t','inf']];
@@ -344,17 +344,17 @@ function strip(){
 function thumb(b,sq){
   const H=b.H||400; let vy=0;
   if(sq && H>400){ const ys=(b.m&&b.m.zones)?b.m.zones.map(z=>z[3]):b.units.map(u=>posAt(u,0)[1]); vy=Math.max(0,Math.min(H-400,ys.reduce((a,c)=>a+c,0)/ys.length-200)); }
-  const T0=TOON; TOON=!!sq;
+  const T0=TOON, A0=TREE_AVOID; TOON=!!sq; TREE_AVOID=treeAvoid(b);
   let s=sq ? `<svg viewBox="0 ${vy.toFixed(0)} 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g filter="url(#sketch)">${b.terrain()}</g>`
            : `<svg viewBox="0 0 400 ${H}" aria-hidden="true"><g filter="url(#aged)">${b.terrain()}</g><rect width="400" height="${H}" fill="url(#parch)"/>`;
   b.units.forEach(u=>{ const p=(b.m&&b.m.start&&b.m.start[u.id])||posAt(u,0); if(p[2]==='off'||p[2]==='exit') return; const lift=u.t==='plane'?-15:0; OFF[u.n||1].forEach(o=>{ s+=`<g transform="translate(${p[0]+o[0]} ${p[1]+o[1]+lift}) scale(${b.face[u.s]*1.15} 1.15)"${p[2]==='hide'?' opacity=".45"':''}><use href="#u-${SPR(u.t,yearOf(b),u.name)}" ${fillAttr(u)}/></g>`; }); });
-  TOON=T0;
+  TREE_AVOID=A0; TOON=T0;
   return s+'</svg>';
 }
 function renderHome(){
   const how=[['r','1','Read the general\'s briefing.'],['y','2','Make one move: a toy and a place.'],['b','3','Watch what really happened.']];
   let h=`<div class="land">
-    <header class="lbar"><span class="lword">The Daily Order</span><a href="#archive">Past orders</a></header>
+    <header class="lbar"><span class="lword">The Daily Order</span><nav class="lnav"><a href="#archive">Past orders</a><a href="#cards">Troop cards</a></nav></header>
     <div class="lwrap">
       <section class="lhero"><span class="lchip">A new battle every day</span>
         <h1>Think you're smarter than history's greatest generals?</h1>
@@ -364,7 +364,6 @@ function renderHome(){
       <div class="lright"><div id="dailySlot"></div>
         <ol class="lhow lhow-m">${how.map(([c,n,t])=>`<li><span class="ln ${c}">${n}</span><span>${t}</span></li>`).join('')}</ol></div>
     </div>
-    <nav class="lfoot"><a href="#archive">Past orders</a><a href="#cards">Troop cards</a></nav>
   </div>`;
   $('#home').innerHTML=h;
   if(window.renderDailySlot) renderDailySlot();

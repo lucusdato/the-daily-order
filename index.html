@@ -960,7 +960,7 @@ body.mys #board .neat{display:none}
 .pg2 .pbar .back:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
 .pg2 .pbt h1{margin:0;font:600 22px/1.1 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.02em;color:#f7f1e1}
 .pg2 .pbt p{margin:2px 0 0;font-size:13px;line-height:1.35;color:#d9efe9}
-.pg2 .pbody{max-width:760px;margin:0 auto;padding:18px 16px 40px;display:flex;flex-direction:column;gap:12px}
+.pg2 .pbody{max-width:880px;margin:0 auto;padding:18px 16px 40px;display:flex;flex-direction:column;gap:12px}
 .pg2 .prow{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fbf7ec;border:2px solid var(--ink);border-radius:12px;box-shadow:0 4px 0 var(--ink);color:var(--ink);text-decoration:none}
 .pg2 .prow:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
 .pg2 .pn{font:600 26px/1 'Oswald',sans-serif;color:#c3311d;min-width:42px}
@@ -986,7 +986,118 @@ body.mys #board .neat{display:none}
 @media (min-width:900px){.pg2 .pbar{padding:12px 32px}.pg2 .pbody{padding:28px 24px 56px}}
 .view[hidden]{display:none!important}
 
+/* ====================== v13: verdicts, earned intel, end-of-game polish ====================== */
+/* the verdict stamp over the board */
+.board-wrap{position:relative}
+.verdict{position:absolute;left:50%;top:16%;z-index:6;display:flex;align-items:center;gap:12px;padding:12px 20px 12px 14px;border:3px solid #1c1a17;border-radius:14px;box-shadow:0 6px 0 #1c1a17,0 14px 30px #0005;pointer-events:none;transform:translate(-50%,0) rotate(-3deg);animation:vIn .42s cubic-bezier(.2,1.4,.4,1) both;white-space:nowrap}
+.verdict .v-ico{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:3px solid #1c1a17;background:#fbf7ec;font:700 24px/1 'Oswald',sans-serif}
+.verdict b{display:block;font:600 26px/1 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.02em}
+.verdict i{display:block;margin-top:4px;font:500 13px/1 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-style:normal;opacity:.9}
+.verdict.v-good{background:#3f8f3a;color:#fff}.verdict.v-good .v-ico{color:#3f8f3a}
+.verdict.v-bad{background:#c3311d;color:#fff}.verdict.v-bad .v-ico{color:#c3311d}
+.verdict.v-good::after{content:'';position:absolute;inset:-3px;border-radius:14px;background:linear-gradient(105deg,transparent 35%,#fff7 50%,transparent 65%) -200% 0/250% 100% no-repeat;animation:vSheen 1.1s .35s ease both}
+@keyframes vIn{0%{opacity:0;transform:translate(-50%,-10px) rotate(-3deg) scale(2.2)}60%{opacity:1}100%{opacity:1;transform:translate(-50%,0) rotate(-3deg) scale(1)}}
+@keyframes vSheen{to{background-position:200% 0}}
+.board-wrap.v-shake{animation:vShake .5s cubic-bezier(.36,.07,.19,.97) both}
+.board-wrap.v-shake::after{content:'';position:absolute;inset:0;border-radius:10px;box-shadow:inset 0 0 0 4px #c3311d,inset 0 0 60px #c3311d88;pointer-events:none;animation:vFlash 1.2s ease both}
+.board-wrap.v-glow::after{content:'';position:absolute;inset:0;border-radius:10px;box-shadow:inset 0 0 0 4px #f4c430,inset 0 0 70px #f4c43099;pointer-events:none;animation:vFlash 2s ease both}
+@keyframes vShake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+@keyframes vFlash{0%{opacity:0}15%{opacity:1}70%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.verdict,.verdict::after,.board-wrap.v-shake{animation:none!important}}
+
+/* dock states: verdict headings, what happened, the marks */
+body.mys .dk-q i{font-style:normal;display:inline-grid;place-items:center;width:24px;height:24px;margin-right:6px;border-radius:50%;border:2px solid #1c1a17;font-size:14px;line-height:1;vertical-align:2px;color:#fff}
+body.mys .dk-q.dk-bad{color:#a8281a!important}body.mys .dk-q.dk-bad i{background:#c3311d}
+body.mys .dk-q.dk-good{color:#2f6f2b!important}body.mys .dk-q.dk-good i{background:#3f8f3a}
+body.mys .dk-what{margin:0;font-size:15px;line-height:1.45;color:#3a3326}
+body.mys .dock.dk-v.lost,body.mys .dock.dk-clue{box-shadow:inset 5px 0 0 #c3311d}
+body.mys .dock.dk-v.won,body.mys .dock.dk-res.won{box-shadow:inset 5px 0 0 #3f8f3a}
+body.mys .dock.dk-res.lost{box-shadow:inset 5px 0 0 #c3311d}
+body.mys .dk-fb{padding:10px 12px;background:#f3ecd9;border:1.5px solid #1c1a17;border-radius:10px}
+body.mys .dk-fb .mk-g b{color:#2f6f2b}body.mys .dk-fb .mk-w b{color:#a8281a}
+.sq2.s-w{background:#c3311d!important;position:relative}
+.sq2.s-w::after{content:'';position:absolute;inset:3px;background:linear-gradient(45deg,transparent 42%,#fff 42% 58%,transparent 58%),linear-gradient(-45deg,transparent 42%,#fff 42% 58%,transparent 58%)}
+.sq2.s-g{position:relative}
+.sq2.s-g::after{content:'';position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+body.mys .dk-new{animation:newIn .5s .15s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes newIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+body.mys .dk-skip{background:#e8dfc8!important;color:#3a3326!important;box-shadow:0 3px 0 #b7a98a!important;border-color:#b7a98a!important}
+.tc-new{margin:0;padding:6px 14px;border:2px solid #1c1a17;border-radius:999px;background:#f4c430;color:#1c1a17;font:600 13px/1 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 3px 0 #1c1a17;order:-1;animation:newIn .5s .3s both}
+
+/* tapping a piece on the board */
+body.mys #utag.show{position:absolute;left:50%;bottom:14px;top:auto;transform:translateX(-50%);z-index:6;max-width:86%;padding:8px 14px;background:#1c1a17;color:#fbf7ec;border-radius:999px;font:500 14px/1.3 'IBM Plex Sans',sans-serif;text-align:center;box-shadow:0 4px 14px #0006}
+
+/* card modal close and end-of-game buttons in the landing look */
+.tc-x{font:600 15px/1 'Oswald',sans-serif!important;text-transform:uppercase;letter-spacing:.06em;background:#fbf7ec!important;color:#1c1a17!important;border:2px solid #1c1a17!important;border-radius:12px!important;padding:12px 28px!important;box-shadow:0 4px 0 #1c1a17!important}
+body.mys .drow2{display:flex;gap:10px;align-items:stretch;margin-top:6px}
+body.mys .drow2 .dlink2,body.mys .drow2 .dreplay{flex:1;display:flex;align-items:center;justify-content:center;min-height:46px;padding:0 14px!important;font:600 15px/1 "Oswald",sans-serif!important;text-transform:uppercase!important;letter-spacing:.05em;text-decoration:none!important;color:#1c1a17!important;background:#fbf7ec!important;border:2px solid #1c1a17!important;border-radius:12px!important;box-shadow:0 4px 0 #1c1a17!important;cursor:pointer}
+body.mys .drow2 > *:active{transform:translateY(2px);box-shadow:0 2px 0 #1c1a17!important}
+body.mys .chip-p{background:#fbf7ec!important;color:#1c1a17!important;border:1.5px solid #1c1a17!important;border-radius:999px!important;font:600 13px/1 'Oswald',sans-serif!important;text-transform:uppercase;letter-spacing:.04em;padding:8px 12px!important}
+body.mys .hint{font-style:normal!important;font-size:14px;color:#5c5240;text-align:center}
+body.mys .mskip,body.mys .mdone{display:block;margin:14px auto 0;font:600 14px/1 'Oswald',sans-serif!important;text-transform:uppercase;letter-spacing:.06em;color:#1d6b68!important;background:none!important;border:0!important;box-shadow:none!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+body.mys .mres .stamp{font:600 34px/1 'Oswald',sans-serif!important;border:3px solid currentColor;border-radius:10px;padding:8px 16px;transform:rotate(-3deg)}
+body.mys .mres .rank{font:600 20px/1 'Oswald',sans-serif!important;text-transform:uppercase;letter-spacing:.06em}
+body.mys .lesson{background:#f3ecd9!important;border:1.5px solid #1c1a17!important;border-radius:10px!important;color:#1c1a17!important}
+
+/* ====================== v14: landing nav, desktop brief, fuller desktop ====================== */
+#home .lnav{display:flex;gap:18px}
+#home .lbar a{padding:12px 2px}
+@media (max-width:360px){ #home .lword{font-size:19px} #home .lnav{gap:12px} }
+#home .land{min-height:100%;display:flex;flex-direction:column}
+@media (min-width:900px){
+  #home .lbar{padding:16px 32px}
+  #home .lword{font-size:26px}
+  #home .lbar a{font-size:14px}
+  #home .lnav{gap:28px}
+  #home .lwrap{flex:1;max-width:1320px;padding:32px 56px 48px;gap:56px}
+  #home .lhero h1{font-size:clamp(56px,5.4vw,78px)}
+  #home .lright{flex:0 0 min(500px,42%)}
+  #home .lin{padding:18px 20px 20px;gap:10px}
+  #home .lname h2{font-size:40px}
+  #home .lin p{font-size:16px}
+}
+/* the miss panel never pushes its button off a small screen */
+body.mys .dock.dk-clue{max-height:62svh;overflow-y:auto;overscroll-behavior:contain}
+body.mys .dock.dk-clue .mnext{position:sticky;bottom:0;z-index:1}
+body.mys .dock.dk-clue .dk-what{font-size:14px}
+@media (max-height:740px){ body.mys .dock.dk-clue .dk-what{display:none} }
+/* desktop: the order opens centred on its own, then the map slides in beside it */
+@media (min-width:900px) and (min-height:520px){
+  body.mys.mbrief .left{display:none!important}
+  body.mys.mbrief .sheet{flex:1 1 auto!important;background:transparent!important;box-shadow:none!important;align-items:center;overflow:hidden}
+  body.mys.mbrief .sheet .card{width:min(780px,100%);margin:0 auto;flex:1;border-radius:16px 16px 0 0!important;border:2px solid #1c1a17;border-bottom:0;box-shadow:0 0 0 6px #1d6b6833;animation:briefIn .45s ease both}
+  body.mys.mbrief .morder{padding:28px 40px 40px!important}
+  body.mys.mbrief .morder .ohead h2{font-size:52px!important}
+  body.mys.mbrief .morder .lead,body.mys.mbrief .morder .sit{font-size:18px!important;line-height:1.6!important}
+  body.mys.mbrief .mgo{max-width:420px;margin:28px auto 0!important;display:flex!important;justify-content:center}
+  body.mys.mbrief .mett{font-size:16px}
+  body.mys:not(.mbrief) .left{animation:mapIn .55s cubic-bezier(.2,.8,.3,1) both}
+  body.mys:not(.mbrief) .sheet{animation:sideIn .45s ease both}
+  body.mys .sheet{flex-basis:470px!important}
+}
+@keyframes briefIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes mapIn{from{opacity:0;transform:translateX(-36px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes sideIn{from{opacity:.4;transform:translateX(40px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){ body.mys .left,body.mys .sheet,body.mys .card{animation:none!important} }
+/* the battle video in the debrief */
+.mvid{display:flex;gap:12px;align-items:center;margin:14px 0 4px;padding:10px;background:#fbf7ec;border:2px solid #1c1a17;border-radius:12px;box-shadow:0 4px 0 #1c1a17;color:#1c1a17;text-decoration:none}
+.mvid:active{transform:translateY(2px);box-shadow:0 2px 0 #1c1a17}
+.mv-th{position:relative;flex:0 0 120px;aspect-ratio:16/9;border-radius:7px;overflow:hidden;border:1.5px solid #1c1a17;background:#1c1a17 linear-gradient(135deg,#2c2620,#1c1a17)}
+.mv-th img{width:100%;height:100%;object-fit:cover;display:block}
+.mv-th i{position:absolute;inset:0;margin:auto;width:34px;height:24px;border-radius:7px;background:#c3311d;color:#fff;font-style:normal;font-size:12px;display:grid;place-items:center;box-shadow:0 2px 0 #1c1a17}
+.mv-tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mv-tx .msl{font:500 11px/1.2 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.1em;color:#9b2a17}
+.mv-tx b{font:600 16px/1.2 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.01em}
+.mv-tx em{font-style:normal;font-size:13px;color:#5c5240}
+
 </style>
+<script>
+/* big screens: scale the whole layout up so it fills the screen like a 1320px wide window */
+(function(){ function z(){ var w=innerWidth,h=innerHeight,fine=matchMedia('(pointer:fine)').matches;
+  var f=fine&&w>=1400?Math.max(1,Math.min(w/1320,h/820,1.9)):1;
+  document.documentElement.style.zoom=f>1.03?f.toFixed(3):''; window.PG_Z=f>1.03?f:1; }
+  z(); addEventListener('resize',z); })();
+</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">

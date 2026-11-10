@@ -5,12 +5,12 @@ const SC = { active:false, list:[], i:-1, tok:0, auto:false, busy:false, onEnd:n
 function scTimer(fn,ms){ const t=setTimeout(fn,ms); SC.timers.push(t); return t; }
 function scClear(){ SC.timers.forEach(clearTimeout); SC.timers=[]; }
 
-function scenesPlay(list,{onEnd,onStep,endLabel='Continue',auto=false}={}){
-  scClear(); SC.list=list; SC.i=-1; SC.onEnd=onEnd; SC.onStep=onStep; SC.endLabel=endLabel; SC.active=true; SC.auto=auto;
+function scenesPlay(list,{onEnd,onStep,endLabel='Continue',auto=false,autoEnd=0}={}){
+  scClear(); SC.list=list; SC.i=-1; SC.onEnd=onEnd; SC.onStep=onStep; SC.endLabel=endLabel; SC.active=true; SC.auto=auto; SC.autoEnd=autoEnd;
   if(window.sheetTo && sheetOn()) sheetTo(isMys()?'peek':(SHEET.pos==='full'?'mid':SHEET.pos));
   scGo(0);
 }
-function scStop(){ SC.tok++; scClear(); SC.active=false; SC.busy=false; const c=$('#capbar'); if(c) c.hidden=true; }
+function scStop(){ SC.autoEnd=0; SC.tok++; scClear(); SC.active=false; SC.busy=false; const c=$('#capbar'); if(c) c.hidden=true; }
 
 function withKo(cur,ids,ko){
   const alt={u:Object.assign({},(cur.alt&&cur.alt.u)||{})};
@@ -39,6 +39,7 @@ function scGo(i){
       if(ids.length) knockDown(ids);
       state.cur=curEnd;
       scTimer(()=>{ if(tok!==SC.tok) return; SC.busy=false; renderCap();
+        if(SC.autoEnd && SC.i===SC.list.length-1) scTimer(()=>{ if(tok===SC.tok) scFinish(); },SC.autoEnd);
         if(SC.auto) scTimer(()=>{ if(tok===SC.tok && SC.auto) scNext(); },2200); }, ids.length?650:50);
     }, (sc.fire&&sc.fire.length) ? t+100 : 0);
   }, moveT);
@@ -48,7 +49,14 @@ function scBack(){ if(SC.active && SC.i>0){ SC.auto=false; scGo(SC.i-1); } }
 function renderCapDock(){
   const d=$('#dock'), sc=SC.list[SC.i]; if(!d||!sc) return;
   const last=SC.i===SC.list.length-1, n=SC.list.length;
-  d.hidden=false; d.className='dock dk-scene';
+  d.hidden=false;
+  if(SC.autoEnd){
+    d.className='dock dk-scene dk-v '+(sc.verdict==='good'?'won':'lost');
+    d.innerHTML=`<div class="dk-row"><b class="dk-q ${sc.verdict==='good'?'dk-good':'dk-bad'}"><i aria-hidden="true">${sc.verdict==='good'?'✓':'✕'}</i> ${sc.t}</b></div><p class="cb-b">${sc.b}</p><div class="dk-nav"><button type="button" class="cb-next dk-skip">${SC.busy?'Watch the board…':'Continue ›'}</button></div>`;
+    if(window.sheetTo && sheetOn()) sheetTo(SHEET.pos==='peek'?'peek':SHEET.pos,false);
+    return;
+  }
+  d.className='dock dk-scene';
   d.innerHTML=`<div class="dk-row"><span class="cb-n">${n>1?`Scene ${SC.i+1} of ${n}`:''}${sc.banner?`${n>1?' · ':''}<i>${sc.banner}</i>`:''}</span>${n>2?`<button type="button" class="cb-auto">${SC.auto?'❚❚ Pause':'▶ Auto'}</button>`:''}</div>
     <b class="cb-t">${sc.t}</b><p class="cb-b">${sc.b}</p>
     <div class="dk-nav">${SC.i>0?'<button type="button" class="cb-back" aria-label="Previous scene">‹</button>':''}<button type="button" class="cb-next${SC.busy?' wait':''}">${last?SC.endLabel:'Next'} ›</button></div>`;
@@ -58,7 +66,7 @@ document.getElementById('dock').addEventListener('click',e=>{
   if(!SC.active) return;
   if(e.target.closest('.cb-back')){ e.stopPropagation(); return scBack(); }
   if(e.target.closest('.cb-auto')){ e.stopPropagation(); return scToggleAuto(); }
-  if(e.target.closest('.cb-next')){ e.stopPropagation(); return scNext(); }
+  if(e.target.closest('.cb-next')){ e.stopPropagation(); if(SC.autoEnd){ if(!SC.busy) scFinish(); return; } return scNext(); }
 });
 function scFinish(){ const fn=SC.onEnd; scStop(); hideBanner(); if(fn) fn(); }
 function scToggleAuto(){ SC.auto=!SC.auto; renderCap(); if(SC.auto && !SC.busy) scNext(); }

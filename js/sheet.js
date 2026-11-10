@@ -11,7 +11,8 @@ function sizeMap(avail){
   if(!isMys()){ bw.style.width=''; return; }
   const k=400/(((typeof B!=='undefined')&&B&&B.H)||400), W=st.clientWidth;
   const wide=!sheetOn();
-  const maxW = wide ? Math.min(W-470, 900) : W-12;
+  const sw=(document.querySelector('#battle .sheet')||{}).offsetWidth||470;
+  const maxW = wide ? Math.min(W-sw-28, 1100) : W-12;
   bw.style.width=Math.max(220,Math.min(maxW,(avail-12)*k))+'px';
 }
 function sheetMeasure(){

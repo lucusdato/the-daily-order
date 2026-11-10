@@ -58,9 +58,22 @@ function hill(cx,cy,rx,ry,n=3){
 const mtn = (x,y,s,cap='#cfc3a0') => TOON ? `<path d="M${x-s} ${y} L${x-s*.12} ${y-s*1.05} L${x+s} ${y} Z" fill="#b9a57a" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/><path d="M${x-s*.12} ${y-s*1.05} L${x-s*.4} ${y-s*.72} L${x-s*.16} ${y-s*.78} L${x+s*.05} ${y-s*.66} L${x+s*.22} ${y-s*.8} Z" fill="#f7f1e1" stroke="${INK}" stroke-width="1.1" stroke-linejoin="round"/>` : `<path d="M${x-s} ${y} L${x-s*.12} ${y-s*1.05} L${x+s} ${y} Z" fill="#a39674"/><path d="M${x-s*.12} ${y-s*1.05} L${x+s} ${y} L${x+s*.15} ${y} Z" fill="#6f6448"/><path d="M${x-s*.12} ${y-s*1.05} L${x-s*.4} ${y-s*.72} L${x-s*.16} ${y-s*.78} L${x+s*.05} ${y-s*.66} L${x+s*.22} ${y-s*.8} Z" fill="${cap}"/>`;
 const treeToon = (x,y,s,c) => `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(2)})"><ellipse cx="1" cy="1" rx="5.5" ry="1.8" fill="rgba(0,0,0,.2)"/><rect x="-1.4" y="-6.5" width="2.8" height="7.5" rx="1" fill="#8a5a32" stroke="${INK}" stroke-width="1"/><circle cx="0" cy="-11" r="6.6" fill="${toon(c)}" stroke="${INK}" stroke-width="1.3"/><path d="M-3.4 -13 q1.4 -2.6 3.8 -2.8" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.3" stroke-linecap="round"/></g>`;
 const tree = (x,y,s=1,c='#3b6b2b') => TOON ? treeToon(x,y,s,c) : `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(2)})"><ellipse cx="0" cy="1" rx="6" ry="2" fill="rgba(0,0,0,.25)"/><rect x="-1.2" y="-7" width="2.4" height="8" rx="1" fill="#6b4a2b"/><circle cx="0" cy="-11" r="6.5" fill="${c}"/><circle cx="-2" cy="-13.2" r="2.6" fill="rgba(255,255,255,.18)"/></g>`;
+/* spots where toys stand, so trees never hide them: [x, y, r] in board units, set while a board is drawn */
+let TREE_AVOID = [];
+const treeClear = (x,y) => !TREE_AVOID.some(([ax,ay,ar])=>Math.hypot(x-ax,(y-ay)*1.15)<ar);
+function treeAvoid(b){
+  const A=[], m=b&&b.m; if(!m) return A;
+  const add=(p,r)=>{ if(p&&p.length>=2&&isFinite(p[0])&&isFinite(p[1])&&p[2]!=='off') A.push([p[0],p[1]-6,r]); };
+  Object.values(m.start||{}).forEach(p=>add(p,26));
+  (b.units||[]).forEach(u=>{ if(!(m.start||{})[u.id] && u.p) add(u.p[0]||Object.values(u.p)[0],26); });
+  (m.scenes||[]).forEach(sc=>Object.values(sc.u||{}).forEach(p=>add(p,26)));
+  Object.values(m.fail||{}).forEach(f=>Object.values(f.u||{}).forEach(p=>add(p,26)));
+  (m.zones||[]).forEach(z=>A.push([z[2],z[3]-4,Math.max(20,z[4]*.95)]));
+  return A;
+}
 function trees(seed,n,box,test,cols){
   const r=rng(seed), pts=[]; let g=0;
-  while(pts.length<n && g++<n*30){const x=box[0]+r()*(box[1]-box[0]), y=box[2]+r()*(box[3]-box[2]); if(test(x,y)) pts.push([x,y,.8+r()*.45,cols[Math.floor(r()*cols.length)]]);}
+  while(pts.length<n && g++<n*30){const x=box[0]+r()*(box[1]-box[0]), y=box[2]+r()*(box[3]-box[2]); if(test(x,y) && treeClear(x,y)) pts.push([x,y,.8+r()*.45,cols[Math.floor(r()*cols.length)]]);}
   pts.sort((a,b)=>a[1]-b[1]);
   return pts.map(p=>tree(p[0],p[1],p[2],p[3])).join('');
 }

@@ -29,8 +29,8 @@ const mz = id => D.sc.m.zones.find(z=>z[0]===id);
 const mToyLabel = u => (D.sc.m.toys.find(t=>t[0]===u)||[u,u])[1];
 const mUnit = id => D.sc.units.find(u=>u.id===id);
 function mSquares(t){ const m=D.sc.m, a=m.ans;
-  const su = t.u===a.u?'g':(m.near.u||[]).includes(t.u)?'y':'w';
-  const sz = t.z===a.z?'g':(m.near.z||[]).includes(t.z)?'y':'w';
+  const su = t.u===a.u?'g':'w';
+  const sz = t.z===a.z?'g':'w';
   return [su,sz]; }
 function mGrid(tries){ return ['🪖📍'].concat(tries.map(t=>mSquares(t).map(s=>SQ[s]).join(''))).join('\n'); }
 const mGeneral = () => (D.sc.m.general || D.sc.you);
@@ -82,6 +82,7 @@ function openMystery(){
 }
 function mRender(){
   const r=mres();
+  document.body.classList.toggle('mbrief', MS.phase==='brief' && !r.done);
   if(!r.done) mCardPlay();
   else if(!r.seen) mCardResult();
   else mCardDebrief();
@@ -112,7 +113,12 @@ function commitLabel(){
   if(z) return 'Now pick a toy';
   return 'Pick a toy, then a circle on the map';
 }
-const SQC={g:'Right',y:'Close',w:'Wrong'};
+const SQC={g:'Right',w:'Wrong'};
+const mClean = t => String(t||'').replace(/^(Close|Right toy|Right place|Right toy, right place)\.\s*/,'');
+/* intel is earned: the first clue is free, each miss unlocks one more; troop cards only open once a clue reveals them */
+const mVis = () => { const m=D.sc.m, r=mres(); return r.done ? m.clues.length : Math.min(m.clues.length, 1+r.tries.length); };
+const mCardOpen = id => { const m=D.sc.m, r=mres(); return !!id && (r.done || m.clues.slice(0,mVis()).some(c=>c.card===id)); };
+function mFailText(u,z){ const m=D.sc.m, F=(m.fail&&(m.fail[u+'@'+z]||m.fail[z]))||{}; const [su,sz]=mSquares({u,z}); return F.b||(sz!=='g'?m.fbZ[z]:m.fbU[u]); }
 function sqHtml(k){ return `<i class="sq2 s-${k}" aria-label="${SQC[k]}"></i>`; }
 function renderDock(){
   if(SC.active) return;
@@ -122,19 +128,23 @@ function renderDock(){
   d.hidden=false;
   if(!r.done && MS.phase==='clue'){
     const n=r.tries.length, last=r.tries[n-1], [su,sz]=mSquares(last), c=m.clues[MS.newClue];
+    const mark=(k,lab,txt)=>`<p class="mk-${k}">${sqHtml(k)}<span><b>${lab} · ${k==='g'?'right':'wrong'}.</b> ${k==='g'?'':mClean(txt)}</span></p>`;
     d.className='dock dk-clue';
-    d.innerHTML=`<div class="dk-row"><b class="dk-q">Round ${n} missed</b>${pipsHtml(r)}</div>
-      <div class="dk-fb"><p>${sqHtml(su)}<span><b>Toy.</b> ${su==='g'?'Right toy.':m.fbU[last.u]}</span></p><p>${sqHtml(sz)}<span><b>Place.</b> ${sz==='g'?'Right place.':m.fbZ[last.z]}</span></p></div>
-      ${c&&MS.newClue>=0?`<div class="dk-new"><span class="msl">New intel${c.cat?` · ${METT.find(x=>x[0]===c.cat)[2]}`:''}</span>${c.card?`<button type="button" class="mcard" data-card="${c.card}">${toySvg(CARDBY[c.card],26)}<span><b>${CARDBY[c.card].name}</b><em>Troop card · tap to study</em></span></button>`:`<p><b>${c.t}.</b> ${c.b}</p>`}</div>`:''}
-      <button type="button" class="commit mnext">Round ${n+1} of ${MAXTRY} ›</button>`;
+    d.innerHTML=`<div class="dk-row"><b class="dk-q dk-bad"><i aria-hidden="true">✕</i> Wrong move</b>${pipsHtml(r)}</div>
+      <p class="dk-what">${mFailText(last.u,last.z)}</p>
+      <div class="dk-fb">${mark(su,'Toy',m.fbU[last.u])}${mark(sz,'Place',m.fbZ[last.z])}</div>
+      ${c&&MS.newClue>=0?`<div class="dk-new"><span class="msl">New intel unlocked${c.cat?` · ${METT.find(x=>x[0]===c.cat)[2]}`:''}</span>${c.card?`<button type="button" class="mcard" data-card="${c.card}">${toySvg(CARDBY[c.card],26)}<span><b>${CARDBY[c.card].name}</b><em>Troop card · tap to study</em></span></button>`:`<p><b>${c.t}.</b> ${c.b}</p>`}</div>`:''}
+      <button type="button" class="commit mnext">Try again · round ${n+1} of ${MAXTRY} ›</button>`;
   } else if(!r.done){
     d.className='dock dk-play';
     d.innerHTML=`<div class="dk-row"><b class="dk-q">${m.qs||'Your order'}</b>${pipsHtml(r)}</div>
-      <div class="dk-tray">${m.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}"><span class="band ${U.s}"></span>${toySvg({t:sprOf(U),side:U.s},40)}<b>${lab}</b></button>${m.cards[u]?`<button type="button" class="toyi" data-card="${m.cards[u]}" aria-label="${lab}: troop card">i</button>`:''}</div>`; }).join('')}</div>
+      <div class="dk-tray">${m.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}"><span class="band ${U.s}"></span>${toySvg({t:sprOf(U),side:U.s},40)}<b>${lab}</b></button>${mCardOpen(m.cards[u])?`<button type="button" class="toyi" data-card="${m.cards[u]}" aria-label="${lab}: troop card">i</button>`:''}</div>`; }).join('')}</div>
       <button type="button" class="commit"${MS.sel.u&&MS.sel.z?'':' disabled'}>${commitLabel()}</button>`;
   } else if(!r.seen){
     d.className='dock dk-res';
-    d.innerHTML=`<div class="dk-row"><b class="dk-q">${r.won?(r.tries.length===1?'First try!':`Solved in ${r.tries.length}`):'Defeated'}</b>${pipsHtml(r)}</div>
+    d.className='dock dk-res '+(r.won?'won':'lost');
+    d.innerHTML=`<div class="dk-row"><b class="dk-q ${r.won?'dk-good':'dk-bad'}"><i aria-hidden="true">${r.won?'✓':'✕'}</i> ${r.won?(r.tries.length===1?'First try!':`Solved in ${r.tries.length}`):'Out of orders'}</b>${pipsHtml(r)}</div>
+      <p class="dk-what">${r.won?`Rank: ${MRANK[r.tries.length]}. You matched ${mGeneral()} in ${r.tries.length===1?'one try':r.tries.length+' tries'}.`:`${mGeneral()} out-thought you this time. Here is what really happened.`}</p>
       <button type="button" class="commit mreveal">Watch the real battle ›</button>`;
   } else {
     const F=r.first||r;
@@ -168,7 +178,7 @@ function mettHtml(vis){
 function mLead(){ const sc=D.sc, m=sc.m; return m.lead || firstSentences(sc.brief.situation,2)[0]; }
 function mCardPlay(){
   state.cardMode='daily';
-  const sc=D.sc, m=sc.m, r=mres(), vis=Math.min(m.clues.length,2+r.tries.length);
+  const sc=D.sc, m=sc.m, r=mres(), vis=mVis();
   card.innerHTML=`<div class="card-in mys morder">
     <header class="ohead">
       <div class="kicker">${D.preview?'Preview':'Order #'+D.n} · ${sc.place} · ${sc.year}</div>
@@ -179,7 +189,7 @@ function mCardPlay(){
     <p class="sit">${m.sit}</p>
     ${mettHtml(vis)}
     <div class="theq"><span>Your order</span><p>${m.q}</p></div>
-    ${MS.phase==='brief'?'<button type="button" class="commit mgo">To the map ›</button>':''}
+    ${MS.phase==='brief'?'<button type="button" class="commit mgo">View the map ›</button>':''}
   </div>`;
   if(MS.newClue<0) card.scrollTop=0;
 }
@@ -189,11 +199,10 @@ function mGo(){ MS.phase='play'; mRender(); if(window.sheetTo) sheetTo('peek'); 
    m.fail['toy@zone'] is the specific outcome for that combination; m.fail[zone] is the fallback.
    Each can carry its own text (b). '$' stands for the toy you placed. */
 function mFailList(u,z,out){
-  const m=D.sc.m, Z=mz(z), placed={[u]:[Z[2],Z[3]]}, [su,sz]=mSquares({u,z}), sub=x=>x==='$'?u:x;
+  const m=D.sc.m, Z=mz(z), placed={[u]:[Z[2],Z[3]]}, sub=x=>x==='$'?u:x;
   const F=(m.fail&&(m.fail[u+'@'+z]||m.fail[z]))||{};
-  return [{t:'Your order',b:`${mToyLabel(u)} → ${Z[1]}.`,cur:startCur(placed)},
-          {t:out?'Defeated':'What happens',b:F.b||(sz!=='g'?m.fbZ[z]:m.fbU[u]),cur:startCur(Object.assign({},F.u||{},placed)),a:F.a||[],
-           fire:(F.fire||[]).map(f=>f.map(sub)),ko:[...new Set((F.ko||['$']).map(sub))].filter(Boolean),banner:'What if',idle:(F.idle||[]).map(sub)}];
+  return [{t:out?'Out of orders':'Wrong move',b:mFailText(u,z),verdict:'bad',cur:startCur(Object.assign({},F.u||{},placed)),a:F.a||[],
+           fire:(F.fire||[]).map(f=>f.map(sub)),ko:[...new Set((F.ko||['$']).map(sub))].filter(Boolean),idle:(F.idle||[]).map(sub)}];
 }
 function mRevealList(){
   return D.sc.m.scenes.map(x=>({t:x.t,b:x.b,cur:{i:x.s,ph:x.s,alt:x.u?{u:x.u}:undefined},a:x.a||[],fire:x.fire||[],ko:x.ko||[],idle:x.idle||[]}));
@@ -206,24 +215,52 @@ function mCommit(){
   const win = u===m.ans.u && z===m.ans.z, out = !win && r.tries.length>=MAXTRY;
   if(win||out){ r.done=true; r.won=win; if(!r.first) r.first={tries:r.tries.slice(),won:win,playedOn:ymd(gameNow())}; r.newCards=unlockCards([...new Set(Object.values(m.cards))]); }
   saveRes(RES);
-  buzz(win?3:0);
-  const t={u,z}, Z=mz(z), placed={[u]:[Z[2],Z[3]]}, lab=`${mToyLabel(u)} → ${Z[1]}.`;
+  const Z=mz(z), placed={[u]:[Z[2],Z[3]]};
   const old=$('#mzones'); if(old) old.remove();
   figs.forEach(f=>f.g.classList.remove('sel'));
-  let list;
-  if(win){
-    list=[{t:'Your order',b:lab,cur:startCur(placed)},
-          {t:'Right call',b:`${m.fbU[u].replace(/^Right toy\.\s*/,'')} ${m.fbZ[z].replace(/^Right place\.\s*/,'')}`,cur:startCur(placed),fire:(m.win&&m.win.fire)||[]}];
-  } else {
-    list=mFailList(u,z,out);
-  }
-  scenesPlay(list,{endLabel:win?'See result':out?'See the answer':'Continue',onEnd:()=>{
+  const list = win
+    ? [{t:r.tries.length===1?'First try!':'Order carried out',b:`${mClean(m.fbU[u])} ${mClean(m.fbZ[z])}`,verdict:'good',cur:startCur(placed),fire:(m.win&&m.win.fire)||[]}]
+    : mFailList(u,z,out);
+  mVerdict(win, win?(r.tries.length===1?'First try!':'Order carried out'):(out?'Out of orders':'Wrong move'), win?`${r.tries.length===1?'Solved first time':`Solved in ${r.tries.length}`} · ${MRANK[r.tries.length]}`:(out?`${mGeneral()} wins this one`:`Round ${r.tries.length} of ${MAXTRY}`), Z);
+  scenesPlay(list,{autoEnd:win?2400:1700,onEnd:()=>{
     MS.busy=false; MS.sel={u:null,z:null};
-    const k=1+r.tries.length; MS.newClue = (win||out||k>=m.clues.length)?-1:k;
+    const k=r.tries.length; MS.newClue = (win||out||k>=m.clues.length)?-1:k;
     MS.phase = r.done ? 'done' : 'clue';
+    mVerdictOff();
     mRender();
-    if(win && r.tries.length===1 && window.confetti) confetti();
+    const c=MS.newClue>=0 && m.clues[MS.newClue];
+    if(c && c.card) setTimeout(()=>showCard(c.card,'<p class="tc-new">New intel unlocked</p>'),380);
   }});
+}
+/* the verdict: an unmissable stamp over the board the moment the order goes out */
+function mVerdict(win,title,sub,Z){
+  const w=$('.board-wrap'); if(!w) return;
+  mVerdictOff();
+  const v=document.createElement('div'); v.id='verdict'; v.className='verdict '+(win?'v-good':'v-bad'); v.setAttribute('role','status');
+  v.innerHTML=`<span class="v-ico" aria-hidden="true">${win?'✓':'✕'}</span><span class="v-tx"><b>${title}</b>${sub?`<i>${sub}</i>`:''}</span>`;
+  w.appendChild(v);
+  w.classList.remove('v-shake','v-glow'); void w.offsetWidth; w.classList.add(win?'v-glow':'v-shake');
+  buzz(win?3:0);
+  if(win){ if(window.confetti) setTimeout(confetti,150); mBurst(Z[2],Z[3]); }
+  else mCross(Z[2],Z[3]);
+}
+function mVerdictOff(){ const v=$('#verdict'); if(v) v.remove(); const w=$('.board-wrap'); if(w) w.classList.remove('v-shake','v-glow'); }
+function mBurst(x,y){
+  const fx=$('#fx'); if(!fx) return;
+  const g=document.createElementNS(NS,'g'); g.setAttribute('class','vburst'); g.setAttribute('pointer-events','none');
+  g.innerHTML=[0,1,2].map(k=>`<circle cx="${x}" cy="${y}" r="10" fill="none" stroke="${k===1?'#f4c430':'#3f8f3a'}" stroke-width="${4-k}"/>`).join('')+
+    Array.from({length:10},(_,k)=>{ const a=k/10*Math.PI*2; return `<path d="M${x+Math.cos(a)*16} ${y+Math.sin(a)*16} L${x+Math.cos(a)*30} ${y+Math.sin(a)*30}" stroke="#f4c430" stroke-width="3" stroke-linecap="round"/>`; }).join('');
+  fx.appendChild(g);
+  const cs=g.querySelectorAll('circle'), ps=g.querySelectorAll('path');
+  addTw({keep:true,dur:1500,step:p=>{ cs.forEach((c,k)=>{ const q=Math.max(0,Math.min(1,p*1.4-k*.15)); c.setAttribute('r',(10+q*58).toFixed(1)); c.style.opacity=(1-q).toFixed(2); });
+    ps.forEach(e=>{ e.style.opacity=(p<.5?1:(1-p)*2).toFixed(2); e.setAttribute('transform',`translate(${x} ${y}) scale(${(1+p*1.2).toFixed(2)}) translate(${-x} ${-y})`); }); },end:()=>g.remove()});
+}
+function mCross(x,y){
+  const fx=$('#fx'); if(!fx) return;
+  const g=document.createElementNS(NS,'g'); g.setAttribute('class','vcross'); g.setAttribute('pointer-events','none');
+  g.innerHTML=`<circle cx="${x}" cy="${y}" r="26" fill="rgba(195,49,29,.18)" stroke="#c3311d" stroke-width="3"/><path d="M${x-12} ${y-12} L${x+12} ${y+12} M${x+12} ${y-12} L${x-12} ${y+12}" stroke="#c3311d" stroke-width="5" stroke-linecap="round"/>`;
+  fx.appendChild(g);
+  addTw({keep:true,dur:1700,step:p=>{ g.style.opacity=(p<.7?1:(1-p)/.3).toFixed(2); },end:()=>g.remove()});
 }
 
 function mCardResult(){
@@ -276,11 +313,19 @@ function mCardDebrief(){
     ${cards.length?`<div class="sec"><h3>Troop cards from this battle</h3><div class="cgrid sm">${cards.filter(id=>CARDBY[id]).map(id=>{const C=CARDBY[id]; return `<button type="button" class="cmini ${C.side}" data-card="${id}">${nw.has(id)?'<i class="newb">New</i>':''}${toySvg(C,46)}<b>${C.name}</b></button>`;}).join('')}</div></div>`:''}
     ${pr.length?`<div class="sec"><h3>Principles in play</h3><div class="chips">${pr.map(p=>`<button type="button" class="chip-p" data-pr="${p.id}">${p.name}</button>`).join('')}</div></div>`:''}
     <details class="more sm"><summary>Want the full story?</summary><div class="more-in">${sec('How it came to this',sc.brief.situation)}${sec('Your forces',sc.brief.forces)}${sec('The enemy',sc.brief.enemy)}${sec('The ground',sc.brief.ground)}${oRest?sec('How it ended',oRest):''}${sec('Why it worked',db.why)}<div class="other"><h3>${sc.t.eyes}</h3><p>${db.them}</p></div></div></details>
-    ${m.sources?`<details class="more sm srcs"><summary>Sources</summary><div class="more-in"><ul>${m.sources.map(([n,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${n}</a></li>`).join('')}</ul></div></details>`:''}
+    ${m.video?mVideoHtml(m.video):''}
+    ${m.sources?`<details class="more sm srcs"><summary>Sources</summary><div class="more-in"><ul>${m.sources.map(([n,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${n}</a></li>`).join('')}${m.video?`<li><a href="https://www.youtube.com/watch?v=${m.video.id}" target="_blank" rel="noopener">Video: ${m.video.t} (${m.video.ch})</a></li>`:''}</ul></div></details>`:''}
     <div class="drow2"><a class="dlink2" href="#archive">Past orders</a><button type="button" class="dreplay mreplay">Play again</button></div>
     <p class="hint">${r.first&&(r.first.won!==r.won||r.first.tries.length!==r.tries.length)?'Your first attempt is the score that counts. ':''}${D.preview?'This was a preview. ':''}Next order in ${untilTomorrow()}.</p>
   </div>`;
   card.scrollTop=0;
+}
+/* the most watched video on the battle, for anyone who wants the whole story */
+const mViews = v => v>=1e6 ? (v/1e6).toFixed(v>=1e7?0:1).replace(/\.0$/,'')+'M' : v>=1e3 ? Math.round(v/1e3)+'K' : String(v);
+function mVideoHtml(v){
+  return `<a class="mvid" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener">
+    <span class="mv-th"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><i aria-hidden="true">▶</i></span>
+    <span class="mv-tx"><span class="msl">Go deeper · the most watched video on this battle</span><b>${v.t}</b><em>${v.ch} · ${mViews(v.v)} views on YouTube</em></span></a>`;
 }
 /* the share text: who you matched, how fast, a labelled grid (🪖 the toy, 📍 the place), a dare and the link */
 function mShare(){
@@ -319,9 +364,11 @@ function mUnitTap(id){
   if(state.mode!=='daily' || !D.sc || !D.sc.m) return false;
   const m=D.sc.m, r=mres();
   if(!r.done && !SC.active && m.toys.some(t=>t[0]===id)){ mPickToy(id); return true; }
-  if(m.cards[id]){ showCard(m.cards[id]); return true; }
-  return false;
+  if(m.cards[id] && mCardOpen(m.cards[id])){ showCard(m.cards[id]); return true; }
+  const U=mUnit(id); if(U) mToast(r.done?U.name:`${U.name}. Its troop card unlocks with a clue.`);
+  return true;
 }
+function mToast(t){ const e=$('#utag'); if(!e) return; e.textContent=t; e.hidden=false; e.classList.add('show'); clearTimeout(mToast.t); mToast.t=setTimeout(()=>{ e.hidden=true; e.classList.remove('show'); },2200); }
 /* in the opening order, pulling the sheet down to the map starts the game */
 function sheetUserMove(to){ if(document.body.classList.contains('mys') && MS.phase==='brief' && to!=='full' && D.sc && D.sc.m && !SC.active && !mres().done){ MS.phase='play'; mRender(); } }
 /* leaving the mystery hides the dock */

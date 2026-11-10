@@ -2,7 +2,7 @@
    Brief follows METT-T (Mission, Enemy, Terrain and weather, Troops, Time), the US Army and Marine Corps mission variables,
    with terrain read through OAKOC (Observation, Avenues of approach, Key terrain, Obstacles, Cover and concealment).
    sit: the trigger. mett: one line per variable. ground: OAKOC notes for the Terrain row [tag, text].
-   clues: extra intel by METT-T row (cat m/e/t/tr/ti), two shown at the start, one more after each miss.
+   clues: extra intel by METT-T row (cat m/e/t/tr/ti), the first shown at the start, one more after each miss. Misses 1 to 4 unlock clues 1 to 4, so put an enemy troop card at 1 and one of yours at 3; anything past index 4 is never shown.
    toys/zones/ans/near/start/fbU/fbZ: the puzzle. fail[zone]: what plays out ($ = the toy you placed).
    scenes: the real battle, play by play. s = state index, u = position overrides, fire = [from, to, kind?], ko = extra casualties.
    deduce: the commander's estimate, fact and so-what, shown in the debrief. cards: unit to troop card. */
@@ -77,9 +77,9 @@ PGD.mystery(1,{
       b:'The right spot for the cavalry, but cavalry needs a moment to strike. With no lines out front, Tarleton\'s attack never breaks up, and that moment never comes.'}},
   clues:[
     {cat:'e',t:'Tarleton\'s habit',b:'He has beaten militia again and again with one headlong bayonet charge.'},
-    {cat:'tr',card:'militia1781'},
     {cat:'e',card:'legion1781'},
     {cat:'m',t:'Morgan\'s intent',b:'For the plan to work, Tarleton has to believe he is winning.'},
+    {cat:'tr',card:'militia1781'},
     {cat:'tr',t:'Morgan\'s ask',b:'Morgan reportedly told the militia he needed only a couple of volleys from them.'},
     {cat:'t',t:'Cover and concealment',b:'The low rise hides whatever stands behind it from the British.'}],
   deduce:[['Tarleton always charges headlong.','Make his charge work for you: let him believe he is winning.'],
@@ -105,6 +105,7 @@ PGD.mystery(1,{
        fire:[['a_cont','t_inf','clash'],['a_cav','t_inf','clash'],['a_militia','t_71'],['a_cont','t_art','clash']]});
     return S;
   })(),
+  video:{id:'kP7Lmz9MdNE',t:'The Most Gangster General Of The American Revolution: Daniel Morgan',ch:'The Fat Electrician',v:3654211},
   sources:[['National Park Service: Battle of Cowpens','https://www.nps.gov/articles/000/battle-of-cowpens.htm'],
            ['National Park Service: Colonel Howard\'s misunderstood order','https://www.nps.gov/places/colonel-howard-s-misunderstood-order.htm'],
            ['Journal of the American Revolution: William Washington at Cowpens','https://allthingsliberty.com/2026/03/coup-doeil-william-washington-at-the-battle-of-cowpens/'],
@@ -164,11 +165,10 @@ PGD.mystery(14,{
       b:'Tanks waiting in the forest do nothing for the crossing. The French use the time to bring their reserves up to the river.'}},
   clues:[
     {cat:'ti',t:'The clock',b:'French commanders believe you need days to prepare any river crossing.'},
-    {cat:'e',card:'res1940'},
     {cat:'e',card:'bunker1940'},
     {cat:'tr',t:'Air support',b:'The air force has promised massive support for this one crossing.'},
-    {cat:'e',t:'Air defense',b:'The French have few anti-aircraft guns covering Sedan.'},
-    {cat:'tr',card:'stuka1940'}],
+    {cat:'tr',card:'stuka1940'},
+    {cat:'e',t:'Air defense',b:'The French have few anti-aircraft guns covering Sedan.'}],
   deduce:[['Your heavy artillery is days behind.','Waiting for it hands the French the days they need. Find something else to do its job.'],
           ['The French expect days of preparation.','Crossing tomorrow, right here, hits them before they are ready.'],
           ['The reservists have never faced air attack.','Massed bombing may break their nerve, not just their bunkers.']],
@@ -188,6 +188,7 @@ PGD.mystery(14,{
     add(3,{fr_north:[80,10,'exit']},{t:'The halt',b:'On 24 May a halt order stops the panzers short of Dunkirk. The delay helps more than 338,000 Allied troops escape by sea.'});
     return S;
   })(),
+  video:{id:'PPBmoWBEJDE',t:'The Meuse Must Hold! Ten Days in Sedan, Day Four',ch:'World War Two (TimeGhost)',v:100986},
   sources:[['Wikipedia: Battle of Sedan (1940), drawing on Frieser','https://en.wikipedia.org/wiki/Battle_of_Sedan_(1940)'],
            ['WarHistory.org: Sedan, 13 May, the Germans cross the Meuse','https://warhistory.org/2015/11/26/sedan-13-may-the-germans-cross-the-meuse/'],
            ['Marine Corps Gazette: Guderian and synchronization','https://www.mca-marines.org/gazette/guderian-and-synchronization/'],

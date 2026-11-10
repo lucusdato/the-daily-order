@@ -76,11 +76,13 @@ PGD.mystery(28,{
       b:'Your cavalry wait far behind while Napoleon walks onto the ridge.'}},
   clues:[
     {cat:'e',t:'Napoleon\'s guns',b:'Napoleon trusts massed artillery. He has gathered a great battery to smash any line he can see.'},
-    {cat:'ti',t:'The ally',b:'Blücher has promised to march to you. You only need to hold until he arrives.'},
+    {cat:'e',card:'ligne1815'},
+    {cat:'m',t:'Wellington\'s habit',b:'In Spain, Wellington often kept his infantry out of sight until the enemy came close.'},
+    {cat:'tr',card:'redcoat1815'},
     {cat:'t',t:'Behind the ridge',b:'Behind the crest the ground drops away, out of sight from the south.'},
+    {cat:'ti',t:'The ally',b:'Blücher has promised to march to you. You only need to hold until he arrives.'},
     {cat:'e',t:'Mud',b:'Heavy rain overnight has soaked the fields. The French will be slow to start.'},
-    {cat:'tr',t:'Your army',b:'Many of your units are inexperienced. They will fight hard if they are not exposed to the full weight of the French guns.'},
-    {cat:'m',t:'Wellington\'s habit',b:'In Spain, Wellington often kept his infantry out of sight until the enemy came close.'}],
+    {cat:'tr',t:'Your army',b:'Many of your units are inexperienced. They will fight hard if they are not exposed to the full weight of the French guns.'}],
   deduce:[['Napoleon\'s great battery smashes any line it can see.','Keep your line out of its sight, behind the crest.'],
           ['Many of your troops are inexperienced.','Shelter them, and they will hold.'],
           ['The Prussians are coming.','You do not need to win alone. You need to last until the afternoon.']],
@@ -104,6 +106,7 @@ PGD.mystery(28,{
        fire:[['al_line','fr_inf','clash'],['al_cav','fr_inf','clash'],['al_pruss','fr_art','clash']]});
     return S;
   })(),
+  video:{id:'nDZGL1xsqzs',t:'Napoleonic Wars: Battle of Waterloo 1815',ch:'Epic History',v:6338151},
   sources:[['Britannica: Battle of Waterloo, the first hours of battle','https://www.britannica.com/event/Battle-of-Waterloo/The-first-hours-of-battle'],
            ['National Army Museum: Battle of Waterloo','https://www.nam.ac.uk/explore/battle-waterloo'],
            ['King\'s College London: the battle of Waterloo','https://kingscollections.org/exhibitions/archives/wellington/military/waterloo-battle'],
@@ -181,11 +184,13 @@ PGD.mystery(4,{
       b:'Holding your infantry back changes nothing. The English still hold the hill at dusk.'}},
   clues:[
     {cat:'e',t:'The shield wall',b:'The English stand shoulder to shoulder, shields overlapping. Uphill attacks have broken on walls like this before.'},
-    {cat:'tr',t:'Your horsemen',b:'Your knights are fast and can wheel around quickly. The English have almost no cavalry.'},
+    {cat:'e',card:'housecarl1066'},
     {cat:'e',t:'The fyrd',b:'Many English are part-time levies. Brave, but if they see an enemy running, they may chase it.'},
+    {cat:'tr',card:'knight1066'},
+    {cat:'m',t:'An old trick',b:'Norman horsemen have used a pretended flight to break an enemy line before.'},
+    {cat:'tr',t:'Your horsemen',b:'Your knights are fast and can wheel around quickly. The English have almost no cavalry.'},
     {cat:'t',t:'Below the hill',b:'At the bottom of the slope the ground is open and fairly flat. Good ground for horses.'},
-    {cat:'ti',t:'Daylight',b:'October days are short. If the English still hold the hill at dusk, they win.'},
-    {cat:'m',t:'An old trick',b:'Norman horsemen have used a pretended flight to break an enemy line before.'}],
+    {cat:'ti',t:'Daylight',b:'October days are short. If the English still hold the hill at dusk, they win.'}],
   deduce:[['The shield wall cannot be broken head on.','Get the English to break it themselves.'],
           ['Some English chase anyone who runs.','Give them something to chase.'],
           ['Your knights can turn fast, and the English have no horsemen.','Lead them onto open ground, then turn and strike.']],
@@ -208,6 +213,7 @@ PGD.mystery(4,{
       fire:[['n_cav','e_wall','clash'],['n_inf','e_wall_l','clash'],['n_arch','e_harold','arrows']]});
     return S;
   })(),
+  video:{id:'Jl3K63Rbygw',t:'The War that Changed the English Language',ch:'OverSimplified',v:36883441},
   sources:[['English Heritage: the battle of Hastings, sequencing (teaching resource)','https://www.english-heritage.org.uk/siteassets/home/learn/teaching-resources/1066_rebrand_sequencing_a4_final.pdf'],
            ['English Heritage: get ready for the battle of Hastings','https://www.english-heritage.org.uk/members-area/members-magazine/october-2018-get-ready-for-the-battle-of-hastings/'],
            ['myArmoury: the battle of Hastings','https://myarmoury.com/feature_battle_hastings.php'],
@@ -281,11 +287,11 @@ PGD.mystery(17,{
       b:'Your squadron waits for dawn. The French get all night to recall their crews and ready their guns.'}},
   clues:[
     {cat:'ti',t:'Ashore',b:'Many French sailors are on land, fetching water and food.'},
+    {cat:'e',card:'orient1798'},
     {cat:'e',t:'Which guns are ready',b:'The French expect any attack from the open sea. The guns facing the shore are cluttered and not ready to fire.'},
-    {cat:'t',t:'Room to swing',b:'Captain Foley sees the first French ship is anchored with room to swing on its cable. Where a ship can swing, another can sail.'},
-    {cat:'t',t:'Wind',b:'The wind blows down the French line, from its head toward its rear. The rear cannot easily sail up to help.'},
     {cat:'tr',card:'sol74_1798'},
-    {cat:'e',card:'orient1798'}],
+    {cat:'t',t:'Room to swing',b:'Captain Foley sees the first French ship is anchored with room to swing on its cable. Where a ship can swing, another can sail.'},
+    {cat:'t',t:'Wind',b:'The wind blows down the French line, from its head toward its rear. The rear cannot easily sail up to help.'}],
   deduce:[['Only the French guns facing the sea are ready.','The shore side is the open door, if a ship can get there.'],
           ['The first French ship has room to swing.','There is water between it and the shoals. A good captain can lead the way.'],
           ['The wind blows down their line.','Hit the head of the line. The rear cannot come up to help.']],
@@ -316,6 +322,7 @@ PGD.mystery(17,{
       t:'Dawn',b:'By morning, 11 of the 13 French battleships are taken or destroyed. Two at the rear of the line slip away. Napoleon\'s army is cut off in Egypt.'});
     return S;
   })(),
+  video:{id:'gJmaRZC2ROE',t:'Nelson\'s Battles in 3D: The Nile',ch:'Epic History',v:3684091},
   sources:[['History Skills: why the French fleet was destroyed at the Nile','https://www.historyskills.com/classroom/modern-history/battle-of-the-nile/'],
            ['The Past: Nelson\'s other great victory, Aboukir Bay','https://the-past.com/?p=50521'],
            ['History Today: the battle of the Nile','https://www.historytoday.com/archive/battle-nile'],
@@ -392,10 +399,12 @@ PGD.mystery(8,{
       b:'A raid on France does nothing to stop bombers already over Kent. Your pilots are now fighting over enemy ground.'}},
   clues:[
     {cat:'tr',t:'The system',b:'Radar and the observers feed your control rooms. You can keep fighters on the ground until you know where the raid is going.'},
+    {cat:'e',card:'bf109_1940'},
     {cat:'e',t:'Short of fuel',b:'London is at the very edge of the Bf 109\'s range. The escorts cannot stay long.'},
+    {cat:'tr',card:'wing1940'},
+    {cat:'m',t:'Your rule',b:'You want raids broken up before they reach the target, so you send squadrons up in pairs.'},
     {cat:'t',t:'Gliding distance',b:'You have told your controllers to fight over land, or within gliding distance of the coast. You cannot afford to lose pilots in the sea.'},
     {cat:'tr',t:'12 Group',b:'12 Group sits north of London and wants to fly in big formations. They hit hard, but they take time to form up.'},
-    {cat:'m',t:'Your rule',b:'You want raids broken up before they reach the target, so you send squadrons up in pairs.'},
     {cat:'e',t:'The escorts',b:'Bf 109s fly high above the bombers. Your Spitfires can go for them, while Hurricanes take the bombers and close escort.'}],
   deduce:[['Radar shows where the raid is going.','You do not need standing patrols. Send fighters to meet it on its way in.'],
           ['London is at the limit of the Bf 109\'s fuel.','The further inland the raid goes, the more alone the bombers are. So fight it over Kent, then again over London.'],
@@ -415,6 +424,7 @@ PGD.mystery(8,{
     add(3,{l_fight:[330,380,'exit'],l_110:[340,380,'exit'],r_11:[262,135],r_12:[196,42]},{a:[['g',290,170,264,140]],t:'The invasion is off',b:'Within days Hitler postpones the invasion of Britain indefinitely. Fighter Command is still flying.'});
     return S;
   })(),
+  video:{id:'XmjKODQYYfg',t:'Battle of Britain: The 13-Hour Dogfight That Denied Luftwaffe Air Superiority',ch:'Timeline',v:8242489},
   sources:[['RAF Museum: Subordinate RAF commanders in the Battle of Britain','https://rafmuseum.org.uk/research/online-exhibitions/history-of-the-battle-of-britain/subordinate-raf-commanders'],
            ['NZ History: the Battle of Britain, September to October','https://nzhistory.govt.nz/war/battle-of-britain/the-battle-september-october'],
            ['Battle of Britain 1940: Sunday 15 September 1940','https://battleofbritain1940.com/entry/sunday-15-september-1940/'],
@@ -488,7 +498,9 @@ PGD.mystery(9,{
       b:'The javelins help hold the flank, as they really did. But nobody strikes at Darius, and the gap closes.'}},
   clues:[
     {cat:'e',t:'Moving lines',b:'The Persian left has ridden out wide to stop you going around it. A line that moves opens gaps.'},
+    {cat:'e',card:'chariot331'},
     {cat:'e',t:'The king',b:'Darius commands from his chariot in the center. His army fights for him, and it will not stay without him.'},
+    {cat:'tr',card:'companion331'},
     {cat:'tr',t:'The wedge',b:'Your Companions are drilled to charge in a wedge, a shape made for driving through a narrow gap.'},
     {cat:'t',t:'Leveled ground',b:'Darius has smoothed this plain for his chariots. You have already drawn the fight away from it.'},
     {cat:'tr',t:'Second line',b:'A second phalanx stands behind the first, ready to turn around if you are surrounded. Your rear can look after itself.'},
@@ -513,6 +525,7 @@ PGD.mystery(9,{
     add(2,{pr_right:[30,160,'exit'],pr_left:[396,100,'exit']},{a:[['t',106,276,40,170],['t',352,182,392,110]],t:'The empire falls',b:'The Persian wings give way. Darius escapes, but months later he is killed by his own officers, and the empire is Alexander\'s.'});
     return S;
   })(),
+  video:{id:'vY3z3yh7a24',t:'Alexander the Great: Battle of Gaugamela 331 BC',ch:'BazBattles',v:4411441},
   sources:[['Britannica: Battle of Gaugamela','https://www.britannica.com/event/Battle-of-Gaugamela'],
            ['World History Encyclopedia: the Battle of Gaugamela','https://www.worldhistory.org/article/108/the-battle-of-gaugamela-331-bce/'],
            ['Arrian on the battle (University of Texas at Arlington)','https://websites.uta.edu/hunnicut/reading-list/readings-western-civilization/arrian-alexander-at-the-battle-of-gaugamela'],
