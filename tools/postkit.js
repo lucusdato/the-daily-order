@@ -35,14 +35,17 @@ if(!n || !byN[n] || !mys[n]){ console.error(`postkit: no battle scheduled for da
 const s=byN[n], m=mys[n];
 const plain=t=>String(t||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 const who=plain(m.general||s.you), cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
-const head=`${plain(s.name)}, ${s.year}. You are ${who}.`;
+/* written the way people talk: "It's Hastings in 1066 and you're William of Normandy." Never a cold "Hastings, 1066." */
+const nm=plain(s.name).replace(/^The /,'the ').replace(/^(Battle|Siege)\b/,'the $1');
+const head=`It's ${nm} in ${s.year} and you're ${who}.`;
+const sit=plain(m.sit).replace(/^[^.]{0,24}\d{2,4}( BC)?\.\s*/,'');   /* the opening date repeats the year just given */
 const link=c=>`${SITE}?utm_source=${c.startsWith('r-')?'reddit':'x'}&utm_medium=${c.startsWith('r-')?'community':'social'}&utm_campaign=${c}`;
 const zones=(m.zones||[]).map(z=>({id:z[0],label:plain(z[1])})), toys=(m.toys||[]).map(t=>({id:t[0],label:plain(t[1])}));
 const warn=[];
 
 /* X: a poll on where the move goes. A poll cannot carry an image, and takes four options of 25 characters at most. */
 const ASK='Where do you make your move?';
-let xpost=[head,'',plain(m.sit),'',ASK].join('\n');
+let xpost=[head,'',sit,'',ASK].join('\n');
 if(xpost.length>280) xpost=[head,'',plain(m.pitch).replace(/^You are [^.]+\.\s*/,''),'',ASK].join('\n');
 if(xpost.length>280) warn.push(`X post is ${xpost.length} characters; trim it to 280.`);
 if(zones.length<2 || zones.length>4) warn.push(`X polls take 2 to 4 options; this battle has ${zones.length} places. Post the options as A/B/C/D text instead.`);
@@ -61,8 +64,8 @@ if(reveal.length>280) warn.push(`Reveal is ${reveal.length} characters before th
 
 /* Reddit: the whole dilemma as a text post, the link in a comment */
 const rc='r-'+(sub||'SUBNAME').toLowerCase().replace(/[^a-z0-9]+/g,'-');
-const rtitle=`${plain(s.name)}, ${s.year}: you are ${who}. What is your order?`;
-const rbody=[plain(m.lead),'',plain(m.sit),'',
+const rtitle=`It's ${nm} in ${s.year} and you're ${who}. What's your order?`;
+const rbody=[plain(m.lead),'',sit,'',
   `You have: ${toys.map(t=>t.label.toLowerCase()).join(', ')}.`,
   'You can send one of them to:', ...zones.map(z=>'- '+z.label),'',
   `Which do you send, where, and why? I will post what ${who} actually did tomorrow.`].join('\n');
