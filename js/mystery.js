@@ -399,7 +399,7 @@ function stepCard(){
     </header>
     ${i===0?`<p class="lead">${mLead()}</p>`:''}
     <p class="sit">${P.sit}</p>
-    ${(P.intel||[]).map(([t,b])=>`<div class="msub"><span class="msl">Intel · ${t}</span><p>${b}</p></div>`).join('')}
+    ${(P.intel||[]).map(([t,b])=>`<div class="msub sint"><span class="msl">Intel · ${t}</span><p>${b}</p></div>`).join('')}
     <div class="theq"><span>Decision ${i+1} of ${S.length}</span><p>${P.q}</p></div>
     ${MS.phase==='brief'?'<button type="button" class="commit mgo">View the map ›</button>':''}
   </div>`;
