@@ -35,9 +35,12 @@ function applyMystery(sc,m){
 const MAXTRY = 5;
 const MS = { sel:{u:null,z:null}, busy:false, dirty:false, newClue:-1, phase:'brief' };
 const SQ = {g:'🟩',y:'🟨',w:'🟥'};
-const mKey = () => D.steps ? 's'+D.n : D.preview ? 'p'+D.n : D.n;
+/* a battle whose own format is three decisions (m.stepsLive) saves like any daily order; a trial of one saves apart */
+const mLive = () => !!(D.steps && D.sc && D.sc.m && D.sc.m.stepsLive);
+const mKey = () => (D.steps && !mLive()) ? 's'+D.n : D.preview ? 'p'+D.n : D.n;
 /* Trial format (open with #steps-N): a battle played as a few decisions in a row. Each decision has its own short
    situation, two tries, and then the real battle plays on to the next one, so the story is told as you go.
+   m.stepsLive: three decisions is this battle's own format, played from #daily-N like any order.
    m.steps[i] overrides the puzzle fields of m (qs, sit, q, intel, toys, zones, ans, fbU, fbZ, fail) for that decision.
    hint: {u,z}, shown after a miss for whichever part was wrong.
    from: the scene whose positions the decision starts from (start: overrides on top). after: scenes to play once it is settled. */
@@ -60,8 +63,11 @@ function mres(){ const k=mKey(); RES[k]=RES[k]||{tries:[],done:false}; RES[k].tr
 const mz = id => mP().zones.find(z=>z[0]===id);
 const mToyLabel = u => (mP().toys.find(t=>t[0]===u)||[u,u])[1];
 const mUnit = id => D.sc.units.find(u=>u.id===id);
+/* an answer can accept more than one toy (ans.u as a list), for a decision that is about where, not who */
+const ansU = (a,u) => Array.isArray(a.u) ? a.u.includes(u) : a.u===u;
+const ansU1 = a => Array.isArray(a.u) ? a.u[0] : a.u;
 function mSquares(t){ const a=(mSt()&&t.s!=null?mP(t.s):mP()).ans;
-  const su = t.u===a.u?'g':'w';
+  const su = ansU(a,t.u)?'g':'w';
   const sz = t.z===a.z?'g':'w';
   return [su,sz]; }
 function mGrid(tries){ return tries.map(t=>mSquares(t).map(s=>SQ[s]).join('')).join('\n'); }
@@ -123,7 +129,7 @@ function pulseAt(x,y,r,label){
 
 /* ---------- open ---------- */
 function openMystery(){
-  if(mSt()) strack('s-open');
+  if(mSt()){ strack('s-open'); if(mLive() && !D.preview && window.track){ track('open-order'); if(!mres().first) track('o'+D.n+'-open'); } }
   else if(!D.preview && window.track){ track('open-order'); if(!mres().first) track('o'+D.n+'-open'); }   /* per order: first play only */
   if(window.scStop) scStop();
   MS.sel={u:null,z:null}; MS.busy=false; MS.newClue=-1;
@@ -250,7 +256,7 @@ function mCardPlay(){
   </div>`;
   if(MS.newClue<0) card.scrollTop=0;
 }
-function mGo(){ if(mSt()) strack('s-map'); else window.track&&track('to-map'); MS.phase='play'; mRender(); if(window.sheetTo) sheetTo('peek'); }
+function mGo(){ if(mSt()){ strack('s-map'); if(mLive()) strack('to-map'); } else window.track&&track('to-map'); MS.phase='play'; mRender(); if(window.sheetTo) sheetTo('peek'); }
 
 /* ---------- what a wrong order plays out as ----------
    m.fail['toy@zone'] is the specific outcome for that combination; m.fail[zone] is the fallback.
@@ -402,7 +408,7 @@ function mShare(){
     ...(!D.preview&&s>1?[`🔥 ${s}-day streak`]:[]), `Think you're smarter than history's greatest generals?`, ...(url?[url]:[])].join('\n');
 }
 function mShareDo(btn){
-  if(mSt()) strack('s-share'); else window.track&&track('share');
+  if(mSt()){ strack('s-share'); if(mLive()) strack('share'); } else window.track&&track('share');
   const tx=mShare(), done=t=>{ btn.textContent=t; setTimeout(()=>{ btn.textContent='Share result'; },2400); };
   try{
     if(navigator.share && matchMedia('(pointer:coarse)').matches){ navigator.share({text:tx}).catch(()=>{}); return; }
@@ -453,7 +459,8 @@ function stepCommit(){
   const r=mres(), m=D.sc.m, S=mSt(), i=mSi(), P=mP(i), {u,z}=MS.sel; if(!u||!z||MS.busy||r.done) return;
   MS.busy=true; r.tries.push({u,z,s:i});
   if(!D.preview && window.markPlayed) markPlayed();
-  const n=sTries(r,i), win=u===P.ans.u&&z===P.ans.z, out=!win&&n>=STRY, last=i===S.length-1, g=mGeneral();
+  const n=sTries(r,i), win=ansU(P.ans,u)&&z===P.ans.z, out=!win&&n>=STRY, last=i===S.length-1, g=mGeneral(), A1=ansU1(P.ans);
+  if(r.tries.length===1 && mLive()) strack('first-move');
   const Z=mz(z), AZ=mz(P.ans.z), placed={[u]:[Z[2],Z[3]]};
   /* everything that reads the current decision is built here, before the save below moves on to the next one.
      The verdict stays on screen until the player taps: what was right or wrong and why, a hint if a try is left, one button on. */
@@ -472,10 +479,11 @@ function stepCommit(){
   const head = win
     ? [{t:'',b:'',verdict:'good',cur:startCur(placed),fire:[],dock}]
     : mFailList(u,z,false).map(x=>Object.assign(x,{dock}));
-  const real=mRevealList(), tail=(out?[{t:`What ${g} did`,b:`${g} sent ${mSay(P.ans.u,P.ans.z)}. ${mClean(P.fbU[P.ans.u])} ${mClean(P.fbZ[P.ans.z])}`,cur:startCur({[P.ans.u]:[AZ[2],AZ[3]]}),a:[],fire:[],ko:[],idle:[]}]:[]).concat((P.after||[]).map(k=>real[k]));
+  const real=mRevealList(), tail=(out?[{t:`What ${g} did`,b:`${g} sent ${mSay(A1,P.ans.z)}. ${mClean(P.fbU[A1])} ${mClean(P.fbZ[P.ans.z])}`,cur:startCur({[A1]:[AZ[2],AZ[3]]}),a:[],fire:[],ko:[],idle:[]}]:[]).concat((P.after||[]).map(k=>real[k]));
   if(win||out){
     r.sres=r.sres||[]; r.sres[i]=win?n:0; strack(`s-d${i+1}-${win?'hit':'miss'}`);
     if(last){ r.done=true; r.seen=true; r.won=sHits(r)*2>S.length; strack('s-done');
+      if(mLive() && !D.preview && window.track){ track(r.won?'won':'lost'); if(!r.first) track('o'+D.n+(r.won?'-won':'-lost')); }
       if(!r.first) r.first={tries:r.tries.slice(),sres:r.sres.slice(),won:r.won,playedOn:ymd(gameNow())};
       r.newCards=unlockCards([...new Set(Object.values(m.cards))]); if(window.keepData) keepData(); }
     else r.si=i+1;
