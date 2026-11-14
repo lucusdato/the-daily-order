@@ -72,7 +72,7 @@ function dailyFeat(f,k){
 function loadDaily(){
   const FILES=(typeof PGD_FILES!=='undefined')?PGD_FILES:[]; let left=FILES.length;
   const done=()=>{ Object.keys(PGD.quickQ).forEach(n=>{ if(PGD.byN[n]) applyQuick(PGD.byN[n],PGD.quickQ[n]); }); Object.keys(PGD.mysQ||{}).forEach(n=>{ if(PGD.byN[n]) applyMystery(PGD.byN[n],PGD.mysQ[n]); }); PGD.ready=true;
-    if(window.renderDailySlot) renderDailySlot(); const h=location.hash.replace('#',''); if(/^daily|^archive|^cards/.test(h)) route(); };
+    if(window.renderDailySlot) renderDailySlot(); const h=location.hash.replace('#',''); if(/^daily|^steps|^archive|^cards/.test(h)) route(); };
   if(!left){ done(); return; }
   FILES.forEach(f=>{
     const s=document.createElement('script'); s.src='daily/'+f; s.async=false;
@@ -153,20 +153,21 @@ $('#archive').addEventListener('click',e=>{ if(e.target.closest('[data-home]')) 
 function dailyRoute(h){
   if(h==='archive'){ if(!PGD.ready){ show('archive'); $('#archive').innerHTML='<p class="pb-intro" style="padding:20px">Loading…</p>'; return true; } show('archive'); renderArchive(); return true; }
   if(h==='cards'){ show('cards'); renderCards(); return true; }
-  const m=/^daily(?:-(\d+))?$/.exec(h);
+  const m=/^(?:daily|(steps))(?:-(\d+))?$/.exec(h);
   if(!m) return false;
   if(!PGD.ready){ show('battle'); card.innerHTML='<div class="card-in"><p class="hint">Loading today\'s briefing…</p></div>'; return true; }
-  let n=m[1]?+m[1]:todayN(), preview=false;
+  let n=m[2]?+m[2]:todayN(), preview=false;
   if(n>todayN()){ const s=PGD.byN[n]; if(s&&s.m) preview=true; else n=todayN(); }
   if(n<1) n=todayN();
   if(!preview && !scFor(n)){ location.replace('#home'); return true; }
-  openDaily(n,preview);
+  openDaily(n,preview,!!m[1]);
   return true;
 }
 
 /* ---------- daily flow ---------- */
-function openDaily(n,preview=false){
+function openDaily(n,preview=false,steps=false){
   const sc=preview?PGD.byN[n]:scFor(n); if(!sc) return; D.preview=preview;
+  D.steps=!!(steps && sc.m && sc.m.steps);   /* the three-decision trial, opened with #steps-N */
   show('battle'); state.mode='daily'; document.body.classList.toggle('mys',!!sc.m);
   B=sc; D.sc=sc; D.n=n; tweens=[]; state.cur={i:-1}; state.curArrows=[]; state.pov=sc.side; state.lens=false; state.phase=0;
   $('#bName').textContent=sc.name;
