@@ -42,9 +42,24 @@ document.addEventListener('submit', e => {
 
 /* analytics: a handful of GoatCounter events that make up the funnel */
 const gcOff = () => { try{ return localStorage.getItem('skipgc')==='t'; }catch(e){ return false; } };   /* GoatCounter's own opt-out flag */
-function track(name){
+function send(name){
   try{ if(gcOff()) return; const g=window.goatcounter; if(g && g.count) g.count({path:'evt-'+name, title:name, event:true}); else (window.__tdoq=window.__tdoq||[]).push(name); }catch(e){}
 }
+/* where this browser first came from: a tagged link (?utm_campaign=, ?utm_source= or ?ref=) is remembered, so the
+   funnel can be read per source, days later too. First touch wins. Each funnel step is also counted as src-SOURCE-step. */
+const SRC_KEY = 'pg-src', SRC_STEPS = ['open-order','first-move','won','lost','share','subscribe','return'];
+const SRC = (function(){
+  try{
+    const had=localStorage.getItem(SRC_KEY); if(had) return had;
+    const q=new URLSearchParams(location.search);
+    const v=(q.get('utm_campaign')||q.get('utm_source')||q.get('ref')||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,24);
+    if(!v) return '';
+    if(Object.values(RES||{}).some(r=>r&&(r.first||(r.tries&&r.tries.length)))) return '';   /* already a player: not this link's doing */
+    localStorage.setItem(SRC_KEY,v); send('src-'+v+'-land');
+    return v;
+  }catch(e){ return ''; }
+})();
+function track(name){ send(name); if(SRC && SRC_STEPS.includes(name)) send('src-'+SRC+'-'+name); }
 /* the owner's own visits: open the site with #toggle-goatcounter to stop (or restart) counting this browser */
 (function(){
   if(location.hash!=='#toggle-goatcounter') return;
@@ -85,7 +100,7 @@ function markPlayed(){ try{ localStorage.setItem(LAST_KEY,ymd(gameNow())); }catc
   window.goatcounter={ no_onload:false };
   const s=document.createElement('script'); s.async=true; s.src='https://gc.zgo.at/count.js';
   s.setAttribute('data-goatcounter',`https://${c}.goatcounter.com/count`);
-  s.onload=()=>{ (window.__tdoq||[]).forEach(track); window.__tdoq=[]; };
+  s.onload=()=>{ const q=window.__tdoq||[]; window.__tdoq=[]; q.forEach(send); };
   document.head.appendChild(s);
 })();
 
