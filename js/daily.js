@@ -23,6 +23,8 @@ const fmtDate = d => d.toLocaleDateString(undefined,{weekday:'short',day:'numeri
 /* day n → the scenario released that day (see daily/manifest.js) */
 function scFor(n){ const id=(typeof PGD_RELEASE!=='undefined'?PGD_RELEASE:[])[n-1]; const sc=id&&PGD.byN[id]; return sc&&sc.m?sc:null; }
 function loadRes(){ try{ return JSON.parse(localStorage.getItem(DKEY)||'{}'); }catch(e){ return {}; } }
+/* a finished order's score: decisions matched for a three-decision battle, tries used for a single order */
+const mScoreOf = f => f.sres ? `${f.sres.filter(x=>x>0).length}/${f.sres.length}` : f.won ? `${f.tries.length}/5` : 'X/5';
 function saveRes(r){ try{ localStorage.setItem(DKEY,JSON.stringify(r)); }catch(e){} }
 let RES = loadRes();
 function resFor(n){ const r = RES[n] || (RES[n]={picks:[],done:false}); r.hints=r.hints||[]; return r; }
@@ -90,7 +92,7 @@ function renderDailySlot(){
   const m=sc.m, g=m.general||sc.you, r=RES[n], st=streak();
   if(sub) sub.textContent=`Today: can you match ${g}?`;
   const done=r&&r.first, going=r&&r.tries&&r.tries.length&&!r.done;
-  const cta = done ? `${r.first.won?`Solved ${r.first.tries.length}/5`:'Defeated X/5'} · See the debrief ›` : going ? 'Continue today\'s order ›' : 'Take today\'s order ›';
+  const cta = done ? `${r.first.sres?`Matched ${mScoreOf(r.first)}`:r.first.won?`Solved ${r.first.tries.length}/5`:'Defeated X/5'} · See the debrief ›` : going ? 'Continue today\'s order ›' : 'Take today\'s order ›';
   el.innerHTML=`<a class="lcard" href="#daily"><div class="lband"></div><div class="lin">
       <span class="lk">Today's order · #${n} · ${day}</span>
       <div class="lname"><h2>${sc.name}</h2><span>${sc.year}</span></div>
@@ -139,7 +141,7 @@ function renderArchive(){
   for(let k=n;k>=1;k--){
     const sc=scFor(k); if(!sc) continue;
     const r=RES[k], d=dateOfN(k), f=r&&r.first;
-    const st = f ? (f.won?`<span class="pst win">${f.tries.length}/5</span>`:`<span class="pst lose">X/5</span>`)
+    const st = f ? (f.won?`<span class="pst win">${mScoreOf(f)}</span>`:`<span class="pst lose">${mScoreOf(f)}</span>`)
       : (r&&r.tries&&r.tries.length ? `<span class="pst mid">In progress</span>` : `<span class="pst new">Play</span>`);
     rows+=`<a class="prow" href="#daily-${k}"><span class="pn">#${k}</span><span class="ptx"><b>${sc.name} <i>${sc.year}</i></b><span>${fmtDate(d)} · ${(sc.m&&sc.m.war)||sc.place}</span></span>${st}</a>`;
   }
@@ -167,7 +169,7 @@ function dailyRoute(h){
 /* ---------- daily flow ---------- */
 function openDaily(n,preview=false,steps=false){
   const sc=preview?PGD.byN[n]:scFor(n); if(!sc) return; D.preview=preview;
-  D.steps=!!(steps && sc.m && sc.m.steps);   /* the three-decision trial, opened with #steps-N */
+  D.steps=!!(sc.m && sc.m.steps && (steps || sc.m.stepsLive));   /* three decisions: the battle's own format (stepsLive), or a trial opened with #steps-N */
   show('battle'); state.mode='daily'; document.body.classList.toggle('mys',!!sc.m);
   B=sc; D.sc=sc; D.n=n; tweens=[]; state.cur={i:-1}; state.curArrows=[]; state.pov=sc.side; state.lens=false; state.phase=0;
   $('#bName').textContent=sc.name;
