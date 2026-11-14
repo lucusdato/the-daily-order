@@ -74,22 +74,25 @@ const refit = () => { if(window.sheetTo) sheetTo(SHEET.pos,false); };
 /* ---------- board ---------- */
 const startCur = extra => ({i:0,ph:0,alt:{u:Object.assign({},mP().start||{},extra||{})}});
 function mBoardStart(anim){ MS.dirty=false; hideBanner(); display(startCur(),anim,[]); state.phase=0; drawZones(); }
-/* the name under an order circle. On the square board a long name is set on two lines, so it stays near its circle
-   and leaves room for its neighbours. */
-function mzLabel(lab,x,y,n){
-  if(WIDE_BOARD) lab=n+' · '+lab;   /* a name can be nudged away from its circle to stay readable, so it carries the circle's number */
-  const w=lab.split(' ');
-  if(!WIDE_BOARD || lab.length<=16 || w.length<2) return `<text class="mzl" x="${x}" y="${y}" text-anchor="middle">${lab}</text>`;
+/* The name of an order circle. On a phone it sits under the circle. On a wide screen the map shows only the numbers: the
+   names are listed in the order panel, and a circle's own name appears beside it when it is picked or pointed at, on two
+   lines if it is long. It is pinned there, so it can never be read as the name of a neighbour. */
+function mzLabel(lab,x,y,r){
+  if(!WIDE_BOARD) return `<text class="mzl" x="${x}" y="${y+r+11}" text-anchor="middle">${lab}</text>`;
+  const w=lab.split(' '), left=x>262, tx=left?x-r-6:x+r+6, anc=left?'end':'start';
+  if(lab.length<=16 || w.length<2) return `<text class="mzl" data-pin="1" x="${tx}" y="${y+4}" text-anchor="${anc}">${lab}</text>`;
   let cut=1, best=1e9;
   for(let i=1;i<w.length;i++){ const d=Math.abs(w.slice(0,i).join(' ').length-w.slice(i).join(' ').length); if(d<best){ best=d; cut=i; } }
-  return `<text class="mzl" x="${x}" y="${y}" text-anchor="middle"><tspan x="${x}">${w.slice(0,cut).join(' ')}</tspan><tspan x="${x}" dy="12">${w.slice(cut).join(' ')}</tspan></text>`;
+  return `<text class="mzl" data-pin="1" x="${tx}" y="${y-2}" text-anchor="${anc}"><tspan x="${tx}">${w.slice(0,cut).join(' ')}</tspan><tspan x="${tx}" dy="12">${w.slice(cut).join(' ')}</tspan></text>`;
 }
+/* the same choices as buttons in the order panel (wide screens) */
+function zoneListHtml(){ return `<div class="dk-zl">${mP().zones.map(([id,lab],k)=>`<button type="button" class="zb${MS.sel.z===id?' on':''}" data-mz="${id}"><i>${k+1}</i><span>${lab}</span></button>`).join('')}</div>`; }
 function drawZones(){
   const f=$('#field'); if(!f) return;
   const old=$('#mzones'); if(old) old.remove(); const oh=$('#mzhit'); if(oh) oh.remove();
   if(mres().done || SC.active) return;
   const g=document.createElementNS(NS,'g'); g.id='mzones';
-  g.innerHTML=mP().zones.map(([id,lab,x,y,r],k)=>`<g class="mz${MS.sel.z===id?' sel':''}" data-z="${id}" role="button" aria-label="${lab}"><circle cx="${x}" cy="${y}" r="${r}"/><g transform="translate(${x} ${y-r})"><circle r="8.5"/><text y="3.4" text-anchor="middle">${k+1}</text></g>${mzLabel(lab,x,y+r+11,k+1)}</g>`).join('');
+  g.innerHTML=mP().zones.map(([id,lab,x,y,r],k)=>`<g class="mz${MS.sel.z===id?' sel':''}" data-z="${id}" role="button" aria-label="${lab}"><circle cx="${x}" cy="${y}" r="${r}"/><g transform="translate(${x} ${y-r})"><circle r="8.5"/><text y="3.4" text-anchor="middle">${k+1}</text></g>${mzLabel(lab,x,y,r)}</g>`).join('');
   /* the circles, numbers and names sit under the troops; an invisible copy of each circle on top keeps them easy to tap */
   g.setAttribute('pointer-events','none'); f.insertBefore(g,$('#units'));
   const old2=$('#mzhit'); if(old2) old2.remove();
@@ -97,6 +100,8 @@ function drawZones(){
   h.innerHTML=mP().zones.map(([id,lab,x,y,r])=>`<circle data-z="${id}" cx="${x}" cy="${y}" r="${Math.max(r,18)}" fill="transparent" role="button" aria-label="${lab}" style="cursor:pointer"/>`).join('');
   f.insertBefore(h,$('#fx')); if(window.refitLabels) refitLabels();
   h.addEventListener('click',e=>{ const z=e.target.closest('[data-z]'); if(z){ e.stopPropagation(); mPickZone(z.dataset.z); } });
+  const hov=(e,on)=>{ const z=e.target.closest&&e.target.closest('[data-z]'); if(z) g.querySelectorAll('.mz').forEach(m=>m.classList.toggle('hov',on&&m.dataset.z===z.dataset.z)); };
+  h.addEventListener('mouseover',e=>hov(e,true)); h.addEventListener('mouseout',e=>hov(e,false));
 }
 function mPreview(){
   const {u,z}=MS.sel;
@@ -189,6 +194,7 @@ function renderDock(){
     d.className='dock dk-play';
     d.innerHTML=`<div class="dk-row"><b class="dk-q">${m.qs||'Your order'}</b>${pipsHtml(r)}</div>
       <div class="dk-tray">${m.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}"><span class="band ${U.s}"></span>${toySvg({t:sprOf(U),side:U.s},40)}<b>${lab}</b></button>${mCardOpen(m.cards[u])?`<button type="button" class="toyi" data-card="${m.cards[u]}" aria-label="${lab}: troop card">i</button>`:''}</div>`; }).join('')}</div>
+      ${zoneListHtml()}
       <button type="button" class="commit"${MS.sel.u&&MS.sel.z?'':' disabled'}>${commitLabel()}</button>`;
   } else if(!r.seen){
     d.className='dock dk-res';
@@ -206,6 +212,7 @@ function renderDock(){
 }
 function mSyncSel(){
   document.querySelectorAll('#dock [data-mt]').forEach(b=>b.classList.toggle('sel',b.dataset.mt===MS.sel.u));
+  document.querySelectorAll('#dock [data-mz]').forEach(b=>b.classList.toggle('on',b.dataset.mz===MS.sel.z));
   const c=$('#dock .commit'); if(c){ c.disabled=!(MS.sel.u&&MS.sel.z); c.textContent=commitLabel(); }
 }
 function mPickToy(u){ if(MS.busy||mres().done||SC.active) return; MS.sel.u = MS.sel.u===u?null:u; mPreview(); mSyncSel(); }
@@ -432,6 +439,7 @@ function stepDock(d,r){
     d.className='dock dk-play';
     d.innerHTML=`<div class="dk-row"><b class="dk-q">${P.qs||'Your order'}</b>${stepPips(r)}</div>
       <div class="dk-tray">${P.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}"><span class="band ${U.s}"></span>${toySvg({t:sprOf(U),side:U.s},40)}<b>${lab}</b></button>${P.cards[u]&&CARDBY[P.cards[u]]?`<button type="button" class="toyi" data-card="${P.cards[u]}" aria-label="${lab}: troop card">i</button>`:''}</div>`; }).join('')}</div>
+      ${zoneListHtml()}
       <button type="button" class="commit"${MS.sel.u&&MS.sel.z?'':' disabled'}>${commitLabel()}</button>`;
   } else {
     const F=r.first||r, k=sHits(F);
@@ -500,6 +508,7 @@ function mClick(e){
   if(state.mode!=='daily' || !D.sc || !D.sc.m) return;
   const cb=e.target.closest('[data-card]'); if(cb){ showCard(cb.dataset.card); return; }
   const t=e.target.closest('[data-mt]'); if(t){ mPickToy(t.dataset.mt); return; }
+  const zb=e.target.closest('[data-mz]'); if(zb){ mPickZone(zb.dataset.mz); return; }
   const og=e.target.closest('[data-gi]'); if(og){ const g=D.sc.m.ground[+og.dataset.gi]; if(window.sheetTo&&sheetOn()) sheetTo('peek'); setTimeout(()=>pulseAt(g[2][0],g[2][1],g[2][2],g[0]),250); return; }
   if(e.target.closest('.mgo')){ mGo(); return; }
   if(e.target.closest('.mnext')){ MS.phase='play'; mBoardStart(true); mRender(); if(window.sheetTo) sheetTo('peek'); return; }

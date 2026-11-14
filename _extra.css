@@ -987,3 +987,21 @@ form.rem.done input{display:none}
 }
 /* phones: a verdict with reasons and a hint may use more of the screen than the order controls do */
 @media not all and (min-width:900px) and (min-height:520px){ body.mys #dock.dk-fbk{max-height:54svh!important} }
+/* the list of order circles in the panel: wide screens only, where the map shows numbers and not names */
+.dk-zl{display:none}
+@media (min-width:900px) and (min-height:520px){
+  body.mys .dk-zl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  body.mys .dk-zl .zb{display:flex;align-items:center;gap:8px;text-align:left;font:600 14px/1.25 var(--f-bd);color:#21170d;background:#fffaf0;border:2px solid #21170d;border-radius:10px;padding:8px 10px;box-shadow:0 3px 0 #21170d;cursor:pointer}
+  body.mys .dk-zl .zb i{flex:none;width:22px;height:22px;border-radius:50%;background:#e6c879;border:1.5px solid #3a2909;display:grid;place-items:center;font:700 12px var(--f-bd);font-style:normal}
+  body.mys .dk-zl .zb.on{background:#f6e3b0;border-color:#9b2a17;box-shadow:0 3px 0 #9b2a17}
+  body.mys .dk-zl .zb:focus-visible{outline:3px solid #9b2a17;outline-offset:2px}
+  /* a circle's name shows only for the circle picked or pointed at */
+  body.mys #mzones .mz text.mzl{display:none;font-family:var(--f-bd)!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;font-size:11px!important;fill:#2c1d0e!important;stroke:#f7f1e1!important;stroke-width:3px!important}
+  body.mys #mzones .mz.hov text.mzl,body.mys #mzones .mz.sel text.mzl{display:block}
+  body.mys #mzones .mz.sel text.mzl{fill:#9b2a17!important}
+  /* place names set like a map, in the same family as the rest of the page's text: small spaced capitals for the land,
+     italics for water, tinted by what the thing is, a thin halo */
+  body.mys #board text.lbl{font-family:var(--f-bd)!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:.09em!important;font-size:8.6px!important;fill:#4d3b1f!important;stroke:rgba(247,241,225,.6)!important;stroke-width:1.8px!important}
+  body.mys #board text.lbl.k-hill{fill:#5e3d0c!important}
+  body.mys #board text.lbl.k-water{font-style:italic;font-weight:400!important;text-transform:none!important;letter-spacing:.04em!important;font-size:10px!important;fill:#164f6e!important;stroke:rgba(235,246,250,.6)!important}
+}

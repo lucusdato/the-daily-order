@@ -295,7 +295,11 @@ function fitLabels(root){
   if(document.body.classList.contains('mys')) root.querySelectorAll('#units > g').forEach(g=>{ const cs=getComputedStyle(g); if(cs.display==='none'||+cs.opacity<.2) return; const b=box(g); if(b.w>2) placed.push({x0:b.x0+2,x1:b.x1-2,y0:b.y0+2,y1:b.y1-1}); });
   /* so do the numbered badges on the order circles: a name must not cover the number you tap */
   root.querySelectorAll('#mzones .mz > g').forEach(g=>{ const b=box(g); if(b.w>2) placed.push({x0:b.x0+1,x1:b.x1-1,y0:b.y0+1,y1:b.y1-1}); });
+  /* a name set along a river or road, or pinned beside its circle, stays put; the others fit around its letters */
+  const lbox=[], letters=t=>{ const o=[], n=t.getNumberOfChars?t.getNumberOfChars():0; for(let i=0;i<n;i+=2){ try{ const e=t.getExtentOfChar(i); o.push({x0:e.x-2,x1:e.x+e.width+2,y0:e.y-1,y1:e.y+e.height+1}); }catch(x){} } return o; };
+  all.forEach(t=>{ if(t.dataset.pin && box(t).w){ const o=t.querySelector('textPath')?letters(t):[(b=>({x0:b.x0,x1:b.x1,y0:b.y0,y1:b.y1}))(box(t))]; o.forEach(b=>{ placed.push(b); lbox.push(b); }); } });
   all.forEach(t=>{
+    if(t.dataset.pin) return;
     let b=box(t); if(!b.w) return;
     let dx=0, dy=0;
     if(b.x0<pad) dx=pad-b.x0; else if(b.x1>400-pad) dx=400-pad-b.x1;
@@ -308,13 +312,13 @@ function fitLabels(root){
       for(const [o,h] of tries){ const c=mv(o,h); if(c.y0>=pad && c.y1<=H-pad && c.x0>=pad && c.x1<=400-pad && !placed.some(p=>hit(c,p))){ dy+=o; dx+=h; break; } }
     }
     if(dx||dy) shift(t,dx,dy);
-    placed.push(mv(0));
+    placed.push(mv(0)); lbox.push(mv(0));
   });
   /* no tree grows through a name: clear any tree that would sit under a label once labels are placed */
   if(document.body.classList.contains('mys')){
     const trees=[...root.querySelectorAll('#field .terr g.tree')];
     trees.forEach(g=>g.style.display='');
-    const L=all.map(t=>box(t)).filter(b=>b.w);
+    const L=lbox;
     trees.forEach(g=>{ const b=box(g); if(L.some(l=>b.x0<l.x1+1 && b.x1>l.x0-1 && b.y0<l.y1+1 && b.y1>l.y0-1)) g.style.display='none'; });
   }
 }
@@ -332,8 +336,33 @@ function buildBoard(b){ const toon=TOON=document.body.classList.contains('mys');
   /* crisp map text: lift place names out of the sketchy terrain filter, into their own layer that still sits below the troops */
   if(toon){ const svg=$('#board'), terr=svg.querySelector('#field > .terr'), arr=svg.querySelector('#arrows');
     if(terr&&arr){ const L=document.createElementNS(NS,'g'); L.id='tlabels'; L.setAttribute('pointer-events','none');
-      terr.querySelectorAll('text.lbl').forEach(t=>L.appendChild(t)); arr.parentNode.insertBefore(L,arr); } }
+      terr.querySelectorAll('text.lbl').forEach(t=>L.appendChild(t)); arr.parentNode.insertBefore(L,arr); geoLabels(svg,L,terr); } }
   refitLabels(); }
+/* Place names the way a map sets them. Each gets a kind (water, high ground) for its lettering, and the name of a river or
+   a road runs along it, on the side it was placed, reading left to right, instead of sitting across it at a fixed angle. */
+function geoLabels(svg,L,terr){
+  const lines=[[/river|creek|stream|brook|canal/i,'.riv'],[/road|lane|track|causeway/i,'.rd']];
+  const defs=svg.querySelector('defs');
+  [...L.querySelectorAll('text.lbl')].forEach((t,ti)=>{ try{
+    const s=t.textContent;
+    if(/river|creek|stream|bay|sea\b|channel|strait|narrows|ocean|lake|gulf|mediterranean|estuary/i.test(s)) t.classList.add('k-water');
+    else if(/rise|ridge|hill|bluff|mont\b|mt\.|mount|heights|crest/i.test(s)) t.classList.add('k-hill');
+    const kind=lines.find(k=>k[0].test(s)); if(!kind||!defs) return;
+    const x=+t.getAttribute('x'), y=+t.getAttribute('y'); let best=null;
+    terr.querySelectorAll('path'+kind[1]).forEach(p=>{ const n=p.getTotalLength(); for(let l=0;l<=n;l+=4){ const q=p.getPointAtLength(l), d=Math.hypot(q.x-x,q.y-y); if(!best||d<best.d) best={d,l,p,n}; } });
+    if(!best||best.d>70) return;
+    const P=best.p, N=best.n, w=s.length*((+t.getAttribute('font-size')||10)*.72)+10;
+    let a=best.l-w/2, b=best.l+w/2; if(a<0){ b-=a; a=0; } if(b>N){ a-=b-N; b=N; } if(a<0) return;   /* too short a stretch to carry the name */
+    const at=l=>{ const q=P.getPointAtLength(l), q0=P.getPointAtLength(Math.max(0,l-1.5)), q1=P.getPointAtLength(Math.min(N,l+1.5)), d=Math.hypot(q1.x-q0.x,q1.y-q0.y)||1; return {x:q.x,y:q.y,nx:-(q1.y-q0.y)/d,ny:(q1.x-q0.x)/d}; };
+    const m=at(best.l), side=((x-m.x)*m.nx+(y-m.y)*m.ny)<0?-1:1, off=(+P.getAttribute('stroke-width')||6)/2+10.5;
+    let pts=[]; for(let l=a;l<=b+.01;l+=3){ const q=at(Math.min(l,N)); pts.push([q.x+q.nx*side*off,q.y+q.ny*side*off]); }
+    const dx=pts[pts.length-1][0]-pts[0][0], dy=pts[pts.length-1][1]-pts[0][1];
+    if(Math.abs(dx)>=Math.abs(dy)*.3 ? dx<0 : dy>0) pts.reverse();   /* left to right; a north-south one reads upward */
+    const id='gl'+ti, p=document.createElementNS(NS,'path'); p.id=id; p.setAttribute('d','M'+pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')); defs.appendChild(p);
+    const tp=document.createElementNS(NS,'textPath'); tp.setAttribute('href','#'+id); tp.setAttribute('startOffset','50%'); tp.textContent=s;
+    t.textContent=''; ['x','y','transform'].forEach(k=>t.removeAttribute(k)); t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','middle'); t.dataset.pin='1'; t.appendChild(tp);
+  }catch(e){} });
+}
 function buildBoard0(b){
   const svg=$('#board');
   const P=b.prologue, box=P?P.box:[0,0,400], [bx,by,bw]=box, H=b.H||400;
