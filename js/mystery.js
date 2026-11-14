@@ -79,7 +79,7 @@ function pulseAt(x,y,r,label){
 
 /* ---------- open ---------- */
 function openMystery(){
-  if(!D.preview) window.track&&track('open-order');
+  if(!D.preview && window.track){ track('open-order'); if(!mres().first) track('o'+D.n+'-open'); }   /* per order: first play only */
   if(window.scStop) scStop();
   MS.sel={u:null,z:null}; MS.busy=false; MS.newClue=-1;
   const r=mres(), K=D.sc.states.length-1;
@@ -221,9 +221,11 @@ function mRevealList(){
 function mCommit(){
   const r=mres(), m=D.sc.m, {u,z}=MS.sel; if(!u||!z||MS.busy||r.done) return;
   MS.busy=true; r.tries.push({u,z});
+  if(!D.preview && window.markPlayed) markPlayed();
   const win = u===m.ans.u && z===m.ans.z, out = !win && r.tries.length>=MAXTRY;
   if(r.tries.length===1) window.track&&track('first-move');
-  if(win||out){ window.track&&track(win?'won':'lost'); if(window.keepData) keepData(); r.done=true; r.won=win; if(!r.first) r.first={tries:r.tries.slice(),won:win,playedOn:ymd(gameNow())}; r.newCards=unlockCards([...new Set(Object.values(m.cards))]); }
+  if((win||out) && window.track){ track(win?'won':'lost'); if(win) track('won-'+r.tries.length); if(!D.preview && !r.first) track('o'+D.n+(win?'-won':'-lost')); }
+  if(win||out){ if(window.keepData) keepData(); r.done=true; r.won=win; if(!r.first) r.first={tries:r.tries.slice(),won:win,playedOn:ymd(gameNow())}; r.newCards=unlockCards([...new Set(Object.values(m.cards))]); }
   saveRes(RES);
   const Z=mz(z), placed={[u]:[Z[2],Z[3]]};
   const old=$('#mzones'); if(old) old.remove(); const oh=$('#mzhit'); if(oh) oh.remove();

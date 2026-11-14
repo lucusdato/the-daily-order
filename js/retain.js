@@ -41,9 +41,44 @@ document.addEventListener('submit', e => {
 });
 
 /* analytics: a handful of GoatCounter events that make up the funnel */
+const gcOff = () => { try{ return localStorage.getItem('skipgc')==='t'; }catch(e){ return false; } };   /* GoatCounter's own opt-out flag */
 function track(name){
-  try{ const g=window.goatcounter; if(g && g.count) g.count({path:'evt-'+name, title:name, event:true}); else (window.__tdoq=window.__tdoq||[]).push(name); }catch(e){}
+  try{ if(gcOff()) return; const g=window.goatcounter; if(g && g.count) g.count({path:'evt-'+name, title:name, event:true}); else (window.__tdoq=window.__tdoq||[]).push(name); }catch(e){}
 }
+/* the owner's own visits: open the site with #toggle-goatcounter to stop (or restart) counting this browser */
+(function(){
+  if(location.hash!=='#toggle-goatcounter') return;
+  try{
+    const off=!gcOff(); if(off) localStorage.setItem('skipgc','t'); else localStorage.removeItem('skipgc');
+    history.replaceState(null,'',location.pathname+location.search);   /* before count.js loads, so it does not flip it back */
+    const m=document.createElement('div'); m.setAttribute('role','status');
+    m.textContent=off?'Analytics off: visits from this browser are no longer counted.':'Analytics on: visits from this browser are counted again.';
+    m.style.cssText='position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99;max-width:calc(100% - 32px);background:#1c1a17;color:#f7f1e1;font:14px/1.4 sans-serif;padding:8px 14px;border-radius:8px';
+    document.body.appendChild(m); setTimeout(()=>m.remove(),4000);
+  }catch(e){}
+})();
+/* return visits: the last game day this browser played, to see who comes back and after how long */
+const LAST_KEY = 'pg-last';
+function markPlayed(){ try{ localStorage.setItem(LAST_KEY,ymd(gameNow())); }catch(e){} }
+(function(){
+  try{
+    let last=localStorage.getItem(LAST_KEY)||'';
+    Object.keys(RES||{}).forEach(k=>{ const f=RES[k]&&RES[k].first; if(/^\d+$/.test(k) && f && f.playedOn>last) last=f.playedOn; });   /* saves from before pg-last */
+    if(!last) return;
+    const [y,mo,d]=last.split('-').map(Number), days=Math.round((midnight(gameNow())-new Date(y,mo-1,d))/864e5);
+    if(!(days>=1)) return;
+    track('return'); track(days===1?'return-d1':days<7?'return-d2-6':'return-d7plus');
+  }catch(e){}
+})();
+/* landing engagement: a real scroll down the home page (a screen, or to the end of a short page), before any order is opened */
+(function(){
+  try{
+    const h=document.getElementById('home'); if(!h) return;
+    const on=()=>{ if(D.sc) return h.removeEventListener('scroll',on);
+      if(h.scrollTop>=Math.min(innerHeight,600,Math.max(80,h.scrollHeight-h.clientHeight-8))){ h.removeEventListener('scroll',on); track('landing-scroll'); } };
+    h.addEventListener('scroll',on,{passive:true});
+  }catch(e){}
+})();
 (function(){
   const c=(window.TDO_CONFIG||{}).goatcounter; if(!c) return;
   if(!/(^|\.)thedailyorder\.(io|netlify\.app)$/.test(location.hostname)) return;   /* count real visits only */
