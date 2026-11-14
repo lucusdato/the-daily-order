@@ -76,14 +76,14 @@ const startCur = extra => ({i:0,ph:0,alt:{u:Object.assign({},mP().start||{},extr
 function mBoardStart(anim){ MS.dirty=false; hideBanner(); display(startCur(),anim,[]); state.phase=0; drawZones(); }
 /* The name of an order circle. On a phone it sits under the circle. On a wide screen the map shows only the numbers: the
    names are listed in the order panel, and a circle's own name appears beside it when it is picked or pointed at, on two
-   lines if it is long. It is pinned there, so it can never be read as the name of a neighbour. */
+   lines if it is long. It stays by its own circle, on whichever side is clear, so it can never be read as a neighbour's. */
 function mzLabel(lab,x,y,r){
   if(!WIDE_BOARD) return `<text class="mzl" x="${x}" y="${y+r+11}" text-anchor="middle">${lab}</text>`;
   const w=lab.split(' '), left=x>262, tx=left?x-r-6:x+r+6, anc=left?'end':'start';
-  if(lab.length<=16 || w.length<2) return `<text class="mzl" data-pin="1" x="${tx}" y="${y+4}" text-anchor="${anc}">${lab}</text>`;
+  if(lab.length<=16 || w.length<2) return `<text class="mzl" data-zc="${x},${y},${r}" x="${tx}" y="${y+4}" text-anchor="${anc}">${lab}</text>`;
   let cut=1, best=1e9;
   for(let i=1;i<w.length;i++){ const d=Math.abs(w.slice(0,i).join(' ').length-w.slice(i).join(' ').length); if(d<best){ best=d; cut=i; } }
-  return `<text class="mzl" data-pin="1" x="${tx}" y="${y-2}" text-anchor="${anc}"><tspan x="${tx}">${w.slice(0,cut).join(' ')}</tspan><tspan x="${tx}" dy="12">${w.slice(cut).join(' ')}</tspan></text>`;
+  return `<text class="mzl" data-zc="${x},${y},${r}" x="${tx}" y="${y-2}" text-anchor="${anc}"><tspan x="${tx}">${w.slice(0,cut).join(' ')}</tspan><tspan x="${tx}" dy="12">${w.slice(cut).join(' ')}</tspan></text>`;
 }
 /* the same choices as buttons in the order panel (wide screens) */
 function zoneListHtml(){ return `<div class="dk-zl">${mP().zones.map(([id,lab],k)=>`<button type="button" class="zb${MS.sel.z===id?' on':''}" data-mz="${id}"><i>${k+1}</i><span>${lab}</span></button>`).join('')}</div>`; }

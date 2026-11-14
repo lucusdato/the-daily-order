@@ -998,10 +998,20 @@ form.rem.done input{display:none}
   /* a circle's name shows only for the circle picked or pointed at */
   body.mys #mzones .mz text.mzl{display:none;font-family:var(--f-bd)!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;font-size:11px!important;fill:#2c1d0e!important;stroke:#f7f1e1!important;stroke-width:3px!important}
   body.mys #mzones .mz.hov text.mzl,body.mys #mzones .mz.sel text.mzl{display:block}
+  body.mys #mzones.meas .mz text.mzl{display:block;visibility:hidden}
   body.mys #mzones .mz.sel text.mzl{fill:#9b2a17!important}
   /* place names set like a map, in the same family as the rest of the page's text: small spaced capitals for the land,
      italics for water, tinted by what the thing is, a thin halo */
   body.mys #board text.lbl{font-family:var(--f-bd)!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:.09em!important;font-size:8.6px!important;fill:#4d3b1f!important;stroke:rgba(247,241,225,.6)!important;stroke-width:1.8px!important}
   body.mys #board text.lbl.k-hill{fill:#5e3d0c!important}
   body.mys #board text.lbl.k-water{font-style:italic;font-weight:400!important;text-transform:none!important;letter-spacing:.04em!important;font-size:10px!important;fill:#164f6e!important;stroke:rgba(235,246,250,.6)!important}
+}
+/* phones: the same quiet place names as wide screens. The order circles keep their names under them, since on a phone
+   you tap the circle itself, but in lighter lettering, with the picked one in red. */
+@media not all and (min-width:900px) and (min-height:520px){
+  body.mys #board text.lbl{font-family:var(--f-bd)!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:.09em!important;font-size:10px!important;fill:#4d3b1f!important;stroke:rgba(247,241,225,.6)!important;stroke-width:2px!important}
+  body.mys #board text.lbl.k-hill{fill:#5e3d0c!important}
+  body.mys #board text.lbl.k-water{font-style:italic;font-weight:400!important;text-transform:none!important;letter-spacing:.04em!important;font-size:11.5px!important;fill:#164f6e!important;stroke:rgba(235,246,250,.6)!important}
+  body.mys #mzones .mz text.mzl{font-family:var(--f-bd)!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important;font-size:12px!important;fill:#3a2c18!important;stroke:rgba(247,241,225,.9)!important;stroke-width:2.6px!important}
+  body.mys #mzones .mz.sel text.mzl{fill:#9b2a17!important;font-weight:700!important}
 }
