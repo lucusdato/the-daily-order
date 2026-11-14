@@ -401,7 +401,7 @@ function mVideoHtml(v){
 }
 /* the share text: score and who you matched, one row per try (toy square, place square), streak, a dare and the link */
 function mShare(){
-  const sc=D.sc, r=mres(), F=r.first||r, s=streak(), g=mGeneral(), n=F.tries.length, url=siteUrl().replace(/\/$/,'');
+  const sc=D.sc, r=mres(), F=r.first||r, s=streak(), g=mGeneral(), n=F.tries.length, url=siteUrl()+(siteUrl()?'?ref=share':'');
   if(mSt()) return stepShare();
   const line = F.won ? `🎖️ ${n}/${MAXTRY} · ${n===1?`Matched ${g} on the first try`:`Matched ${g}`}` : `❌ X/${MAXTRY} · ${g} out-thought me`;
   return [`The Daily Order ${D.preview?'(preview)':'#'+D.n} · ${sc.name}, ${sc.year}`, line, '', mGrid(F.tries), '',
@@ -505,7 +505,7 @@ function stepCommit(){
   else setTimeout(()=>{ mVerdictOff(); document.querySelectorAll('#fx .vcross').forEach(e=>e.remove()); play(); },1300);
 }
 function stepShare(){
-  const sc=D.sc, r=mres(), F=r.first||r, S=mSt(), k=sHits(F), g=mGeneral(), url=siteUrl().replace(/\/$/,'');
+  const sc=D.sc, r=mres(), F=r.first||r, S=mSt(), k=sHits(F), g=mGeneral(), url=siteUrl()+(siteUrl()?'?ref=share':'');
   const E={1:'🟩',2:'🟨',0:'🟥'};
   return [`The Daily Order #${D.n} · ${sc.name}, ${sc.year}`, `${k===S.length?'🎖️':k?'⚔️':'❌'} Matched ${g} on ${k} of ${S.length} decisions`, '',
     (F.sres||[]).map(x=>E[x]).join(''), '', `Think you're smarter than history's greatest generals?`, ...(url?[url]:[])].join('\n');
