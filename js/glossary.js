@@ -126,11 +126,14 @@ function showGloss(i,anchor){
   const g=GLOSSARY[i], el=document.getElementById('gloss'); if(!g||!el) return;
   el.innerHTML=`<button type="button" class="x" aria-label="Close">×</button><b>${g[1]}</b><p>${g[2]}</p>`;
   el.hidden=false;
-  const r=anchor.getBoundingClientRect(), W=window.innerWidth, w=Math.min(300,W-24);
-  el.style.width=w+'px';
-  el.style.left=Math.max(12,Math.min(W-w-12,r.left+r.width/2-w/2))+'px';
-  const h=el.offsetHeight, below=r.bottom+10, above=r.top-h-10;
-  el.style.top=(below+h<window.innerHeight-8||above<8?below:above)+'px';
+  /* big screens scale the whole page (zoom on <html>), so a pixel in style is not a pixel on screen: measure the scale and work in screen pixels */
+  el.style.left='100px'; el.style.top='0px';
+  const z=(el.getBoundingClientRect().left/100)||1;
+  const r=anchor.getBoundingClientRect(), W=window.innerWidth, w=Math.min(300*z,W-24);
+  el.style.width=(w/z)+'px';
+  el.style.left=(Math.max(12,Math.min(W-w-12,r.left+r.width/2-w/2))/z)+'px';
+  const h=el.getBoundingClientRect().height, below=r.bottom+10, above=r.top-h-10;
+  el.style.top=((below+h<window.innerHeight-8||above<8?below:above)/z)+'px';
   el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
 }
 function hideGloss(){ const el=document.getElementById('gloss'); if(el) el.hidden=true; }
