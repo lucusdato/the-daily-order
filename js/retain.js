@@ -59,6 +59,14 @@ const SRC = (function(){
     return v;
   }catch(e){ return ''; }
 })();
+/* once the visit is counted, take the tag out of the address bar, so a copied link is the plain one */
+function cleanUrl(){
+  try{
+    const q=new URLSearchParams(location.search); let had=false;
+    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','ref'].forEach(k=>{ if(q.has(k)){ q.delete(k); had=true; } });
+    if(had){ const r=q.toString(); history.replaceState(history.state,'',location.pathname+(r?'?'+r:'')+location.hash); }
+  }catch(e){}
+}
 function track(name){ send(name); if(SRC && SRC_STEPS.includes(name)) send('src-'+SRC+'-'+name); }
 /* the owner's own visits: open the site with #toggle-goatcounter to stop (or restart) counting this browser */
 (function(){
@@ -95,12 +103,13 @@ function markPlayed(){ try{ localStorage.setItem(LAST_KEY,ymd(gameNow())); }catc
   }catch(e){}
 })();
 (function(){
-  const c=(window.TDO_CONFIG||{}).goatcounter; if(!c) return;
-  if(!/(^|\.)thedailyorder\.(io|netlify\.app)$/.test(location.hostname)) return;   /* count real visits only */
+  const c=(window.TDO_CONFIG||{}).goatcounter; if(!c) return cleanUrl();
+  if(!/(^|\.)thedailyorder\.(io|netlify\.app)$/.test(location.hostname)) return cleanUrl();   /* count real visits only */
   window.goatcounter={ no_onload:false };
   const s=document.createElement('script'); s.async=true; s.src='https://gc.zgo.at/count.js';
   s.setAttribute('data-goatcounter',`https://${c}.goatcounter.com/count`);
-  s.onload=()=>{ const q=window.__tdoq||[]; window.__tdoq=[]; q.forEach(send); };
+  s.onload=()=>{ const q=window.__tdoq||[]; window.__tdoq=[]; q.forEach(send); setTimeout(cleanUrl,1500); };   /* count.js reads the tag for its own referrer first */
+  s.onerror=cleanUrl;
   document.head.appendChild(s);
 })();
 
