@@ -302,8 +302,8 @@ details.more.sm summary{font-size:13px;color:var(--muted)}
 .mlock b{font-family:var(--f-display);font-size:20px;text-align:center}
 .est .ded{display:grid;gap:3px;background:#fffaf0;border-radius:9px;padding:9px 11px;margin-top:6px}
 .df{margin:0;font-size:14.5px;line-height:1.4}
-.dd{margin:0;font-size:15px;line-height:1.42;font-weight:700;display:grid;grid-template-columns:auto 1fr;gap:8px}
-.dd span{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--red);border-radius:4px;padding:3px 6px;align-self:start;margin-top:2px}
+.dd{margin:0;font-size:15px;line-height:1.42;font-weight:700}
+.dd>span:first-child{display:inline-block;margin-right:8px;vertical-align:2px;line-height:1.2;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--red);border-radius:4px;padding:3px 6px}
 .revl li{cursor:pointer}
 .capbar{padding:8px 10px 9px}
 .cb-n i{font-style:normal;color:#ffb38a}
@@ -386,8 +386,8 @@ body{
 .mr-m .ml{background:#2c3a1a}.mr-e .ml{background:#7d2717}.mr-t .ml{background:#6b5530}.mr-tr .ml{background:#3d5a26}.mr-ti .ml{background:#38404a}
 .ogt{border-radius:2px!important;background:#e3d3a6!important;font-family:var(--f-body)}
 .intel{background:#fbf3df!important;border-left-color:var(--ox)!important;border-radius:0 3px 3px 0!important}
-.intel .it,.dd span{font-family:var(--f-hand)}
-.dd span{background:var(--ox)!important;border-radius:2px!important}
+.intel .it,.dd>span:first-child{font-family:var(--f-hand)}
+.dd>span:first-child{background:var(--ox)!important;border-radius:2px!important}
 .mlock{border-radius:4px!important;border-color:#b9a473!important}
 .mett-q{background:transparent!important;box-shadow:none!important;color:var(--ox)!important;text-decoration:underline!important;font-weight:700!important;padding:0!important}
 /* the order form */
@@ -488,7 +488,7 @@ body.mys .dock:not([hidden]){display:block;flex:none;padding:4px 14px 12px;backg
 .mys .who{margin:-6px 0 0;font-weight:700;font-size:14.5px;display:flex;gap:7px;align-items:center;color:#3a2d1c}
 .mys .sit{font-size:14.5px;padding:9px 11px}
 .theq{margin:0;font-size:15.5px;line-height:1.4;font-weight:700}
-.theq span{display:block;font-family:var(--f-hand);font-weight:400;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ox);margin-bottom:2px}
+.theq>span{display:block;font-family:var(--f-hand);font-weight:400;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ox);margin-bottom:2px}
 .mett{gap:5px}
 .mrow{padding:7px 10px 7px 8px!important;grid-template-columns:24px 1fr!important;gap:9px!important}
 .ml{width:24px!important;height:24px!important;font-size:14px!important}
@@ -570,7 +570,7 @@ body.mys .mcard b{display:block;font-size:16px}
 body.mys .mcard em{display:block;font-style:normal;font-family:var(--f-hd);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:#5c5240}
 body.mys .msub.mcard{border-top:2px solid var(--ink)}
 body.mys .theq{display:flex;flex-direction:column;gap:6px;padding:14px 16px;background:var(--ink)!important;color:var(--cream)!important;border-radius:10px;border:0!important;margin:0!important}
-body.mys .theq span{font-family:var(--f-hd);font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:12px;color:var(--gold)!important;display:block}
+body.mys .theq>span{font-family:var(--f-hd);font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:12px;color:var(--gold)!important;display:block}
 body.mys .theq p{margin:0;font-size:17px;line-height:1.45;font-weight:600;color:var(--cream)}
 body.mys .mgo{margin-bottom:24px}
 /* buttons */
@@ -622,7 +622,7 @@ body.mys .card p,body.mys .card li{font-size:16px;line-height:1.5}
 body.mys .ded{background:var(--blk)!important;color:#f3efdd!important;border:2px solid var(--ink)!important;border-radius:10px!important;padding:12px 14px!important;box-shadow:none!important}
 body.mys .ded .df{color:#f3efdd!important;font-weight:600}
 body.mys .ded .dd{color:var(--mut)!important}
-body.mys .ded .dd span{font-family:var(--f-hd);text-transform:uppercase;letter-spacing:.08em;color:var(--gold2)!important;background:none!important}
+body.mys .ded .dd>span:first-child{font-family:var(--f-hd);text-transform:uppercase;letter-spacing:.08em;color:var(--gold2)!important;background:none!important}
 body.mys .more summary{font-family:var(--f-hd);font-weight:500;text-transform:uppercase;letter-spacing:.1em;font-size:13px;color:var(--ink)}
 body.mys .more{border-top:2px solid var(--ink)!important;border-bottom:2px solid var(--ink)!important;border-left:0!important;border-right:0!important;border-radius:0!important;background:none!important}
 body.mys .revl li{font-size:15.5px;line-height:1.5}
