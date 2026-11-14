@@ -69,7 +69,7 @@ function makeFig(u,o,fi,ui,face,parent){
 }
 function draw(f){
   const lift=f.h+f.base;
-  f.g.setAttribute('transform',`translate(${f.x.toFixed(1)} ${f.y.toFixed(1)})`);
+  f.g.setAttribute('transform',`translate(${(f.x+(f.jx||0)).toFixed(1)} ${f.y.toFixed(1)})`);
   f.lift.setAttribute('transform',`translate(0 ${(-lift).toFixed(1)})`);
   const fc=f.dir||f.face;
   f.body.setAttribute('transform',`scale(${fc} ${f.sy.toFixed(3)}) rotate(${f.rot.toFixed(1)})`);
@@ -293,6 +293,8 @@ function fitLabels(root){
   all.forEach(t=>{ if(t.dataset.fit){ t.setAttribute('transform',(t.getAttribute('transform')||'').replace(/^translate\([^)]*\)\s*/,'')); delete t.dataset.fit; if(!t.getAttribute('transform')) t.removeAttribute('transform'); } });
   /* troops count as obstacles too, so a name never hides under (or behind) a toy */
   if(document.body.classList.contains('mys')) root.querySelectorAll('#units > g').forEach(g=>{ const cs=getComputedStyle(g); if(cs.display==='none'||+cs.opacity<.2) return; const b=box(g); if(b.w>2) placed.push({x0:b.x0+2,x1:b.x1-2,y0:b.y0+2,y1:b.y1-1}); });
+  /* so do the numbered badges on the order circles: a name must not cover the number you tap */
+  root.querySelectorAll('#mzones .mz > g').forEach(g=>{ const b=box(g); if(b.w>2) placed.push({x0:b.x0+1,x1:b.x1-1,y0:b.y0+1,y1:b.y1-1}); });
   all.forEach(t=>{
     let b=box(t); if(!b.w) return;
     let dx=0, dy=0;
@@ -302,7 +304,7 @@ function fitLabels(root){
     if(placed.some(p=>hit(mv(0),p))){
       const step=(b.y1-b.y0)+1, tries=[];
       [step,-step,2*step,-2*step,3*step,-3*step].forEach(o=>tries.push([o,0]));
-      [36,-36,64,-64].forEach(h=>[0,step,-step,2*step,-2*step].forEach(o=>tries.push([o,h])));
+      [20,-20,36,-36,64,-64,90,-90].forEach(h=>[0,step,-step,2*step,-2*step].forEach(o=>tries.push([o,h])));
       for(const [o,h] of tries){ const c=mv(o,h); if(c.y0>=pad && c.y1<=H-pad && c.x0>=pad && c.x1<=400-pad && !placed.some(p=>hit(c,p))){ dy+=o; dx+=h; break; } }
     }
     if(dx||dy) shift(t,dx,dy);
@@ -316,9 +318,15 @@ function fitLabels(root){
     trees.forEach(g=>{ const b=box(g); if(L.some(l=>b.x0<l.x1+1 && b.x1>l.x0-1 && b.y0<l.y1+1 && b.y1>l.y0-1)) g.style.display='none'; });
   }
 }
-function refitLabels(){ requestAnimationFrame(()=>fitLabels($('#board'))); }
+/* two frames on, so the toys have been drawn where they now stand before names are fitted around them */
+function refitLabels(){ requestAnimationFrame(()=>requestAnimationFrame(()=>fitLabels($('#board')))); }
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(refitLabels);
 addEventListener('resize',()=>{ clearTimeout(refitLabels.t); refitLabels.t=setTimeout(refitLabels,200); });
+/* names are measured on screen, so fit them again whenever the board changes size or a web font arrives:
+   the first fit can run before the layout and the lettering have settled, and would miss names that then collide */
+(function(){ const later=()=>{ clearTimeout(refitLabels.t); refitLabels.t=setTimeout(refitLabels,120); };
+  try{ const b=document.getElementById('board'); if(b && window.ResizeObserver) new ResizeObserver(later).observe(b); }catch(e){}
+  try{ if(document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',later); }catch(e){} })();
 
 function buildBoard(b){ const toon=TOON=document.body.classList.contains('mys'); TREE_AVOID=treeAvoid(b); buildBoard0(b); TOON=false; TREE_AVOID=[];
   /* crisp map text: lift place names out of the sketchy terrain filter, into their own layer that still sits below the troops */

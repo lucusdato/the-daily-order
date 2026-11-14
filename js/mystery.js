@@ -5,10 +5,10 @@ PGD.mysQ = {};
 PGD.mystery = function(n,m){ if(this.byN[n]) applyMystery(this.byN[n],m); else this.mysQ[n]=m; };
 /* A mystery can use a tall board (m.H, e.g. 600) with its own terrain. Positions in the scenario and the
    mystery are written for a 400 square board and stretched vertically here, once. */
-/* The tall board is for phones, where the screen is tall too. On a wide screen it leaves much of the table empty. A trial,
-   switched on with ?board=square: wide screens keep the square board the battle was written for, with the scenario's own
-   terrain, so the map is about half as big again. Not the default yet: place names crowd more on the shorter board. */
-const WIDE_BOARD = /[?&]board=square\b/.test(location.search) && matchMedia('(min-width:900px) and (min-height:520px)').matches;
+/* The tall board is for phones, where the screen is tall too. On a wide screen it would leave much of the table empty, so
+   there the battle stays on the square board it was written for, with the scenario's own terrain: the map is about half
+   as big again. ?board=tall brings the tall board back on a wide screen, for comparing. */
+const WIDE_BOARD = !/[?&]board=tall\b/.test(location.search) && matchMedia('(min-width:900px) and (min-height:520px)').matches;
 function applyMystery(sc,m){
   sc.m=m; if(!m.H || sc._tall) return; sc._tall=true;
   if(WIDE_BOARD){ const last=(m.scenes||[]).slice(-1)[0], K=sc.states.length-1;
@@ -74,12 +74,22 @@ const refit = () => { if(window.sheetTo) sheetTo(SHEET.pos,false); };
 /* ---------- board ---------- */
 const startCur = extra => ({i:0,ph:0,alt:{u:Object.assign({},mP().start||{},extra||{})}});
 function mBoardStart(anim){ MS.dirty=false; hideBanner(); display(startCur(),anim,[]); state.phase=0; drawZones(); }
+/* the name under an order circle. On the square board a long name is set on two lines, so it stays near its circle
+   and leaves room for its neighbours. */
+function mzLabel(lab,x,y,n){
+  if(WIDE_BOARD) lab=n+' · '+lab;   /* a name can be nudged away from its circle to stay readable, so it carries the circle's number */
+  const w=lab.split(' ');
+  if(!WIDE_BOARD || lab.length<=16 || w.length<2) return `<text class="mzl" x="${x}" y="${y}" text-anchor="middle">${lab}</text>`;
+  let cut=1, best=1e9;
+  for(let i=1;i<w.length;i++){ const d=Math.abs(w.slice(0,i).join(' ').length-w.slice(i).join(' ').length); if(d<best){ best=d; cut=i; } }
+  return `<text class="mzl" x="${x}" y="${y}" text-anchor="middle"><tspan x="${x}">${w.slice(0,cut).join(' ')}</tspan><tspan x="${x}" dy="12">${w.slice(cut).join(' ')}</tspan></text>`;
+}
 function drawZones(){
   const f=$('#field'); if(!f) return;
   const old=$('#mzones'); if(old) old.remove(); const oh=$('#mzhit'); if(oh) oh.remove();
   if(mres().done || SC.active) return;
   const g=document.createElementNS(NS,'g'); g.id='mzones';
-  g.innerHTML=mP().zones.map(([id,lab,x,y,r],k)=>`<g class="mz${MS.sel.z===id?' sel':''}" data-z="${id}" role="button" aria-label="${lab}"><circle cx="${x}" cy="${y}" r="${r}"/><g transform="translate(${x} ${y-r})"><circle r="8.5"/><text y="3.4" text-anchor="middle">${k+1}</text></g><text class="mzl" x="${x}" y="${y+r+11}" text-anchor="middle">${lab}</text></g>`).join('');
+  g.innerHTML=mP().zones.map(([id,lab,x,y,r],k)=>`<g class="mz${MS.sel.z===id?' sel':''}" data-z="${id}" role="button" aria-label="${lab}"><circle cx="${x}" cy="${y}" r="${r}"/><g transform="translate(${x} ${y-r})"><circle r="8.5"/><text y="3.4" text-anchor="middle">${k+1}</text></g>${mzLabel(lab,x,y+r+11,k+1)}</g>`).join('');
   /* the circles, numbers and names sit under the troops; an invisible copy of each circle on top keeps them easy to tap */
   g.setAttribute('pointer-events','none'); f.insertBefore(g,$('#units'));
   const old2=$('#mzhit'); if(old2) old2.remove();
