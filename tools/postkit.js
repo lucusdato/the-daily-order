@@ -7,7 +7,8 @@
 
    Prints: the X poll and its link reply, tomorrow's reveal of this battle, and a Reddit text post with its link comment.
    The X poll asks only where the move goes, and nothing here gives the answer on the day, so the game is not spoiled.
-   Links carry the tags js/retain.js remembers, so each placement shows up in GoatCounter as evt-src-CAMPAIGN-step. */
+   Links are short paths (thedailyorder.io/x, /via/NAME) that carry the source without showing a tag; each placement
+   shows up in GoatCounter as evt-src-SOURCE-step. The map picture for the post comes from tools/sharemap.js. */
 const fs=require('fs'), vm=require('vm'), path=require('path');
 const root=path.join(__dirname,'..'), SITE='https://thedailyorder.io/', START='2026-11-08', ROLL=4, TZ='America/Toronto';
 
@@ -32,17 +33,22 @@ const day = !pick ? today() : /^\d{4}-\d\d-\d\d$/.test(pick) ? dayOf(pick) : Num
 const n=man.R[day-1];
 if(!n || !byN[n] || !mys[n]){ console.error(`postkit: no battle scheduled for day ${day} (the schedule has ${man.R.length} days)`); process.exit(1); }
 
-const s=byN[n], m=mys[n];
+const s=byN[n], top=mys[n];
+/* a three-decision battle opens on its first decision, so that is the one the post asks about (and the map shows) */
+const m=(top.stepsLive && top.steps && top.steps[0]) ? Object.assign({},top,top.steps[0]) : top;
 const plain=t=>String(t||'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 const who=plain(m.general||s.you), cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
-const head=`${plain(s.name)}, ${s.year}. You are ${who}.`;
-const link=c=>`${SITE}?utm_source=${c.startsWith('r-')?'reddit':'x'}&utm_medium=${c.startsWith('r-')?'community':'social'}&utm_campaign=${c}`;
+/* written the way people talk: "It's Hastings in 1066 and you're William of Normandy." Never a cold "Hastings, 1066." */
+const nm=plain(s.name).replace(/^The /,'the ').replace(/^(Battle|Siege)\b/,'the $1');
+const head=`It's ${nm} in ${s.year} and you're ${who}.`;
+const sit=plain(m.sit).replace(/^[^.]{0,24}\d{2,4}( BC)?\.\s*/,'');   /* the opening date repeats the year just given */
+const link=c=>SITE+(c==='x'?'x':'via/'+c);   /* short paths in netlify.toml redirect to /?ref=SOURCE, which js/retain.js remembers and then clears from the address bar */
 const zones=(m.zones||[]).map(z=>({id:z[0],label:plain(z[1])})), toys=(m.toys||[]).map(t=>({id:t[0],label:plain(t[1])}));
 const warn=[];
 
 /* X: a poll on where the move goes. A poll cannot carry an image, and takes four options of 25 characters at most. */
 const ASK='Where do you make your move?';
-let xpost=[head,'',plain(m.sit),'',ASK].join('\n');
+let xpost=[head,'',sit,'',ASK].join('\n');
 if(xpost.length>280) xpost=[head,'',plain(m.pitch).replace(/^You are [^.]+\.\s*/,''),'',ASK].join('\n');
 if(xpost.length>280) warn.push(`X post is ${xpost.length} characters; trim it to 280.`);
 if(zones.length<2 || zones.length>4) warn.push(`X polls take 2 to 4 options; this battle has ${zones.length} places. Post the options as A/B/C/D text instead.`);
@@ -61,8 +67,8 @@ if(reveal.length>280) warn.push(`Reveal is ${reveal.length} characters before th
 
 /* Reddit: the whole dilemma as a text post, the link in a comment */
 const rc='r-'+(sub||'SUBNAME').toLowerCase().replace(/[^a-z0-9]+/g,'-');
-const rtitle=`${plain(s.name)}, ${s.year}: you are ${who}. What is your order?`;
-const rbody=[plain(m.lead),'',plain(m.sit),'',
+const rtitle=`It's ${nm} in ${s.year} and you're ${who}. What's your order?`;
+const rbody=[plain(m.lead),'',sit,'',
   `You have: ${toys.map(t=>t.label.toLowerCase()).join(', ')}.`,
   'You can send one of them to:', ...zones.map(z=>'- '+z.label),'',
   `Which do you send, where, and why? I will post what ${who} actually did tomorrow.`].join('\n');
@@ -73,8 +79,9 @@ const out=[
 '',
 '=== X · POST (as a poll, 1 day) ' + '='.repeat(30), xpost, '',
 'Poll options:', ...zones.map((z,i)=>`  ${i+1}. ${z.label}`), '',
+`=== X · MAP PICTURE ` + '='.repeat(42), `node tools/sharemap.js ${day}   (writes maps/day-${day}.png: the board with the numbered places)`, '',
 '=== X · REPLY TO YOUR OWN POST ' + '='.repeat(31),
-`Play it on the map and see if you matched ${who}:\n${link('x-daily')}`, '',
+`Play it on the map and see if you matched ${who}:\n${link('x')}`, '',
 '=== X · TOMORROW, QUOTING THIS POLL ' + '='.repeat(26), reveal, '',
 `=== REDDIT · TEXT POST${sub?' in r/'+sub:''} ` + '='.repeat(20),
 'Title: '+rtitle, '', rbody, '',

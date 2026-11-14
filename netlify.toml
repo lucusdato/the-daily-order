@@ -2,3 +2,18 @@
 [build]
   publish = "."
   command = ""
+
+# Short links for sharing: the source rides on the path, so a posted link shows no tracking tag.
+# js/retain.js remembers the source from ?ref= and then clears it from the address bar.
+[[redirects]]
+  from = "/x"
+  to = "/?ref=x"
+  status = 302
+[[redirects]]
+  from = "/share"
+  to = "/?ref=share"
+  status = 302
+[[redirects]]
+  from = "/via/:src"
+  to = "/?ref=:src"
+  status = 302
