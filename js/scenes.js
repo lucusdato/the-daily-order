@@ -5,8 +5,10 @@ const SC = { active:false, list:[], i:-1, tok:0, auto:false, busy:false, onEnd:n
 function scTimer(fn,ms){ const t=setTimeout(fn,ms); SC.timers.push(t); return t; }
 function scClear(){ SC.timers.forEach(clearTimeout); SC.timers=[]; }
 
-function scenesPlay(list,{onEnd,onStep,endLabel='Continue',auto=false,autoEnd=0}={}){
-  scClear(); SC.list=list; SC.i=-1; SC.onEnd=onEnd; SC.onStep=onStep; SC.endLabel=endLabel; SC.active=true; SC.auto=auto; SC.autoEnd=autoEnd;
+/* hold: a verdict scene that waits for a tap instead of moving on by itself. label: what the counter calls each scene.
+   A scene can bring its own dock (scene.dock = {cls, html()}); its button carries the class cb-next. */
+function scenesPlay(list,{onEnd,onStep,endLabel='Continue',auto=false,autoEnd=0,hold=false,label='Scene'}={}){
+  scClear(); SC.list=list; SC.i=-1; SC.onEnd=onEnd; SC.onStep=onStep; SC.endLabel=endLabel; SC.active=true; SC.auto=auto; SC.autoEnd=autoEnd; SC.hold=hold; SC.label=label;
   if(window.sheetTo && sheetOn()) sheetTo(isMys()?'peek':(SHEET.pos==='full'?'mid':SHEET.pos));
   scGo(0);
 }
@@ -50,6 +52,7 @@ function renderCapDock(){
   const d=$('#dock'), sc=SC.list[SC.i]; if(!d||!sc) return;
   const last=SC.i===SC.list.length-1, n=SC.list.length;
   d.hidden=false;
+  if(sc.dock){ d.className=sc.dock.cls; d.innerHTML=sc.dock.html(); d.scrollTop=0; if(window.sheetTo && sheetOn()) sheetTo(sc.dock.pos&&!SC.busy?sc.dock.pos:'peek',!!sc.dock.pos); return; }   /* a long verdict lifts the sheet once the board has finished moving */
   if(SC.autoEnd){
     d.className='dock dk-scene dk-v '+(sc.verdict==='good'?'won':'lost');
     d.innerHTML=`<div class="dk-row"><b class="dk-q ${sc.verdict==='good'?'dk-good':'dk-bad'}"><i aria-hidden="true">${sc.verdict==='good'?'✓':'✕'}</i> ${sc.t}</b></div><p class="cb-b">${sc.b}</p><div class="dk-nav"><button type="button" class="cb-next dk-skip">${SC.busy?'Watch the board…':'Continue ›'}</button></div>`;
@@ -57,7 +60,7 @@ function renderCapDock(){
     return;
   }
   d.className='dock dk-scene';
-  d.innerHTML=`<div class="dk-row"><span class="cb-n">${n>1?`Scene ${SC.i+1} of ${n}`:''}${sc.banner?`${n>1?' · ':''}<i>${sc.banner}</i>`:''}</span>${n>2?`<button type="button" class="cb-auto">${SC.auto?'❚❚ Pause':'▶ Auto'}</button>`:''}</div>
+  d.innerHTML=`<div class="dk-row"><span class="cb-n">${n>1?`${SC.label} ${SC.i+1} of ${n}`:''}${sc.banner?`${n>1?' · ':''}<i>${sc.banner}</i>`:''}</span>${n>2?`<button type="button" class="cb-auto">${SC.auto?'❚❚ Pause':'▶ Auto'}</button>`:''}</div>
     <b class="cb-t">${sc.t}</b><p class="cb-b">${sc.b}</p>
     <div class="dk-nav">${SC.i>0?'<button type="button" class="cb-back" aria-label="Previous scene">‹</button>':''}<button type="button" class="cb-next${SC.busy?' wait':''}">${last?SC.endLabel:'Next'} ›</button></div>`;
   if(window.sheetTo && sheetOn()) sheetTo(SHEET.pos==='peek'?'peek':SHEET.pos,false);
@@ -66,7 +69,7 @@ document.getElementById('dock').addEventListener('click',e=>{
   if(!SC.active) return;
   if(e.target.closest('.cb-back')){ e.stopPropagation(); return scBack(); }
   if(e.target.closest('.cb-auto')){ e.stopPropagation(); return scToggleAuto(); }
-  if(e.target.closest('.cb-next')){ e.stopPropagation(); if(SC.autoEnd){ if(!SC.busy) scFinish(); return; } return scNext(); }
+  if(e.target.closest('.cb-next')){ e.stopPropagation(); if(SC.hold) return scFinish(); if(SC.autoEnd){ if(!SC.busy) scFinish(); return; } return scNext(); }
 });
 function scFinish(){ const fn=SC.onEnd; scStop(); hideBanner(); if(fn) fn(); }
 function scToggleAuto(){ SC.auto=!SC.auto; renderCap(); if(SC.auto && !SC.busy) scNext(); }

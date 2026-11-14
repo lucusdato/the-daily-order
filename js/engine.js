@@ -69,7 +69,7 @@ function makeFig(u,o,fi,ui,face,parent){
 }
 function draw(f){
   const lift=f.h+f.base;
-  f.g.setAttribute('transform',`translate(${f.x.toFixed(1)} ${f.y.toFixed(1)})`);
+  f.g.setAttribute('transform',`translate(${(f.x+(f.jx||0)).toFixed(1)} ${f.y.toFixed(1)})`);
   f.lift.setAttribute('transform',`translate(0 ${(-lift).toFixed(1)})`);
   const fc=f.dir||f.face;
   f.body.setAttribute('transform',`scale(${fc} ${f.sy.toFixed(3)}) rotate(${f.rot.toFixed(1)})`);
@@ -289,11 +289,24 @@ function fitLabels(root){
   const box=t=>{ const r=t.getBoundingClientRect(); return {x0:(r.left-sr.left)*k, x1:(r.right-sr.left)*k, y0:(r.top-sr.top)*k, y1:(r.bottom-sr.top)*k, w:r.width}; };
   const hit=(a,b)=>a.x0<b.x1+2 && a.x1>b.x0-2 && a.y0<b.y1+1 && a.y1>b.y0-1;
   const shift=(t,dx,dy)=>{ t.setAttribute('transform',`translate(${dx.toFixed(1)} ${dy.toFixed(1)}) `+(t.getAttribute('transform')||'')); t.dataset.fit='1'; };
+  const mzg=root.querySelector('#mzones'); if(mzg) mzg.classList.add('meas');   /* hidden circle names are measured too, unseen */
   const all=[...root.querySelectorAll('text.lbl'),...root.querySelectorAll('text.mzl')].filter(t=>!t.closest('[style*="display:none"]')&&!t.closest('#theater'));
   all.forEach(t=>{ if(t.dataset.fit){ t.setAttribute('transform',(t.getAttribute('transform')||'').replace(/^translate\([^)]*\)\s*/,'')); delete t.dataset.fit; if(!t.getAttribute('transform')) t.removeAttribute('transform'); } });
   /* troops count as obstacles too, so a name never hides under (or behind) a toy */
   if(document.body.classList.contains('mys')) root.querySelectorAll('#units > g').forEach(g=>{ const cs=getComputedStyle(g); if(cs.display==='none'||+cs.opacity<.2) return; const b=box(g); if(b.w>2) placed.push({x0:b.x0+2,x1:b.x1-2,y0:b.y0+2,y1:b.y1-1}); });
+  /* so do the numbered badges on the order circles: a name must not cover the number you tap */
+  root.querySelectorAll('#mzones .mz > g').forEach(g=>{ const b=box(g); if(b.w>2) placed.push({x0:b.x0+1,x1:b.x1-1,y0:b.y0+1,y1:b.y1-1}); });
+  /* a name set along a river or road stays on it, but slides along to a stretch clear of toys, badges and other names */
+  const lbox=[], letters=t=>{ const o=[], n=t.getNumberOfChars?t.getNumberOfChars():0; for(let i=0;i<n;i+=2){ try{ const e=t.getExtentOfChar(i); if(e.width) o.push({x0:e.x-2,x1:e.x+e.width+2,y0:e.y-1,y1:e.y+e.height+1}); }catch(x){} } return o; };
+  const clash=bs=>bs.some(c=>c.x0<pad||c.x1>400-pad||c.y0<pad||c.y1>H-pad||placed.some(p=>hit(c,p)));
+  all.forEach(t=>{ const tp=t.querySelector('textPath'); if(!tp||!box(t).w) return;
+    const base=+tp.dataset.base, half=+tp.dataset.half, st=+tp.dataset.step||5; let got=null;
+    for(const k of [0,1,-1,2,-2,3,-3,4,-4,5,-5,6,-6,8,-8,10,-10]){ const o=base+k*st; if(o<half||o>100-half) continue;
+      tp.setAttribute('startOffset',o.toFixed(1)+'%'); const bs=letters(t); if(bs.length && !clash(bs)){ got=bs; break; } }
+    if(!got){ tp.setAttribute('startOffset',base.toFixed(1)+'%'); got=letters(t); }
+    got.forEach(b=>{ placed.push(b); lbox.push(b); }); });
   all.forEach(t=>{
+    if(t.dataset.pin||t.dataset.zc) return;
     let b=box(t); if(!b.w) return;
     let dx=0, dy=0;
     if(b.x0<pad) dx=pad-b.x0; else if(b.x1>400-pad) dx=400-pad-b.x1;
@@ -302,30 +315,80 @@ function fitLabels(root){
     if(placed.some(p=>hit(mv(0),p))){
       const step=(b.y1-b.y0)+1, tries=[];
       [step,-step,2*step,-2*step,3*step,-3*step].forEach(o=>tries.push([o,0]));
-      [36,-36,64,-64].forEach(h=>[0,step,-step,2*step,-2*step].forEach(o=>tries.push([o,h])));
+      [20,-20,36,-36,64,-64,90,-90].forEach(h=>[0,step,-step,2*step,-2*step].forEach(o=>tries.push([o,h])));
       for(const [o,h] of tries){ const c=mv(o,h); if(c.y0>=pad && c.y1<=H-pad && c.x0>=pad && c.x1<=400-pad && !placed.some(p=>hit(c,p))){ dy+=o; dx+=h; break; } }
     }
     if(dx||dy) shift(t,dx,dy);
-    placed.push(mv(0));
+    placed.push(mv(0)); lbox.push(mv(0));
   });
+  /* the name that appears beside an order circle (wide screens) takes whichever side of its circle is clear. Each is
+     placed on its own, since only the picked or pointed-at one shows. */
+  all.forEach(t=>{ if(!t.dataset.zc) return; const [cx,cy,r]=t.dataset.zc.split(',').map(Number), two=!!t.querySelector('tspan');
+    const set=(x,y,anc)=>{ t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('text-anchor',anc); t.querySelectorAll('tspan').forEach(s=>s.setAttribute('x',x)); };
+    const yr=two?cy-2:cy+4, R=[cx+r+6,yr,'start'], Lf=[cx-r-6,yr,'end'], Dn=[cx,cy+r+12,'middle'], Up=[cx,cy-r-(two?19:7),'middle'];
+    const near=cx>262?[Lf,R,Dn,Up]:[R,Lf,Dn,Up], order=near.slice();
+    /* then the same sides nudged up, down or a little further out */
+    [14,-14,26,-26].forEach(d=>{ order.push([R[0],yr+d,'start'],[Lf[0],yr+d,'end']); });
+    order.push([cx,Dn[1]+14,'middle'],[cx,Up[1]-14,'middle'],[cx+r+20,yr,'start'],[cx-r-20,yr,'end']);
+    const over=bs=>{ let a=0; bs.forEach(c=>{ if(c.x0<pad||c.x1>400-pad||c.y0<pad||c.y1>H-pad) a+=1e4; placed.forEach(p=>{ const w=Math.min(c.x1,p.x1)-Math.max(c.x0,p.x0), h=Math.min(c.y1,p.y1)-Math.max(c.y0,p.y0); if(w>0&&h>0) a+=w*h; }); }); return a; };
+    let ok=false, least=null;
+    for(const c of order){ set(...c); const b=box(t); if(!b.w){ ok=true; break; } const bs=[{x0:b.x0,x1:b.x1,y0:b.y0+1,y1:b.y1-1}];
+      if(!clash(bs)){ ok=true; break; } const a=over(bs); if(!least||a<least.a) least={a,c}; }
+    if(!ok && least) set(...least.c); });
+
   /* no tree grows through a name: clear any tree that would sit under a label once labels are placed */
   if(document.body.classList.contains('mys')){
     const trees=[...root.querySelectorAll('#field .terr g.tree')];
     trees.forEach(g=>g.style.display='');
-    const L=all.map(t=>box(t)).filter(b=>b.w);
+    const L=lbox;
     trees.forEach(g=>{ const b=box(g); if(L.some(l=>b.x0<l.x1+1 && b.x1>l.x0-1 && b.y0<l.y1+1 && b.y1>l.y0-1)) g.style.display='none'; });
   }
+  if(mzg) mzg.classList.remove('meas');
 }
-function refitLabels(){ requestAnimationFrame(()=>fitLabels($('#board'))); }
+/* two frames on, so the toys have been drawn where they now stand before names are fitted around them */
+function refitLabels(){ requestAnimationFrame(()=>requestAnimationFrame(()=>fitLabels($('#board')))); }
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(refitLabels);
 addEventListener('resize',()=>{ clearTimeout(refitLabels.t); refitLabels.t=setTimeout(refitLabels,200); });
+/* names are measured on screen, so fit them again whenever the board changes size or a web font arrives:
+   the first fit can run before the layout and the lettering have settled, and would miss names that then collide */
+(function(){ const later=()=>{ clearTimeout(refitLabels.t); refitLabels.t=setTimeout(refitLabels,120); };
+  try{ const b=document.getElementById('board'); if(b && window.ResizeObserver) new ResizeObserver(later).observe(b); }catch(e){}
+  try{ if(document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',later); }catch(e){} })();
 
 function buildBoard(b){ const toon=TOON=document.body.classList.contains('mys'); TREE_AVOID=treeAvoid(b); buildBoard0(b); TOON=false; TREE_AVOID=[];
   /* crisp map text: lift place names out of the sketchy terrain filter, into their own layer that still sits below the troops */
   if(toon){ const svg=$('#board'), terr=svg.querySelector('#field > .terr'), arr=svg.querySelector('#arrows');
     if(terr&&arr){ const L=document.createElementNS(NS,'g'); L.id='tlabels'; L.setAttribute('pointer-events','none');
-      terr.querySelectorAll('text.lbl').forEach(t=>L.appendChild(t)); arr.parentNode.insertBefore(L,arr); } }
+      terr.querySelectorAll('text.lbl').forEach(t=>L.appendChild(t)); arr.parentNode.insertBefore(L,arr); geoLabels(svg,L,terr); } }
   refitLabels(); }
+/* Place names the way a map sets them. Each gets a kind (water, high ground) for its lettering, and the name of a river or
+   a road runs along it, on the side it was placed, reading left to right, instead of sitting across it at a fixed angle. */
+function geoLabels(svg,L,terr){
+  const lines=[[/river|creek|stream|brook|canal/i,'.riv'],[/road|lane|track|causeway/i,'.rd']];
+  const defs=svg.querySelector('defs');
+  [...L.querySelectorAll('text.lbl')].forEach((t,ti)=>{ try{
+    const s=t.textContent;
+    if(/river|creek|stream|bay|sea\b|channel|strait|narrows|ocean|lake|gulf|mediterranean|estuary/i.test(s)) t.classList.add('k-water');
+    else if(/rise|ridge|hill|bluff|mont\b|mt\.|mount|heights|crest/i.test(s)) t.classList.add('k-hill');
+    const kind=lines.find(k=>k[0].test(s)); if(!kind||!defs) return;
+    const x=+t.getAttribute('x'), y=+t.getAttribute('y'); let best=null;
+    terr.querySelectorAll('path'+kind[1]).forEach(p=>{ const n=p.getTotalLength(); for(let l=0;l<=n;l+=4){ const q=p.getPointAtLength(l), d=Math.hypot(q.x-x,q.y-y); if(!best||d<best.d) best={d,l,p,n}; } });
+    if(!best||best.d>70) return;
+    const P=best.p, N=best.n, w=s.length*((+t.getAttribute('font-size')||10)*.72)+10;
+    if(N<w) return;   /* too short a stretch to carry the name */
+    const at=l=>{ const q=P.getPointAtLength(l), q0=P.getPointAtLength(Math.max(0,l-1.5)), q1=P.getPointAtLength(Math.min(N,l+1.5)), d=Math.hypot(q1.x-q0.x,q1.y-q0.y)||1; return {x:q.x,y:q.y,tx:(q1.x-q0.x)/d,ty:(q1.y-q0.y)/d}; };
+    const m=at(best.l), side=((x-m.x)*-m.ty+(y-m.y)*m.tx)<0?-1:1, off=(+P.getAttribute('stroke-width')||6)/2+10.5;
+    /* the whole feature, set off to the side the name was placed on, so the name can slide along it to a clear stretch */
+    let pts=[]; for(let l=0;l<=N+.01;l+=3){ const q=at(Math.min(l,N)); pts.push([q.x-q.ty*side*off,q.y+q.tx*side*off]); }
+    const rev = Math.abs(m.tx)>=Math.abs(m.ty)*.3 ? m.tx<0 : m.ty>0;   /* left to right; a north-south one reads upward */
+    if(rev) pts.reverse();
+    const half=Math.min(50,100*(w/2)/N), base=Math.max(half,Math.min(100-half,100*(rev?N-best.l:best.l)/N));
+    const id='gl'+ti, p=document.createElementNS(NS,'path'); p.id=id; p.setAttribute('d','M'+pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')); defs.appendChild(p);
+    const tp=document.createElementNS(NS,'textPath'); tp.setAttribute('href','#'+id); tp.setAttribute('startOffset',base.toFixed(1)+'%'); tp.textContent=s;
+    tp.dataset.base=base.toFixed(1); tp.dataset.half=half.toFixed(1); tp.dataset.step=(100*12/N).toFixed(2);
+    t.textContent=''; ['x','y','transform'].forEach(k=>t.removeAttribute(k)); t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','middle'); t.dataset.pin='1'; t.appendChild(tp);
+  }catch(e){} });
+}
 function buildBoard0(b){
   const svg=$('#board');
   const P=b.prologue, box=P?P.box:[0,0,400], [bx,by,bw]=box, H=b.H||400;

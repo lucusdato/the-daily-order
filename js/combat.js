@@ -51,7 +51,9 @@ function sparks(x,y,delay=0){
   fxAnim(300,delay,p=>{ g.setAttribute('transform',`translate(${x} ${y}) scale(${(.4+p*.9).toFixed(2)}) rotate(${(p*60).toFixed(0)})`); g.style.opacity=(1-p).toFixed(2); },()=>g.remove());
 }
 function shakeUnit(id,delay=0){
-  uFigs(id).forEach(f=>{ fxAnim(320,delay,p=>{ f.dir=(p<1?(Math.sin(p*38)>0?1:-1)*(f.face||1):0); },()=>{ f.dir=0; }); });
+  /* a hit rocks the toy a little and lets it settle. It used to flip the toy to face the other way and back several
+     times, which read as a glitch, and overlapping hits fought over which way it faced. */
+  uFigs(id).forEach(f=>{ fxAnim(360,delay,p=>{ f.jx=Math.sin(p*Math.PI*3)*(1-p)*1.8; },()=>{ f.jx=0; }); });
 }
 function lunge(id,tx,ty,delay=0){
   uFigs(id).forEach((f,k)=>{ const x0=f.x,y0=f.y, dx=(tx-x0)*.45, dy=(ty-y0)*.45;

@@ -302,8 +302,8 @@ details.more.sm summary{font-size:13px;color:var(--muted)}
 .mlock b{font-family:var(--f-display);font-size:20px;text-align:center}
 .est .ded{display:grid;gap:3px;background:#fffaf0;border-radius:9px;padding:9px 11px;margin-top:6px}
 .df{margin:0;font-size:14.5px;line-height:1.4}
-.dd{margin:0;font-size:15px;line-height:1.42;font-weight:700;display:grid;grid-template-columns:auto 1fr;gap:8px}
-.dd span{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--red);border-radius:4px;padding:3px 6px;align-self:start;margin-top:2px}
+.dd{margin:0;font-size:15px;line-height:1.42;font-weight:700}
+.dd>span:first-child{display:inline-block;margin-right:8px;vertical-align:2px;line-height:1.2;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--red);border-radius:4px;padding:3px 6px}
 .revl li{cursor:pointer}
 .capbar{padding:8px 10px 9px}
 .cb-n i{font-style:normal;color:#ffb38a}
@@ -386,8 +386,8 @@ body{
 .mr-m .ml{background:#2c3a1a}.mr-e .ml{background:#7d2717}.mr-t .ml{background:#6b5530}.mr-tr .ml{background:#3d5a26}.mr-ti .ml{background:#38404a}
 .ogt{border-radius:2px!important;background:#e3d3a6!important;font-family:var(--f-body)}
 .intel{background:#fbf3df!important;border-left-color:var(--ox)!important;border-radius:0 3px 3px 0!important}
-.intel .it,.dd span{font-family:var(--f-hand)}
-.dd span{background:var(--ox)!important;border-radius:2px!important}
+.intel .it,.dd>span:first-child{font-family:var(--f-hand)}
+.dd>span:first-child{background:var(--ox)!important;border-radius:2px!important}
 .mlock{border-radius:4px!important;border-color:#b9a473!important}
 .mett-q{background:transparent!important;box-shadow:none!important;color:var(--ox)!important;text-decoration:underline!important;font-weight:700!important;padding:0!important}
 /* the order form */
@@ -488,7 +488,7 @@ body.mys .dock:not([hidden]){display:block;flex:none;padding:4px 14px 12px;backg
 .mys .who{margin:-6px 0 0;font-weight:700;font-size:14.5px;display:flex;gap:7px;align-items:center;color:#3a2d1c}
 .mys .sit{font-size:14.5px;padding:9px 11px}
 .theq{margin:0;font-size:15.5px;line-height:1.4;font-weight:700}
-.theq span{display:block;font-family:var(--f-hand);font-weight:400;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ox);margin-bottom:2px}
+.theq>span{display:block;font-family:var(--f-hand);font-weight:400;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ox);margin-bottom:2px}
 .mett{gap:5px}
 .mrow{padding:7px 10px 7px 8px!important;grid-template-columns:24px 1fr!important;gap:9px!important}
 .ml{width:24px!important;height:24px!important;font-size:14px!important}
@@ -558,6 +558,13 @@ body.mys .mk{margin:0;font-family:var(--f-hd)!important;font-weight:500!importan
 body.mys .mb p{margin:0;font-size:16px;line-height:1.5;color:#f3efdd}
 body.mys .msub{display:flex;flex-direction:column;gap:4px;padding-top:10px;border-top:1px solid var(--blk-l);background:none;border-radius:0}
 body.mys .msl{font-family:var(--f-hd);font-weight:500;text-transform:uppercase;letter-spacing:.1em;font-size:11px;color:var(--mut)}
+/* the verdict dock in the trial format: it can be taller than the space over the map, so the button stays in reach */
+body.mys .dk-fbk .commit{position:sticky;bottom:0;z-index:2}
+body.mys .dk-fbk .dk-new p{margin:0}
+/* intel lines on the cream order card (trial format): the label has to read on a light ground */
+body.mys .sint{gap:3px;padding-top:12px;border-top-color:#d8ccae}
+body.mys .sint .msl{color:#9b2a17;font-size:12px}
+body.mys .sint p{margin:0}
 body.mys .msub.new{animation:newin 1.4s ease 2}
 @keyframes newin{0%,100%{background:transparent}40%{background:#3e5c35}}
 body.mys .msub.new .msl{color:var(--gold2)}
@@ -570,7 +577,7 @@ body.mys .mcard b{display:block;font-size:16px}
 body.mys .mcard em{display:block;font-style:normal;font-family:var(--f-hd);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:#5c5240}
 body.mys .msub.mcard{border-top:2px solid var(--ink)}
 body.mys .theq{display:flex;flex-direction:column;gap:6px;padding:14px 16px;background:var(--ink)!important;color:var(--cream)!important;border-radius:10px;border:0!important;margin:0!important}
-body.mys .theq span{font-family:var(--f-hd);font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:12px;color:var(--gold)!important;display:block}
+body.mys .theq>span{font-family:var(--f-hd);font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-size:12px;color:var(--gold)!important;display:block}
 body.mys .theq p{margin:0;font-size:17px;line-height:1.45;font-weight:600;color:var(--cream)}
 body.mys .mgo{margin-bottom:24px}
 /* buttons */
@@ -622,7 +629,7 @@ body.mys .card p,body.mys .card li{font-size:16px;line-height:1.5}
 body.mys .ded{background:var(--blk)!important;color:#f3efdd!important;border:2px solid var(--ink)!important;border-radius:10px!important;padding:12px 14px!important;box-shadow:none!important}
 body.mys .ded .df{color:#f3efdd!important;font-weight:600}
 body.mys .ded .dd{color:var(--mut)!important}
-body.mys .ded .dd span{font-family:var(--f-hd);text-transform:uppercase;letter-spacing:.08em;color:var(--gold2)!important;background:none!important}
+body.mys .ded .dd>span:first-child{font-family:var(--f-hd);text-transform:uppercase;letter-spacing:.08em;color:var(--gold2)!important;background:none!important}
 body.mys .more summary{font-family:var(--f-hd);font-weight:500;text-transform:uppercase;letter-spacing:.1em;font-size:13px;color:var(--ink)}
 body.mys .more{border-top:2px solid var(--ink)!important;border-bottom:2px solid var(--ink)!important;border-left:0!important;border-right:0!important;border-radius:0!important;background:none!important}
 body.mys .revl li{font-size:15.5px;line-height:1.5}
@@ -977,4 +984,34 @@ form.rem.done input{display:none}
 @media not all and (min-width:900px) and (min-height:520px){
   body.mys #dock{max-height:var(--dockmax,62svh)!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:none}
   body.mys #dock::-webkit-scrollbar{display:none}
+}
+/* phones: a verdict with reasons and a hint may use more of the screen than the order controls do */
+@media not all and (min-width:900px) and (min-height:520px){ body.mys #dock.dk-fbk{max-height:54svh!important} }
+/* the list of order circles in the panel: wide screens only, where the map shows numbers and not names */
+.dk-zl{display:none}
+@media (min-width:900px) and (min-height:520px){
+  body.mys .dk-zl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  body.mys .dk-zl .zb{display:flex;align-items:center;gap:8px;text-align:left;font:600 14px/1.25 var(--f-bd);color:#21170d;background:#fffaf0;border:2px solid #21170d;border-radius:10px;padding:8px 10px;box-shadow:0 3px 0 #21170d;cursor:pointer}
+  body.mys .dk-zl .zb i{flex:none;width:22px;height:22px;border-radius:50%;background:#e6c879;border:1.5px solid #3a2909;display:grid;place-items:center;font:700 12px var(--f-bd);font-style:normal}
+  body.mys .dk-zl .zb.on{background:#f6e3b0;border-color:#9b2a17;box-shadow:0 3px 0 #9b2a17}
+  body.mys .dk-zl .zb:focus-visible{outline:3px solid #9b2a17;outline-offset:2px}
+  /* a circle's name shows only for the circle picked or pointed at */
+  body.mys #mzones .mz text.mzl{display:none;font-family:var(--f-bd)!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;font-size:11px!important;fill:#2c1d0e!important;stroke:#f7f1e1!important;stroke-width:3px!important}
+  body.mys #mzones .mz.hov text.mzl,body.mys #mzones .mz.sel text.mzl{display:block}
+  body.mys #mzones.meas .mz text.mzl{display:block;visibility:hidden}
+  body.mys #mzones .mz.sel text.mzl{fill:#9b2a17!important}
+  /* place names set like a map, in the same family as the rest of the page's text: small spaced capitals for the land,
+     italics for water, tinted by what the thing is, a thin halo */
+  body.mys #board text.lbl{font-family:var(--f-bd)!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:.09em!important;font-size:8.6px!important;fill:#4d3b1f!important;stroke:rgba(247,241,225,.6)!important;stroke-width:1.8px!important}
+  body.mys #board text.lbl.k-hill{fill:#5e3d0c!important}
+  body.mys #board text.lbl.k-water{font-style:italic;font-weight:400!important;text-transform:none!important;letter-spacing:.04em!important;font-size:10px!important;fill:#164f6e!important;stroke:rgba(235,246,250,.6)!important}
+}
+/* phones: the same quiet place names as wide screens. The order circles keep their names under them, since on a phone
+   you tap the circle itself, but in lighter lettering, with the picked one in red. */
+@media not all and (min-width:900px) and (min-height:520px){
+  body.mys #board text.lbl{font-family:var(--f-bd)!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:.09em!important;font-size:10px!important;fill:#4d3b1f!important;stroke:rgba(247,241,225,.6)!important;stroke-width:2px!important}
+  body.mys #board text.lbl.k-hill{fill:#5e3d0c!important}
+  body.mys #board text.lbl.k-water{font-style:italic;font-weight:400!important;text-transform:none!important;letter-spacing:.04em!important;font-size:11.5px!important;fill:#164f6e!important;stroke:rgba(235,246,250,.6)!important}
+  body.mys #mzones .mz text.mzl{font-family:var(--f-bd)!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important;font-size:12px!important;fill:#3a2c18!important;stroke:rgba(247,241,225,.9)!important;stroke-width:2.6px!important}
+  body.mys #mzones .mz.sel text.mzl{fill:#9b2a17!important;font-weight:700!important}
 }
