@@ -558,6 +558,9 @@ body.mys .mk{margin:0;font-family:var(--f-hd)!important;font-weight:500!importan
 body.mys .mb p{margin:0;font-size:16px;line-height:1.5;color:#f3efdd}
 body.mys .msub{display:flex;flex-direction:column;gap:4px;padding-top:10px;border-top:1px solid var(--blk-l);background:none;border-radius:0}
 body.mys .msl{font-family:var(--f-hd);font-weight:500;text-transform:uppercase;letter-spacing:.1em;font-size:11px;color:var(--mut)}
+/* the verdict dock in the trial format: it can be taller than the space over the map, so the button stays in reach */
+body.mys .dk-fbk .commit{position:sticky;bottom:0;z-index:2}
+body.mys .dk-fbk .dk-new p{margin:0}
 /* intel lines on the cream order card (trial format): the label has to read on a light ground */
 body.mys .sint{gap:3px;padding-top:12px;border-top-color:#d8ccae}
 body.mys .sint .msl{color:#9b2a17;font-size:12px}
@@ -982,3 +985,5 @@ form.rem.done input{display:none}
   body.mys #dock{max-height:var(--dockmax,62svh)!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:none}
   body.mys #dock::-webkit-scrollbar{display:none}
 }
+/* phones: a verdict with reasons and a hint may use more of the screen than the order controls do */
+@media not all and (min-width:900px) and (min-height:520px){ body.mys #dock.dk-fbk{max-height:54svh!important} }

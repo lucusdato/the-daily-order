@@ -5,8 +5,15 @@ PGD.mysQ = {};
 PGD.mystery = function(n,m){ if(this.byN[n]) applyMystery(this.byN[n],m); else this.mysQ[n]=m; };
 /* A mystery can use a tall board (m.H, e.g. 600) with its own terrain. Positions in the scenario and the
    mystery are written for a 400 square board and stretched vertically here, once. */
+/* The tall board is for phones, where the screen is tall too. On a wide screen it leaves much of the table empty. A trial,
+   switched on with ?board=square: wide screens keep the square board the battle was written for, with the scenario's own
+   terrain, so the map is about half as big again. Not the default yet: place names crowd more on the shorter board. */
+const WIDE_BOARD = /[?&]board=square\b/.test(location.search) && matchMedia('(min-width:900px) and (min-height:520px)').matches;
 function applyMystery(sc,m){
   sc.m=m; if(!m.H || sc._tall) return; sc._tall=true;
+  if(WIDE_BOARD){ const last=(m.scenes||[]).slice(-1)[0], K=sc.states.length-1;
+    if(last&&last.u) sc.units.forEach(u=>{ if(last.u[u.id]) u.p[K]=last.u[u.id].slice(); });
+    return; }
   const k=m.H/400, Y=y=>Math.round(y*k*10)/10;
   const pt=p=>p&&[p[0],Y(p[1])].concat(p.slice(2));
   const arr=a=>a.map(r=>{ const o=r.slice(); for(let i=1;i+1<o.length;i+=2){ o[i+1]=Y(o[i+1]); } return o; });
@@ -32,6 +39,7 @@ const mKey = () => D.steps ? 's'+D.n : D.preview ? 'p'+D.n : D.n;
 /* Trial format (open with #steps-N): a battle played as a few decisions in a row. Each decision has its own short
    situation, two tries, and then the real battle plays on to the next one, so the story is told as you go.
    m.steps[i] overrides the puzzle fields of m (qs, sit, q, intel, toys, zones, ans, fbU, fbZ, fail) for that decision.
+   hint: {u,z}, shown after a miss for whichever part was wrong.
    from: the scene whose positions the decision starts from (start: overrides on top). after: scenes to play once it is settled. */
 const STRY = 2;
 const mSt = () => (D.steps && D.sc && D.sc.m && D.sc.m.steps) || null;
@@ -407,15 +415,7 @@ function stepCard(){
 }
 function stepDock(d,r){
   const S=mSt(), i=mSi(), P=mP();
-  if(!r.done && MS.phase==='clue'){
-    const last=r.tries[r.tries.length-1], [su,sz]=mSquares(last);
-    const mark=(k,lab,txt)=>`<p class="mk-${k}">${sqHtml(k)}<span><b>${lab} · ${k==='g'?'right':'wrong'}.</b> ${k==='g'?'':mClean(txt)}</span></p>`;
-    d.className='dock dk-clue';
-    d.innerHTML=`<div class="dk-row"><b class="dk-q dk-bad"><i aria-hidden="true">✕</i> Wrong move</b>${stepPips(r)}</div>
-      <p class="dk-what">${mFailText(last.u,last.z)}</p>
-      <div class="dk-fb">${mark(su,'Toy',P.fbU[last.u])}${mark(sz,'Place',P.fbZ[last.z])}</div>
-      <button type="button" class="commit mnext">Try again · last try ›</button>`;
-  } else if(!r.done){
+  if(!r.done){
     d.className='dock dk-play';
     d.innerHTML=`<div class="dk-row"><b class="dk-q">${P.qs||'Your order'}</b>${stepPips(r)}</div>
       <div class="dk-tray">${P.toys.map(([u,lab])=>{ const U=mUnit(u); return `<div class="toyw"><button type="button" class="toy${MS.sel.u===u?' sel':''}" data-mt="${u}"><span class="band ${U.s}"></span>${toySvg({t:sprOf(U),side:U.s},40)}<b>${lab}</b></button>${P.cards[u]&&CARDBY[P.cards[u]]?`<button type="button" class="toyi" data-card="${P.cards[u]}" aria-label="${lab}: troop card">i</button>`:''}</div>`; }).join('')}</div>
@@ -434,10 +434,23 @@ function stepCommit(){
   if(!D.preview && window.markPlayed) markPlayed();
   const n=sTries(r,i), win=u===P.ans.u&&z===P.ans.z, out=!win&&n>=STRY, last=i===S.length-1, g=mGeneral();
   const Z=mz(z), AZ=mz(P.ans.z), placed={[u]:[Z[2],Z[3]]};
-  /* everything that reads the current decision is built here, before the save below moves on to the next one */
+  /* everything that reads the current decision is built here, before the save below moves on to the next one.
+     The verdict stays on screen until the player taps: what was right or wrong and why, a hint if a try is left, one button on. */
+  const [su,sz]=mSquares({u,z,s:i}), F=(P.fail&&(P.fail[u+'@'+z]||P.fail[z]))||{}, H=P.hint||{};
+  const mark=(k,what,name,txt)=>`<p class="mk-${k}">${sqHtml(k)}<span><b>${name} · ${k==='g'?'right '+what:'wrong '+what}.</b> ${k==='g'?'':mClean(txt)}</span></p>`;
+  const hint=[su!=='g'&&H.u, sz!=='g'&&H.z].filter(Boolean).join(' ');
+  const btn=t=>`<button type="button" class="commit cb-next">${t} ›</button>`;
+  const dock = win
+    ? {cls:'dock dk-scene dk-v dk-fbk won', html:()=>`<div class="dk-row"><b class="dk-q dk-good"><i aria-hidden="true">✓</i> ${n===1?'First try!':'Order carried out'}</b>${stepPips(r)}</div>
+        <p class="cb-b"><b>${mToyLabel(u)} → ${Z[1]}.</b> ${mClean(P.fbU[u])} ${mClean(P.fbZ[z])}</p>${btn('Watch what happens')}`}
+    : {cls:'dock dk-clue dk-fbk', html:()=>`<div class="dk-row"><b class="dk-q dk-bad"><i aria-hidden="true">✕</i> Wrong move</b>${stepPips(r)}</div>
+        ${F.b?`<p class="dk-what">${F.b}</p>`:''}
+        <div class="dk-fb">${mark(su,'toy',mToyLabel(u),P.fbU[u])}${mark(sz,'place',Z[1],P.fbZ[z])}</div>
+        ${!out&&hint?`<div class="dk-new"><span class="msl">Hint</span><p>${hint}</p></div>`:''}
+        ${btn(out?`See what ${g} did`:'Try again · last try')}`, pos:'mid'};
   const head = win
-    ? [{t:n===1?'First try!':'Order carried out',b:`${mClean(P.fbU[u])} ${mClean(P.fbZ[z])}`,verdict:'good',cur:startCur(placed),fire:[]}]
-    : mFailList(u,z,false);
+    ? [{t:'',b:'',verdict:'good',cur:startCur(placed),fire:[],dock}]
+    : mFailList(u,z,false).map(x=>Object.assign(x,{dock}));
   const real=mRevealList(), tail=(out?[{t:`What ${g} did`,b:`${mToyLabel(P.ans.u)} → ${AZ[1]}. ${mClean(P.fbU[P.ans.u])} ${mClean(P.fbZ[P.ans.z])}`,cur:startCur({[P.ans.u]:[AZ[2],AZ[3]]}),a:[],fire:[],ko:[],idle:[]}]:[]).concat((P.after||[]).map(k=>real[k]));
   if(win||out){
     r.sres=r.sres||[]; r.sres[i]=win?n:0; strack(`s-d${i+1}-${win?'hit':'miss'}`);
@@ -453,11 +466,11 @@ function stepCommit(){
   const next=()=>{ MS.busy=false; MS.sel={u:null,z:null}; mVerdictOff();
     if(r.done){ MS.phase='done'; mFinishReveal(); return; }
     MS.phase='play'; mBoardStart(true); mRender(); if(window.sheetTo&&sheetOn()) sheetTo('peek'); };
-  const play=()=>scenesPlay(head,{autoEnd:win?2400:1700,onEnd:()=>{
+  const play=()=>scenesPlay(head,{hold:true,onEnd:()=>{
     mVerdictOff();
-    if(!(win||out)){ MS.busy=false; MS.sel={u:null,z:null}; MS.phase='clue'; mRender(); return; }
+    if(!(win||out)){ MS.busy=false; MS.sel={u:null,z:null}; MS.phase='play'; mBoardStart(true); mRender(); if(window.sheetTo&&sheetOn()) sheetTo('peek'); return; }
     if(!tail.length) return next();
-    scenesPlay(tail,{endLabel:last?'Debrief':`Decision ${i+2}`,onEnd:next});
+    scenesPlay(tail,{label:'What happened',endLabel:last?'Debrief':`Decision ${i+2}`,onEnd:next});
   }});
   if(win) play();
   else setTimeout(()=>{ mVerdictOff(); document.querySelectorAll('#fx .vcross').forEach(e=>e.remove()); play(); },1300);
