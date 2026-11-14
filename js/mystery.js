@@ -22,9 +22,9 @@ function applyMystery(sc,m){
   sc.units.forEach(u=>{ Object.keys(u.p).forEach(i=>u.p[i]=pt(u.p[i])); });
   sc.states.forEach(s=>{ if(s.a) s.a=arr(s.a); });
   m.start=um(m.start);
-  m.zones=m.zones.map(z=>[z[0],z[1],z[2],Y(z[3]),z[4]]);
+  m.zones=m.zones.map(z=>[z[0],z[1],z[2],Y(z[3]),z[4]].concat(z.slice(5)));
   Object.values(m.fail||{}).forEach(f=>{ if(f.u) f.u=um(f.u); if(f.a) f.a=arr(f.a); });
-  (m.steps||[]).forEach(s=>{ if(s.start) s.start=um(s.start); if(s.zones) s.zones=s.zones.map(z=>[z[0],z[1],z[2],Y(z[3]),z[4]]);
+  (m.steps||[]).forEach(s=>{ if(s.start) s.start=um(s.start); if(s.zones) s.zones=s.zones.map(z=>[z[0],z[1],z[2],Y(z[3]),z[4]].concat(z.slice(5)));
     Object.values(s.fail||{}).forEach(f=>{ if(f.u) f.u=um(f.u); if(f.a) f.a=arr(f.a); }); });
   (m.scenes||[]).forEach(s=>{ if(s.u) s.u=um(s.u); if(s.a) s.a=arr(s.a); });
   (m.ground||[]).forEach(g=>{ if(g[2]) g[2]=[g[2][0],Y(g[2][1]),g[2][2]]; });
@@ -52,6 +52,9 @@ function mP(i){
 const sTries = (r,i) => r.tries.filter(t=>t.s===i).length;
 const sHits = r => (r.sres||[]).filter(x=>x>0).length;
 const SRANK = ['Cadet','Captain','General','Marshal of the board'];
+/* the order as a phrase inside a sentence: "the cavalry into the chasing dragoons". A toy's third entry and a zone's sixth
+   give the wording; without them the labels are used in lower case. */
+function mSay(u,z){ const t=mP().toys.find(x=>x[0]===u)||[u,u], Z=mz(z); return `${t[2]||'the '+t[1].toLowerCase()} ${Z[5]||Z[1].charAt(0).toLowerCase()+Z[1].slice(1)}`; }
 const strack = n => { if(!D.preview && window.track) track(n); };
 function mres(){ const k=mKey(); RES[k]=RES[k]||{tries:[],done:false}; RES[k].tries=RES[k].tries||[]; return RES[k]; }
 const mz = id => mP().zones.find(z=>z[0]===id);
@@ -437,21 +440,21 @@ function stepCommit(){
   /* everything that reads the current decision is built here, before the save below moves on to the next one.
      The verdict stays on screen until the player taps: what was right or wrong and why, a hint if a try is left, one button on. */
   const [su,sz]=mSquares({u,z,s:i}), F=(P.fail&&(P.fail[u+'@'+z]||P.fail[z]))||{}, H=P.hint||{};
-  const mark=(k,what,name,txt)=>`<p class="mk-${k}">${sqHtml(k)}<span><b>${name} · ${k==='g'?'right '+what:'wrong '+what}.</b> ${k==='g'?'':mClean(txt)}</span></p>`;
-  const hint=[su!=='g'&&H.u, sz!=='g'&&H.z].filter(Boolean).join(' ');
+  const mark=(k,what,txt)=>`<p class="mk-${k}">${sqHtml(k)}<span><b>${k==='g'?'Right':'Wrong'} ${what}.</b> ${k==='g'?'':mClean(txt).replace(/^Not this toy\.\s*/,'')}</span></p>`;
+  const hint=[su!=='g'&&H.u, sz!=='g'&&H.z].filter(Boolean).join(' '), said=mSay(u,z);   /* worded now: the dock is drawn after the save */
   const btn=t=>`<button type="button" class="commit cb-next">${t} ›</button>`;
   const dock = win
     ? {cls:'dock dk-scene dk-v dk-fbk won', html:()=>`<div class="dk-row"><b class="dk-q dk-good"><i aria-hidden="true">✓</i> ${n===1?'First try!':'Order carried out'}</b>${stepPips(r)}</div>
-        <p class="cb-b"><b>${mToyLabel(u)} → ${Z[1]}.</b> ${mClean(P.fbU[u])} ${mClean(P.fbZ[z])}</p>${btn('Watch what happens')}`}
+        <p class="cb-b">You sent ${said}. ${mClean(P.fbU[u])} ${mClean(P.fbZ[z])}</p>${btn('Watch what happens')}`}
     : {cls:'dock dk-clue dk-fbk', html:()=>`<div class="dk-row"><b class="dk-q dk-bad"><i aria-hidden="true">✕</i> Wrong move</b>${stepPips(r)}</div>
-        ${F.b?`<p class="dk-what">${F.b}</p>`:''}
-        <div class="dk-fb">${mark(su,'toy',mToyLabel(u),P.fbU[u])}${mark(sz,'place',Z[1],P.fbZ[z])}</div>
+        <p class="dk-what">You sent ${said}.${F.b?' '+F.b:''}</p>
+        <div class="dk-fb">${mark(su,'toy',P.fbU[u])}${mark(sz,'place',P.fbZ[z])}</div>
         ${!out&&hint?`<div class="dk-new"><span class="msl">Hint</span><p>${hint}</p></div>`:''}
         ${btn(out?`See what ${g} did`:'Try again · last try')}`, pos:'mid'};
   const head = win
     ? [{t:'',b:'',verdict:'good',cur:startCur(placed),fire:[],dock}]
     : mFailList(u,z,false).map(x=>Object.assign(x,{dock}));
-  const real=mRevealList(), tail=(out?[{t:`What ${g} did`,b:`${mToyLabel(P.ans.u)} → ${AZ[1]}. ${mClean(P.fbU[P.ans.u])} ${mClean(P.fbZ[P.ans.z])}`,cur:startCur({[P.ans.u]:[AZ[2],AZ[3]]}),a:[],fire:[],ko:[],idle:[]}]:[]).concat((P.after||[]).map(k=>real[k]));
+  const real=mRevealList(), tail=(out?[{t:`What ${g} did`,b:`${g} sent ${mSay(P.ans.u,P.ans.z)}. ${mClean(P.fbU[P.ans.u])} ${mClean(P.fbZ[P.ans.z])}`,cur:startCur({[P.ans.u]:[AZ[2],AZ[3]]}),a:[],fire:[],ko:[],idle:[]}]:[]).concat((P.after||[]).map(k=>real[k]));
   if(win||out){
     r.sres=r.sres||[]; r.sres[i]=win?n:0; strack(`s-d${i+1}-${win?'hit':'miss'}`);
     if(last){ r.done=true; r.seen=true; r.won=sHits(r)*2>S.length; strack('s-done');

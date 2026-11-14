@@ -3,7 +3,7 @@
    with terrain read through OAKOC (Observation, Avenues of approach, Key terrain, Obstacles, Cover and concealment).
    sit: the trigger. mett: one line per variable. ground: OAKOC notes for the Terrain row [tag, text].
    clues: extra intel by METT-T row (cat m/e/t/tr/ti), the first shown at the start, one more after each miss. Misses 1 to 4 unlock clues 1 to 4, so put an enemy troop card at 1 and one of yours at 3; anything past index 4 is never shown.
-   toys/zones/ans/near/start/fbU/fbZ: the puzzle. fail[zone]: what plays out ($ = the toy you placed).
+   toys/zones/ans/near/start/fbU/fbZ: the puzzle. A toy's third entry and a zone's sixth are how they read inside a sentence. fail[zone]: what plays out ($ = the toy you placed).
    scenes: the real battle, play by play. s = state index, u = position overrides, fire = [from, to, kind?], ko = extra casualties.
    deduce: the commander's estimate, fact and so-what, shown in the debrief. cards: unit to troop card. */
 
@@ -38,8 +38,8 @@ PGD.mystery(1,{
     ti:'Tonight to set up. He attacks at first light.'},
   ground:[['Key terrain','The first rise, where a main line can stand.',[200,142,46]],['Avenue of approach','The road from the south, straight across open pasture.',[172,300,34]],['Obstacle','A river behind you. Nobody can run far.',[200,16,30]]],
   q:'Tarleton always charges. Which toy, placed where, turns that charge into a trap?',
-  toys:[['a_militia','Militia'],['a_cont','Continentals'],['a_cav','Cavalry']],
-  zones:[['skirm','Open pasture',196,262,26],['front','Before the first rise',204,188,22],['rise1','On the first rise',200,136,24],['rise2','Behind the second rise',272,40,22]],
+  toys:[['a_militia','Militia','the militia'],['a_cont','Continentals','the Continentals'],['a_cav','Cavalry','the cavalry']],
+  zones:[['skirm','Open pasture',196,262,26,'out into the open pasture'],['front','Before the first rise',204,188,22,'just in front of the first rise'],['rise1','On the first rise',200,136,24,'onto the first rise'],['rise2','Behind the second rise',272,40,22,'behind the second rise']],
   ans:{u:'a_militia',z:'front'},
   near:{u:[],z:['skirm','rise1']},
   start:{a_militia:[64,112],a_cont:[104,112],a_cav:[146,104],a_rifles:[146,262],a_morgan:[236,112]},
@@ -91,7 +91,7 @@ PGD.mystery(1,{
      intel:[['What dragoons do to runaways','After Camden, five months earlier, Tarleton\'s horsemen chased fleeing militia for 20 miles.'],
             ['Your reserve','Washington\'s cavalry is still out of sight behind the second rise.'],
             ['The main line','The British infantry are still coming on toward your Continentals on the first rise.']],
-     zones:[['chase','Into the dragoons',296,206,22],['beside','Beside the Continentals',128,150,20],['centre','At the infantry',200,208,22],['right','Far right flank',70,96,20]],
+     zones:[['chase','Into the dragoons',296,206,22,'into the chasing dragoons'],['beside','Beside the Continentals',128,150,20,'up beside the Continentals'],['centre','At the infantry',200,208,22,'at the British infantry'],['right','Far right flank',70,96,20,'out to the far right flank']],
      ans:{u:'a_cav',z:'chase'},
      hint:{u:'The dragoons are on horseback. What can catch them?',z:'Strike where the dragoons are busy looking the other way.'},
      fbU:{a_cav:'Right toy. Only horsemen are fast enough to catch horsemen.',
@@ -110,7 +110,7 @@ PGD.mystery(1,{
      intel:[['The enemy','The British line is breathless and out of formation. The Highlanders on your right are still fighting.'],
             ['Already moving','The Continentals are going in with the bayonet. The cavalry is swinging round your left.'],
             ['Your militia','Re-formed behind the hill, and not yet back in the fight.']],
-     zones:[['r71','Round your right',112,112,22],['left','Round your left',318,170,22],['centre','Behind the Continentals',206,64,20],['river','Back toward the river',170,22,18]],
+     zones:[['r71','Round your right',112,112,22,'round your right, onto the Highlanders'],['left','Round your left',318,170,22,'round your left'],['centre','Behind the Continentals',206,64,20,'in behind the Continentals'],['river','Back toward the river',170,22,18,'back toward the river']],
      ans:{u:'a_militia',z:'r71'},
      hint:{u:'Look for the troops who are not in the fight yet.',z:'One British unit is still fighting. Go for its open side.'},
      fbU:{a_militia:'Right toy. The militia have re-formed and are the only troops not yet back in the fight.',
