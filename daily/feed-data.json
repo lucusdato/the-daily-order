@@ -87,6 +87,18 @@
    "war": "American Revolution",
    "year": "1781",
    "place": "Virginia, United States"
+  },
+  {
+   "day": 15,
+   "war": "Anglo-Zulu War",
+   "year": "1879",
+   "place": "Natal, South Africa"
+  },
+  {
+   "day": 16,
+   "war": "American Civil War",
+   "year": "1863",
+   "place": "Mississippi, United States"
   }
  ]
 }

@@ -1,4 +1,4 @@
-/* The Daily Order: mystery battles for days 12 to 14 (Alesia, Kursk, Yorktown).
+/* The Daily Order: mystery battles for days 12 to 16 (Alesia, Kursk, Yorktown, Rorke's Drift, Vicksburg).
    Positions are written for a 400 square board and stretched to the 600 tall board when loaded. */
 
 PGD.mystery(24,{
@@ -399,4 +399,326 @@ PGD.mystery(27,{
            ['National Park Service: Colonials and Patriots, victory at Yorktown','https://www.nps.gov/parkhistory/online_books/colonials-patriots/introl.htm'],
            ['World History Encyclopedia: Siege of Yorktown','https://worldhistory.org/article/2532/siege-of-yorktown']],
   cards:{am_cont:'cont1781',am_fr:'frinf1781',am_laf:'cont1781',am_fleet:'frfleet1781',br_corn:'redcoat1781',br_ny:'redcoat1781',br_navy:'rnfleet1781'}
+});
+
+PGD.mystery(10,{
+  war:'Anglo-Zulu War',
+  general:'John Chard',
+  pitch:'You are <b>John Chard</b>. A Zulu army has just wiped out the main British camp, and thousands of warriors are heading for your small post and its hospital. What you do in the next few hours decides who lives.',
+  H:600,
+  terrain(){
+    let s=felt('#a4a46a',600);
+    s+=river('M0 39 Q200 69 400 30',16);
+    s+=`<path d="M0 600 Q60 465 140 450 Q200 435 260 450 Q340 465 400 600 Z" fill="#8c8160"/>`;
+    s+=mtn(200,570,70)+mtn(100,588,40)+mtn(320,588,44);
+    s+=trees(1879,10,[60,200,90,190],()=>true,['#5b7a3a','#6b8a44']);
+    s+=`<rect x="110" y="240" width="70" height="57" fill="#efe3c4" stroke="#5a4a35" stroke-width="1.5"/><path d="M106 240 L145 210 L184 240 Z" fill="#9a8b6a" stroke="#5a4a35"/>`;
+    s+=`<rect x="236" y="225" width="84" height="60" fill="#efe3c4" stroke="#5a4a35" stroke-width="1.5"/><path d="M232 225 L278 192 L324 225 Z" fill="#9a8b6a" stroke="#5a4a35"/>`;
+    s+=`<circle cx="350" cy="294" r="28" fill="none" stroke="#7a7466" stroke-width="5"/>`;
+    s+=`<path d="M110 225 L236 210 M110 321 L180 321 L236 300 L330 309" stroke="#c4b48a" stroke-width="6" stroke-linecap="round" fill="none"/>`;
+    s+=`<path d="M230 214 L230 302" stroke="#b08a52" stroke-width="5" stroke-dasharray="6 3" fill="none"/>`;
+    s+=road('M330 309 Q370 330 400 380');
+    s+=label(145,318,'Hospital',9)+label(278,300,'Storehouse',9)+label(350,340,'Stone kraal',8)+label(200,22,'Buffalo River',9)+label(200,500,'Oskarberg',10)+label(372,372,'To Helpmekaar',8);
+    s+=compass(26,560);
+    return s+end(600);
+  },
+  ranges:{rifle:260},
+  lead:'Britain has invaded the Zulu kingdom. You are Lieutenant John Chard, an engineer left in charge of a small supply post and hospital at Rorke\'s Drift, by a river crossing on the border. The main British army camped at Isandlwana, a few miles away.',
+  sit:'22 January 1879, about 4:20 p.m. Your walls of mealie bags link the hospital, the storehouse and a stone cattle kraal. But the horsemen sent out to watch have ridden off, and the whole Native Contingent has run after them. About 150 men are left, many of them sick, and the Zulus are minutes away.',
+  mett:{
+    m:'Keep the garrison and the sick alive until help comes.',
+    e:'Three to four thousand Zulu warriors, mostly armed with spears and shields, a few with old guns.',
+    t:'Two thatched buildings joined by walls of sacks and boxes, a stone cattle kraal, and a rocky hill, the Oskarberg, just to the south.',
+    tr:'B Company of the 24th Regiment, some sick and wounded, and a few others. About 150 men in all.',
+    ti:'Through the night. The main British column is the nearest help.'},
+  ground:[['Key terrain','The storehouse, the stronger of the two buildings.',[278,170,34]],
+          ['Obstacle','The walls of mealie bags linking the buildings.',[200,176,50]],
+          ['Avenue of approach','The Oskarberg, the rocky hill the Zulus will come round.',[200,318,44]]],
+  q:'Your walls are now far too long for the men you have. Which toy, sent where, fixes that?',
+  qs:'Too few men: which toy goes where?',
+  toys:[['b_res','Bromhead\'s reserve','Bromhead\'s reserve'],['b_north','North wall','the men on the north wall'],['b_south','South wall','the men on the south wall']],
+  zones:[['mid','A wall across the middle',228,178,20,'to build a wall of biscuit boxes across the middle'],['kraal','Into the empty kraal',350,196,20,'into the empty kraal'],['chase','After the runaways',384,300,20,'off after the men who ran'],['hill','Up onto the hill',200,318,22,'up onto the Oskarberg to meet them']],
+  ans:{u:'b_res',z:'mid'},
+  start:{b_north:[175,138],b_south:[205,216],b_hosp:[145,180],b_res:[300,128],b_chard:[300,176],b_nnc:[398,250,'off'],
+         z_1:[200,392,'off'],z_2:[20,200,'off'],z_rifles:[250,392,'off'],z_cmd:[330,392,'off']},
+  fbU:{b_res:'Right toy. The reserve is the one group not holding a wall, so it is free to build.',
+       b_north:'Not this toy. The north wall men are holding their stretch. Take them off it, and it stands empty.',
+       b_south:'Not this toy. The south wall faces the hill the Zulus are coming round. It needs every man it has.'},
+  fbZ:{mid:'Right place. A wall across the middle gives you a shorter line to fall back to if the outer walls cannot be held.',
+       kraal:'Filling the kraal keeps the line as long as ever, with even fewer men to spare.',
+       chase:'The men who ran are on horseback and long gone. Chasing them only leaves the post emptier.',
+       hill:'On the open hillside your rifles lose the walls that make them deadly.'},
+  fail:{
+    'b_north@mid':{u:{z_1:[150,146]},fire:[['z_1','b_hosp','clash'],['b_hosp','z_1','rifle']],ko:[],idle:['$'],
+      b:'The north wall men go off to build and leave their wall bare. When the Zulus swing round the hospital, they find that stretch empty.'},
+    'b_north@kraal':{u:{z_1:[150,146]},fire:[['z_1','b_hosp','clash'],['b_hosp','z_1','rifle']],ko:[],idle:['$'],
+      b:'The north wall men move into the kraal. The line is just as long, and now its north side is bare. The Zulus come round the hospital and over the empty wall.'},
+    'b_north@chase':{u:{z_1:[150,146]},fire:[['z_1','b_hosp','clash'],['b_hosp','z_1','rifle']],ko:[],idle:['$'],
+      b:'The north wall men run off after the deserters, who are mounted and long gone. The Zulus come round the hospital and find the north wall empty.'},
+    'b_north@hill':{u:{z_1:[200,330]},fire:[['z_1','$','clash']],ko:['$'],
+      b:'The north wall men climb the hill and meet the Zulus on open ground, with no wall to fight from. They are swept away.'},
+    'b_south@mid':{u:{z_1:[212,206]},fire:[['z_1','$','clash'],['$','z_1','rifle']],ko:[],
+      b:'The south wall men pull back to build. The first rush comes round the hill and straight over the empty south wall, into the men still stacking boxes.'},
+    'b_south@kraal':{u:{z_1:[205,200]},fire:[['b_hosp','z_1','rifle'],['b_north','z_1','rifle']],ko:[],idle:['$'],
+      b:'The south wall men leave to fill the kraal. The first rush comes round the hill and over the empty south wall into the yard.'},
+    'b_south@chase':{u:{z_1:[205,200]},fire:[['b_hosp','z_1','rifle'],['b_north','z_1','rifle']],ko:[],idle:['$'],
+      b:'The south wall men run off after the deserters. The first rush comes round the hill and over the empty south wall into the yard.'},
+    'b_south@hill':{u:{z_1:[200,330]},fire:[['z_1','$','clash']],ko:['$'],
+      b:'The south wall men climb the hill and meet the Zulus on open ground, with no wall to fight from. They are swept away.'},
+    'b_res@kraal':{u:{z_1:[150,146]},fire:[['z_1','b_hosp','clash'],['b_hosp','z_1','rifle']],ko:[],idle:['$'],
+      b:'The reserve fills the kraal. The line is as long as ever and nobody is spare. When the Zulus swing round to the north-west wall, there is no one left to send.'},
+    'b_res@chase':{u:{z_1:[150,146]},fire:[['z_1','b_hosp','clash'],['b_hosp','z_1','rifle']],ko:[],idle:['$'],
+      b:'The reserve runs off after the men who fled. They are mounted and long gone, and the post has even fewer men when the Zulus come round the hill.'},
+    'b_res@hill':{u:{z_1:[200,330]},fire:[['z_1','$','clash']],ko:['$'],
+      b:'The reserve climbs the hill and meets the Zulus on open, rocky ground, with no wall to fight from. It is swept away, and the post is weaker than ever.'}},
+  /* Three decisions (see tools/FORMAT.md). Decision 2 is the puzzle above.
+     Every zone is a real move: none sits where a toy already stands. Texts stay inside what the scenes and sources say. */
+  stepsLive:true,
+  steps:[
+    {from:0, start:{b_north:[330,96],b_south:[300,96],b_res:[360,112],b_nnc:[60,100],b_chard:[200,50]}, after:[0,1],
+     qs:'Run or stay: which toy goes where?',
+     sit:'22 January 1879, about 3:15 p.m. Two riders gallop in with terrible news: the main camp at Isandlwana has been wiped out, and part of the Zulu army is coming your way. You have about 400 men, a hospital full of sick, ox wagons and piles of stores.',
+     q:'Which toy, sent where, gives your men the best chance?',
+     intel:[['The enemy','Thousands of Zulu warriors, fast on foot. They have already marched a long way today.'],
+            ['The road','The next British post, Helpmekaar, is about 16 kilometres away across open country.'],
+            ['Your stores','Heavy sacks of mealies (maize), big wooden biscuit boxes and two wagons.']],
+     toys:[['b_res','B Company','B Company'],['b_nnc','Native Contingent','the Native Contingent'],['b_hosp','Walking wounded','the walking wounded']],
+     zones:[['wall','Wall the buildings together',208,178,22,'to wall the hospital and storehouse together'],['road','Retreat to Helpmekaar',382,262,20,'off down the road to Helpmekaar'],['ponts','Hold the river crossing',130,36,20,'down to hold the river crossing'],['hill','Up the Oskarberg',200,322,22,'up onto the Oskarberg']],
+     ans:{u:['b_res','b_nnc','b_hosp'],z:'wall'},
+     hint:{z:'Ox wagons crawl. Think about where rifles count for most.'},
+     fbU:{b_res:'Right toy. Every man is needed for this.',
+          b_nnc:'Right toy. Every man is needed for this.',
+          b_hosp:'Right toy. Every man is needed, and the sick who could hold a rifle took a place at the walls.'},
+     fbZ:{wall:'Right place. Behind walls every rifle counts. In the open, a few hundred men are no match for thousands.',
+          road:'Ox wagons full of sick men crawl. Fast Zulu warriors would catch the column in open country.',
+          ponts:'The Zulus are expected from behind the hill, not across the river. The sick and the stores would be left unguarded.',
+          hill:'On an open hillside your men have no walls, and the sick and the stores are left behind.'},
+     fail:{wall:{ko:[]},road:{ko:[],idle:['$']},ponts:{ko:[],idle:['$']},hill:{ko:[],idle:['$']}}},
+    {after:[2,3,4],
+     hint:{u:'Look for the men who are not already holding a stretch of wall.',z:'You cannot hold everything with 150 men. Think about a shorter line.'},
+     intel:[['Half gone','The horsemen and the Native Contingent have run. About 150 men are left to hold walls built when there were more than 400.'],
+            ['The hill','The Zulus are coming round the hill to the south. They will reach the walls within minutes.'],
+            ['Your reserve','Bromhead has a few men in reserve by the storehouse, not yet holding any wall.']]},
+    {from:4, after:[5,6,7,8],
+     qs:'Shot from behind: which toy goes where?',
+     sit:'About 6 p.m. Zulu marksmen on the rocks of the hill are firing down into the post. Other warriors hold the far side of the north wall, and the hospital is under attack. Men on the north wall keep falling.',
+     q:'The north wall is being hit from in front and from behind. Which toy, sent where, stops the losses?',
+     intel:[['From behind','The marksmen are about 400 yards away on the hill. Their aim is poor, but the men on the north wall have their backs to them.'],
+            ['The boxes','Your wall of biscuit boxes now runs across the middle of the post, beside the storehouse.'],
+            ['The bush','There was no time to cut down the bush. Warriors use it to creep right up to the wall.']],
+     toys:[['b_north','North wall','the men on the north wall'],['b_res','Reserve at the boxes','the reserve'],['b_hosp','Hospital defenders','the hospital defenders']],
+     zones:[['back','Behind the boxes',266,136,20,'back behind the biscuit boxes'],['rocks','Clear the rocks',222,280,22,'up the hill to clear the rocks'],['bush','Clear the bush',104,70,20,'out into the bush to clear it'],['kraal','Out to the kraal',350,196,20,'out to the far end of the kraal']],
+     ans:{u:'b_north',z:'back'},
+     hint:{u:'Ask which men are being hit in the back.',z:'You built something earlier for exactly this moment.'},
+     fbU:{b_north:'Right toy. These are the men being hit from behind.',
+          b_res:'Not this toy. The reserve is already at the boxes. The men in danger are the ones on the north wall.',
+          b_hosp:'Not this toy. The hospital defenders are fighting room by room to save the patients. They cannot leave them.'},
+     fbZ:{back:'Right place. A shorter line means more rifles for every yard of wall, and it is the line you built for this.',
+          rocks:'Up the open hillside, men would be hit by the marksmen and by thousands of warriors, with no wall at all.',
+          bush:'Out in the bush, among the warriors hiding there, a few men would be cut off and killed.',
+          kraal:'The kraal is at the far end of the post. Moving there leaves the north wall empty and solves nothing.'},
+     fail:{back:{ko:[]},rocks:{ko:['$'],fire:[['z_rifles','$','rifle']]},bush:{ko:['$'],fire:[['z_2','$','clash']]},kraal:{ko:[],idle:['$'],fire:[['z_2','b_res','clash']]}}}],
+  clues:[
+    {cat:'tr',t:'Half the men gone',b:'The horsemen and the Native Contingent have run. About 150 men are left to hold walls built when there were more than 400.'},
+    {cat:'e',card:'zulu1879'},
+    {cat:'t',t:'Two buildings',b:'The storehouse is the stronger building. The hospital end of the post, with its small rooms full of sick men, is the hardest to hold.'},
+    {cat:'tr',card:'b24_1879'},
+    {cat:'m',t:'Shrink the line',b:'A wall you cannot man is no wall at all. Keep the men on the walls where they are, and build a shorter line across the middle that you can fall back to.'}],
+  deduce:[['The horsemen and the Native Contingent have gone.','About 150 men are left for walls built for 400.'],
+          ['Every stretch of wall already has its men.','Only the reserve is free.'],
+          ['A line you cannot man is a line you cannot hold.','Use the reserve to build a shorter line across the middle.']],
+  /* The real battle. North is up. The Buffalo River is to the north; the Oskarberg is just south of the post.
+     The hospital is the west building, the storehouse the east one, with the stone kraal beyond it. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={b_north:[175,138],b_south:[205,216],b_hosp:[145,180],b_res:[300,128],b_chard:[300,176],b_nnc:[350,196],
+           z_1:[200,392,'off'],z_2:[20,200,'off'],z_rifles:[250,392,'off'],z_cmd:[330,392,'off']};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{},{a:[['g',330,96,180,134],['g',300,96,204,210],['g',360,112,300,126],['g',60,100,344,192]],t:'Stay and fight',b:'About 3:15 p.m. two riders bring news of the disaster at Isandlwana. Chard, Bromhead and Dalton agree that wagons full of sick men would be caught in the open. They stay, and build walls of mealie bags, biscuit boxes and two wagons between the hospital and the storehouse.'});
+    add(0,{b_nnc:[398,250,'exit']},{a:[['gd',350,196,394,248]],t:'Left alone',b:'About 4:20 p.m. there is the noise of a fight behind the hill. The horsemen sent out to watch ride off to Helpmekaar, and the Native Contingent leaves the kraal and runs too. About 150 men are left.'});
+    add(1,{b_res:[228,178]},{a:[['g',300,128,232,174]],t:'Biscuit boxes',b:'Chard sees that his walls are now far too long for the men left. He starts a new wall of biscuit boxes across the middle of the post, so the hospital end can be given up if it has to be.'});
+    add(1,{z_1:[120,128]},{a:[['t',200,392,206,236,120,132]],t:'The first rush',b:'About 4:30 p.m. some 500 or 600 warriors come round the hill and run at the south wall. Heavy volleys stop them about 50 yards out. Most swing round the hospital and rush the north-west wall, and are driven back into the bush.',
+      fire:[['b_south','z_1','rifle'],['b_north','z_1','rifle'],['b_hosp','z_1','rifle'],['z_1','b_north','clash']]});
+    add(1,{z_1:[130,150],z_2:[180,104],z_rifles:[250,290],z_cmd:[330,330]},{a:[['t',20,200,176,108],['t',250,392,250,296]],t:'From the rocks',b:'The main body arrives. Marksmen line the rocks on the hill and fire into the post from behind. Others creep up through the bush, and the two sides fight hand to hand across the north wall and at the hospital.',
+      fire:[['z_rifles','b_north','rifle'],['z_2','b_north','clash'],['b_north','z_2','rifle'],['z_1','b_hosp','clash'],['b_hosp','z_1','clash'],['b_north','z_1','rifle']]});
+    add(2,{b_north:[262,138],z_2:[190,140]},{a:[['g',175,138,258,138],['t',180,104,190,136]],t:'Behind the boxes',b:'About 6 p.m., with men being hit from behind by the marksmen on the hill, Chard pulls the north wall back behind the biscuit boxes. The yard in front of the hospital is given up.',
+      fire:[['z_rifles','b_north','rifle'],['b_north','z_2','rifle'],['b_res','z_2','rifle']]});
+    add(2,{b_hosp:[196,200],z_1:[160,182]},{a:[['g',145,180,192,198]],t:'Through the walls',b:'The Zulus set the hospital roof alight and break in. Inside, the defenders hack holes through the walls from room to room, drag the patients through, and get most of them out of a window and across the yard.',
+      fire:[['z_1','b_hosp','clash'],['b_hosp','z_1','clash'],['b_res','z_1','rifle']]});
+    add(2,{b_hosp:[258,200],b_res:[276,128],b_south:[340,200],z_1:[214,196],z_2:[236,150]},{a:[['g',196,200,254,200],['g',205,216,336,200]],t:'The last line',b:'As it gets dark, two heaps of mealie bags become a small redoubt that can fire in every direction. Pressed from all sides, the men fall back to the middle and then the inner wall of the kraal. The light of the burning hospital helps them aim.',
+      fire:[['z_2','b_north','clash'],['b_north','z_2','rifle'],['z_1','b_hosp','clash'],['b_hosp','z_1','rifle'],['b_res','z_2','rifle']]});
+    add(2,{z_1:[0,392,'exit'],z_2:[0,300,'exit'],z_rifles:[120,400,'exit'],z_cmd:[60,400,'exit']},{a:[['td',214,196,40,380]],t:'Dawn',b:'The attacks die away after midnight, and by dawn the Zulus have gone back over the hill. About 8 a.m. the British relief column arrives. Seventeen defenders are dead, and about 350 Zulus. Eleven defenders win the Victoria Cross, Britain\'s highest award for bravery.'});
+    return S;
+  })(),
+  video:{id:'WYtPfhWREsg',t:'Victory From Disaster: Last Stand at Rorke\'s Drift',ch:'Battle Guide',v:1452419},
+  sources:[['National Army Museum: the defence of Rorke\'s Drift','https://www.nam.ac.uk/explore/rorkes-drift'],
+           ['Chard\'s official report, 25 January 1879 (South African Military History Society)','https://samilitaryhistory.org/misc/rorke.html'],
+           ['British Battles: Battle of Rorke\'s Drift','https://www.britishbattles.com/zulu-war/battle-of-rorkes-drift/'],
+           ['Wikipedia: Battle of Rorke\'s Drift','https://en.wikipedia.org/wiki/Battle_of_Rorke%27s_Drift']],
+  cards:{b_north:'b24_1879',b_south:'b24_1879',b_hosp:'b24_1879',b_res:'b24_1879',b_nnc:'nnc1879',z_1:'zulu1879',z_2:'zulu1879',z_rifles:'zmark1879'}
+});
+
+PGD.mystery(12,{
+  war:'American Civil War',
+  general:'Ulysses S. Grant',
+  pitch:'You are <b>Ulysses S. Grant</b>. A fortress city on high bluffs blocks the Mississippi River, and a whole winter of trying has failed. Find another way to take it.',
+  H:600,
+  terrain(){
+    let s=felt('#9fae6c',600);
+    s+=trees(1863,26,[0,62,0,600],()=>true,['#3b6b2b','#4b7a35'])+trees(63,10,[120,180,0,70],()=>true,['#3b6b2b','#4b7a35']);
+    s+=river('M190 0 Q200 180 180 330 Q170 450 190 600',5);
+    s+=river('M90 0 Q60 90 110 165 Q150 225 100 300 Q60 375 110 450 Q140 510 110 600',22);
+    s+=`<path d="M152 204 L240 282 L338 276" fill="none" stroke="#5a4630" stroke-width="2.2" stroke-dasharray="7 4"/>`;
+    s+=hill(156,196,20,16,2)+hill(240,282,20,13,2);
+    s+=house(146,198)+house(156,206,'#8a3a2a')+house(152,188)+house(334,272)+house(344,280,'#8a3a2a');
+    s+=label(166,176,'Vicksburg',11)+label(342,258,'Jackson',10)+city(178,495,'Port Gibson',9,-8)+city(275,375,'Raymond',9,-8);
+    s+=label(140,372,'Grand Gulf',9)+label(164,506,'Bruinsburg',9)+label(36,374,'Hard Times',8)+label(50,80,'Milliken\'s Bend',8)+label(166,98,'Snyder\'s Bluff',8);
+    s+=label(242,306,'Champion Hill',8)+label(204,120,'Big Black River',8,-86)+label(34,560,'Louisiana',10)+label(300,560,'Mississippi',10)+label(30,170,'Swamps and bayous',8,-86);
+    s+=compass(372,40);
+    return s+end(600);
+  },
+  lead:'Vicksburg stands on high bluffs above the Mississippi River, and its heavy guns stop Union ships from using the river. While it holds, the Confederacy stays joined across the river. All winter your army has tried to reach it through the swamps and bayous, and every try has failed.',
+  sit:'April 1863. Your engineers have built a rough road through the Louisiana swamps, and your corps are marching down the west bank to Hard Times, well below the city. But an army cannot cross the Mississippi on foot, and all of Admiral Porter\'s gunboats and transports are upstream, north of the city guns.',
+  mett:{
+    m:'Take Vicksburg and open the Mississippi River.',
+    e:'Pemberton\'s army in and around Vicksburg, with heavy guns on the bluffs. More Confederates gathering at Jackson, the state capital, to the east.',
+    t:'A great river with swamps and bayous to the north. High bluffs at the city. Dry ground on the east bank, south of it.',
+    tr:'The Army of the Tennessee in three corps, Porter\'s gunboats and transports, and Grierson\'s cavalry.',
+    ti:'Spring. The winter tries have already used up months.'},
+  ground:[['Key terrain','The bluffs at Vicksburg, lined with heavy guns over the river.',[142,130,30]],
+          ['Obstacle','The swamps and bayous north of the city, where every winter try failed.',[170,40,40]],
+          ['Avenue of approach','Dry ground on the east bank, south of the city, at Bruinsburg.',[142,326,28]]],
+  q:'Your army is marching south, but its boats are north of the city. Which toy, sent where, gets the army across the river?',
+  qs:'Cross the river: which toy goes where?',
+  toys:[['un_boats','Porter\'s gunboats','Porter\'s gunboats and transports'],['un_sher','Sherman\'s corps','Sherman\'s corps'],['un_grier','Grierson\'s cavalry','Grierson\'s cavalry']],
+  zones:[['run','Past the guns at night',86,232,22,'past the city guns at night, down to Hard Times'],['swamps','Up the Yazoo swamps',170,40,22,'up into the Yazoo swamps'],['bluffs','Under the city bluffs',128,160,20,'straight in under the city bluffs'],['lake','Lake Providence bayous',24,26,20,'back upriver to the Lake Providence bayous']],
+  ans:{u:'un_boats',z:'run'},
+  start:{un_sher:[50,60],un_mcp:[58,150],un_mccl:[56,180],un_boats:[80,48],un_grier:[330,22],un_grant:[36,118],
+         cs_batt:[140,124],cs_pemb:[168,150],cs_pcmd:[176,128],cs_gulf:[112,258],cs_john:[340,196]},
+  fbU:{un_boats:'Right toy. The army can walk to Hard Times, but only boats can carry it over the river.',
+       un_sher:'Not this toy. Two corps are already marching south. More men do not help if there is nothing to carry them across.',
+       un_grier:'Not this toy. Horses cannot carry an army over a river this wide.'},
+  fbZ:{run:'Right place. The guns are deadly by day, but a fast ship on a dark night is a hard target. Below the city, the boats meet the army.',
+       swamps:'The Yazoo swamps are where the winter tries already failed.',
+       bluffs:'Under the bluffs, everything is in point-blank range of the heavy guns above.',
+       lake:'The Lake Providence route is a long way round through bayous, and it has already proved hopeless.'},
+  fail:{
+    'un_boats@swamps':{ko:[],idle:['$'],
+      b:'The boats push back up into the Yazoo swamps, where every route has already failed. The army waits at Hard Times with no way across.'},
+    'un_boats@bluffs':{fire:[['cs_batt','$','cannon']],ko:['$'],
+      b:'The boats stop under the bluffs to land troops right below the city. The heavy guns above them cannot miss.'},
+    'un_boats@lake':{ko:[],idle:['$'],
+      b:'The boats steam back upriver toward the Lake Providence bayous. Weeks pass, and the army is still on the wrong bank.'},
+    'un_sher@run':{ko:[],idle:['$'],
+      b:'Sherman\'s corps joins the march south. Now there are more men at Hard Times, but still no boats to carry them over.'},
+    'un_sher@swamps':{fire:[['cs_batt','$','cannon']],ko:[],
+      b:'Sherman tries the Yazoo swamps again. Mud, flooded bayous and the guns on the bluffs stop him, just as they did all winter.'},
+    'un_sher@bluffs':{fire:[['cs_batt','$','cannon'],['cs_pemb','$','musket']],ko:['$'],
+      b:'Sherman\'s men try to cross right under the city. The bluffs are steep, the guns on top are waiting, and the attack is cut to pieces.'},
+    'un_sher@lake':{ko:[],idle:['$'],
+      b:'Sherman heads back upriver to dig through the Lake Providence bayous. Months of digging there have already come to nothing.'},
+    'un_grier@run':{ko:[],idle:['$'],
+      b:'Grierson\'s horsemen ride down to Hard Times. They can water their horses at the river, but nobody can cross it.'},
+    'un_grier@swamps':{ko:[],idle:['$'],
+      b:'Horsemen in a swamp are stuck. Grierson\'s men flounder in the flooded bayous north of the city and get nowhere.'},
+    'un_grier@bluffs':{fire:[['cs_batt','$','cannon'],['cs_pemb','$','musket']],ko:['$'],
+      b:'Grierson\'s horsemen ride at the bluffs below the city, and the guns on top cut them down.'},
+    'un_grier@lake':{ko:[],idle:['$'],
+      b:'Grierson\'s men ride back upriver to the bayous. Horses are no help in digging a way through the swamps.'}},
+  /* Three decisions (see tools/FORMAT.md). Decision 1 is the puzzle above.
+     Every zone is a real move: none sits where a toy already stands. Texts stay inside what the scenes and sources say. */
+  stepsLive:true,
+  steps:[
+    {after:[0,1,2,3,4,5,6,7],
+     hint:{u:'Ask what the army is missing, not who could join it.',z:'The guns are deadly by day. Think about when a moving ship is hardest to hit.'},
+     intel:[['The road south','A rough road now runs about 70 miles through the swamps on the Louisiana side, to Hard Times, below the city.'],
+            ['The guns','Heavy guns on the bluffs cover the river in front of the city. By day, nothing gets past them.'],
+            ['The winter','Five tries to get round the city through the swamps and bayous have all failed.']]},
+    {from:7, after:[8,9,10,11],
+     qs:'Between two armies: which toy goes where?',
+     sit:'May 1863. Your army is across the river and has won at Port Gibson and Raymond. Pemberton\'s army is near Edwards Station, between you and Vicksburg. Behind you, General Johnston is due at Jackson any day with more men.',
+     q:'There is an enemy army on each side of you. Which toy, sent where, keeps them from joining up?',
+     intel:[['To the west','Pemberton\'s army is near Edwards Station, on the railroad between Jackson and Vicksburg. McClernand\'s corps is closest to it.'],
+            ['To the east','Johnston is due at Jackson with reinforcements within a couple of days. For now, the Confederates there are few.'],
+            ['Your orders','Your first orders were to take Grand Gulf, then go south and join General Banks against Port Hudson. Banks says he is not ready.']],
+     toys:[['un_mcp','McPherson\'s corps','McPherson\'s corps'],['un_sher','Sherman\'s corps','Sherman\'s corps'],['un_mccl','McClernand\'s corps','McClernand\'s corps']],
+     zones:[['jackson','East to Jackson',322,204,22,'east to take Jackson'],['vburg','West to Vicksburg',176,170,22,'west, straight at Vicksburg'],['banks','South to Banks',175,385,20,'south to join Banks at Port Hudson'],['gulf','Back to Grand Gulf',112,262,18,'back to Grand Gulf to guard the river']],
+     ans:{u:['un_mcp','un_sher'],z:'jackson'},
+     hint:{u:'One of your corps is already watching Pemberton.',z:'One enemy army is still small, but it is growing. Deal with it first.'},
+     fbU:{un_mcp:'Right toy. McPherson\'s corps is closest to the road east.',
+          un_sher:'Right toy. Sherman\'s corps is free to march.',
+          un_mccl:'Not this toy. McClernand\'s corps is the one facing Pemberton. Move it, and nothing watches the Vicksburg side.'},
+     fbZ:{jackson:'Right place. Strike Jackson before Johnston\'s men arrive, and the railroad that feeds Vicksburg goes with it.',
+          vburg:'Turn your back on Jackson, and Johnston can march up behind you while you face the city.',
+          banks:'Going south means waiting for Banks while both Confederate armies grow and join up.',
+          gulf:'Pulling back to the river gives both Confederate armies time to join up.'},
+     fail:{jackson:{ko:[]},vburg:{u:{cs_john:[285,215]},fire:[['cs_pemb','$','musket']],ko:[]},banks:{ko:[],idle:['$']},gulf:{ko:[],idle:['$']}}},
+    {from:11, after:[12,13],
+     qs:'The fortress holds: which toy goes where?',
+     sit:'Late May 1863. You have chased Pemberton back inside the Vicksburg earthworks. You stormed them on 19 May and again on 22 May, and both attacks were thrown back with heavy losses.',
+     q:'The walls will not fall to a charge. Which toy, sent where, takes the city anyway?',
+     intel:[['The earthworks','Forts and trenches ring the city on the land side, with over 170 cannon.'],
+            ['Inside','About 30,000 Confederate soldiers and the townspeople, cut off from the rest of the South.'],
+            ['Your side','Your men are well fed from the countryside, and boats now bring supplies straight up the Yazoo.']],
+     toys:[['un_sher','Sherman\'s corps','Sherman\'s corps'],['un_mcp','McPherson\'s corps','McPherson\'s corps'],['un_mccl','McClernand\'s corps','McClernand\'s corps']],
+     zones:[['ring','Dig in round the city',140,212,20,'to dig in and close the ring round the city'],['storm','Storm the walls again',156,128,18,'at the walls for a third assault'],['east','After Johnston',330,180,22,'east after Johnston'],['back','Back over the river',62,200,20,'back over the river']],
+     ans:{u:['un_sher','un_mcp','un_mccl'],z:'ring'},
+     hint:{z:'Two charges have failed. Think about what the people inside will run out of.'},
+     fbU:{un_sher:'Right toy. Every corps has a part of the ring to hold.',
+          un_mcp:'Right toy. Every corps has a part of the ring to hold.',
+          un_mccl:'Right toy. Every corps has a part of the ring to hold.'},
+     fbZ:{ring:'Right place. Shut every road in and out, and hunger and your guns will do what charges could not.',
+          storm:'Twice the walls have thrown your men back. A third charge only adds to the losses.',
+          east:'Leave the city, and Pemberton\'s army can march out and join Johnston.',
+          back:'Going back over the river throws away everything the campaign has won.'},
+     fail:{ring:{ko:[]},storm:{fire:[['cs_pemb','$','musket']],ko:[]},east:{u:{cs_pemb:[205,150]},ko:[],idle:['$']},back:{ko:[],idle:['$']}}}],
+  clues:[
+    {cat:'m',t:'The road south',b:'Your engineers have built a rough road through the Louisiana swamps, about 70 miles, to Hard Times, below the city. The army can get there on foot.'},
+    {cat:'e',card:'battery1863'},
+    {cat:'t',t:'A dark night',b:'The guns on the bluffs are deadly by day. On a night with no moon, a ship moving fast with its lights out is much harder to hit.'},
+    {cat:'tr',card:'gunboat1863'},
+    {cat:'m',t:'No boats, no crossing',b:'An army cannot swim the Mississippi. Whatever carries it across has to get south of the city first.'}],
+  deduce:[['Every route through the swamps north of the city has failed.','Look south.'],
+          ['The army can march south on its own.','What it lacks is a way across the river.'],
+          ['The boats are north of the guns.','Run them past the city at night, down to the army.']],
+  /* The real campaign. North is up. The Mississippi runs down the west side; Vicksburg is on the east bank. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={un_sher:[50,60],un_mcp:[58,150],un_mccl:[56,180],un_boats:[80,48],un_grier:[330,22],un_grant:[36,118],
+           cs_batt:[140,124],cs_pemb:[168,150],cs_pcmd:[176,128],cs_gulf:[112,258],cs_john:[340,196]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{un_mcp:[52,232],un_mccl:[56,246],un_grant:[40,226]},{a:[['g',58,150,52,226],['g',56,180,56,240]],t:'Down the west bank',b:'Grant\'s men build roads and bridges through the Louisiana swamps and march about 70 miles down the west bank, to Hard Times, below the city.'});
+    add(0,{un_boats:[86,230]},{a:[['g',80,48,112,140,86,224]],t:'Running the guns',b:'On the night of 16 April, with no moon, Porter\'s gunboats and transports slip downriver. Lookouts spot them and the bluffs open fire, but the fleet gets through with little damage. One transport burns.',
+      fire:[['cs_batt','un_boats','cannon']]});
+    add(1,{un_grier:[262,392,'exit'],un_sher:[165,74]},{a:[['g',330,22,262,386],['g',50,60,159,74]],t:'Raids and feints',b:'Grierson\'s cavalry raids right through Mississippi, and Sherman stages a fake attack north of the city at Snyder\'s Bluff. Both draw Confederate attention away from the crossing.',
+      fire:[['cs_batt','un_sher','cannon']]});
+    add(1,{un_boats:[96,250],un_sher:[50,70]},{a:[['g',86,230,94,246],['g',165,74,56,70]],t:'Grand Gulf',b:'On 29 April Porter\'s ironclads pound the guns at Grand Gulf for over five hours. They silence the lower batteries, but the upper guns keep firing. Landing here would cost too much.',
+      fire:[['un_boats','cs_gulf','broadside'],['cs_gulf','un_boats','cannon']]});
+    add(1,{un_boats:[120,322],un_mcp:[134,330],un_mccl:[152,338],un_grant:[124,346],un_sher:[56,236]},{a:[['g',96,250,118,316],['g',56,246,148,334],['g',50,70,56,230]],t:'Across at Bruinsburg',b:'The transports run past Grand Gulf under fire, and on 30 April they land the army further south at Bruinsburg: 17,000 men, with nobody there to stop them. Sherman\'s corps follows down the west bank.',
+      fire:[['cs_gulf','un_boats','cannon']]});
+    add(1,{un_mccl:[174,322]},{a:[['g',152,338,170,324]],t:'Port Gibson',b:'Marching inland, the army runs into Confederates near Port Gibson on 1 May and pushes them back all day.',
+      fire:[['un_mccl','cs_gulf','musket'],['cs_gulf','un_mccl','musket']]});
+    add(2,{un_sher:[205,330],un_mcp:[240,285],un_mccl:[215,250],un_grant:[200,300],cs_pemb:[222,195],cs_pcmd:[214,174],cs_gulf:[150,250,'exit']},{a:[['g',174,322,213,256],['g',134,330,236,288],['t',168,150,218,190]],t:'Inland',b:'The Confederates give up Grand Gulf, and Sherman\'s corps crosses and follows. Grant marches north-east toward the railroad that links Vicksburg with Jackson. Pemberton brings his army out to Edwards Station.'});
+    add(2,{un_mcp:[270,250],cs_john:[300,236],un_sher:[232,300]},{a:[['g',240,285,266,254],['t',340,196,304,232]],t:'Raymond',b:'On 12 May, near Raymond, McPherson\'s corps runs into a Confederate brigade sent from Jackson. After hours of hard fighting, the Confederates fall back toward Jackson.',
+      fire:[['un_mcp','cs_john','musket'],['cs_john','un_mcp','musket']]});
+    add(2,{cs_john:[340,196]},{a:[['t',300,236,336,200]],t:'Johnston comes',b:'General Johnston reaches Jackson on 13 May to take command. He finds two Union corps marching on the town and only about 6,000 men to defend it.'});
+    add(2,{un_sher:[318,214],un_mcp:[326,174],un_grant:[300,210],cs_john:[358,160]},{a:[['g',232,300,314,218],['g',270,250,322,180]],t:'Jackson falls',b:'Sherman and McPherson attack on 14 May. Johnston pulls his men out to the north, and the Union troops take the town and wreck the railroad that feeds Vicksburg.',
+      fire:[['un_sher','cs_john','musket'],['un_mcp','cs_john','musket']]});
+    add(2,{un_mcp:[262,190],un_mccl:[236,226],un_grant:[262,212],cs_pemb:[240,188],cs_pcmd:[222,168],un_sher:[296,214],cs_john:[392,90,'exit']},{a:[['g',326,174,266,188],['g',215,250,234,230],['t',222,195,238,190]],t:'Champion Hill',b:'Grant turns west. On 16 May he meets Pemberton\'s army at Champion Hill. After a day of fierce fighting the Union troops take the hill, and Pemberton retreats.',
+      fire:[['un_mcp','cs_pemb','musket'],['cs_pemb','un_mcp','musket'],['un_mccl','cs_pemb','musket']]});
+    add(2,{cs_pemb:[152,145],cs_pcmd:[140,160],un_mccl:[172,186],un_mcp:[180,146],un_sher:[170,104],un_grant:[204,164]},{a:[['t',240,188,158,148],['g',262,190,186,148],['g',296,214,174,110]],t:'Storming the walls',b:'Pemberton falls back inside the Vicksburg earthworks. Grant storms them on 19 May and again on 22 May. Both attacks are thrown back; the second alone costs about 3,200 men.',
+      fire:[['cs_pemb','un_mcp','musket'],['cs_pemb','un_mccl','musket'],['cs_batt','un_sher','cannon'],['un_mcp','cs_pemb','musket'],['un_sher','cs_pemb','musket']]});
+    add(2,{un_mccl:[168,184],un_mcp:[176,146],un_sher:[170,100],un_boats:[92,214]},{a:[['g',120,322,94,220]],t:'The siege',b:'Grant digs in round the city. For weeks his guns and Porter\'s gunboats pound it day and night. Food runs short, and many townspeople shelter in caves dug into the hillsides.',
+      fire:[['un_mcp','cs_pemb','musket'],['un_sher','cs_pemb','musket'],['un_mccl','cs_pemb','musket'],['un_boats','cs_pemb','broadside']]});
+    add(2,{cs_pemb:[152,145,'exit'],cs_pcmd:[140,160,'exit'],cs_batt:[140,124,'exit']},{t:'Surrender',b:'After 47 days, on 4 July 1863, Pemberton surrenders the city and about 29,000 men. Together with Port Hudson five days later, it gives the Union the whole Mississippi and splits the Confederacy in two.'});
+    return S;
+  })(),
+  video:{id:'1eSgimZ8GKQ',t:'Vicksburg: Animated Battle Map',ch:'American Battlefield Trust',v:1545993},
+  sources:[['Wikipedia: Vicksburg campaign','https://en.wikipedia.org/wiki/Vicksburg_campaign'],
+           ['Wikipedia: Siege of Vicksburg','https://en.wikipedia.org/wiki/Siege_of_Vicksburg'],
+           ['American Battlefield Trust: Vicksburg','https://www.battlefields.org/learn/civil-war/battles/vicksburg'],
+           ['National Park Service: the campaign for Vicksburg','https://www.nps.gov/vick/learn/historyculture/campaign-for-vicksburg.htm'],
+           ['National Park Service: the siege of Vicksburg','https://www.nps.gov/vick/learn/historyculture/vicksburgsiege.htm']],
+  cards:{un_sher:'unioninf1863',un_mcp:'unioninf1863',un_mccl:'unioninf1863',un_boats:'gunboat1863',un_grier:'ucav1863',
+         cs_batt:'battery1863',cs_gulf:'battery1863',cs_pemb:'csinf1863',cs_john:'csinf1863'}
 });

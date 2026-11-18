@@ -236,7 +236,38 @@ const CARDS = [
   {id:'rnfleet1781', set:'yorktown', name:'British fleet', era:'American Revolution, 1781', t:'ship', side:'t', st:[3,4,4,4],
    good:'Moving armies along the coast, bringing supplies', beat:'Being outnumbered at the decisive moment',
    fact:'After the Battle of the Capes, it went back to New York to refit, leaving Cornwallis cut off.'}
-];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27]};
+,
+  // Rorke's Drift, 1879
+  {id:'b24_1879', set:'rorke', name:'B Company, 24th Foot', era:'Anglo-Zulu War, 1879', t:'inf', side:'g', st:[2,3,3,4],
+   good:'Aimed rifle fire from behind a wall', beat:'Being caught in the open by far bigger numbers',
+   fact:'Most of the defenders were men of B Company, 2nd Battalion, 24th Regiment of Foot, under Lieutenant Bromhead.'},
+  {id:'nnc1879', set:'rorke', name:'Natal Native Contingent', era:'Anglo-Zulu War, 1879', t:'spr', side:'g', st:[3,2,1,1],
+   good:'Scouting and filling out a line', beat:'Facing a Zulu army with few guns of their own',
+   fact:'Only some carried guns. At Rorke\'s Drift the rest waited in the cattle kraal with spears, and the whole company ran as the Zulus came near.'},
+  {id:'zulu1879', set:'rorke', name:'Zulu warriors', era:'Anglo-Zulu War, 1879', t:'spr', side:'t', st:[4,4,1,1],
+   good:'Fast marches and fierce hand to hand fighting', beat:'Rifles behind a wall, across open ground',
+   fact:'The regiments at Rorke\'s Drift had not fought at Isandlwana, and had marched about 30 kilometres that day.'},
+  {id:'zmark1879', set:'rorke', name:'Zulu marksmen', era:'Anglo-Zulu War, 1879', t:'inf', side:'t', st:[2,2,2,3],
+   good:'Firing down from high ground', beat:'Hitting anything at long range with old guns',
+   fact:'Their aim was poor, but they killed five of the 17 defenders who died.'}
+,
+  // Vicksburg, 1863
+  {id:'unioninf1863', set:'vicksburg', name:'Union infantry corps', era:'American Civil War, 1863', t:'inf', side:'g', st:[3,3,2,3],
+   good:'Long marches, living off the country, digging in', beat:'Storming earthworks head on',
+   fact:'Grant\'s men marched about 70 miles down the Louisiana side before they ever crossed the river.'},
+  {id:'gunboat1863', set:'vicksburg', name:'River gunboats', era:'American Civil War, 1863', t:'ship', side:'g', st:[3,4,4,3],
+   good:'Pounding river forts, carrying an army across a river', beat:'Heavy guns high on a bluff in daylight',
+   fact:'On the night of 16 April 1863, Porter ran seven gunboats past the Vicksburg guns.'},
+  {id:'ucav1863', set:'vicksburg', name:'Union cavalry raiders', era:'American Civil War, 1863', t:'cav', side:'g', st:[5,2,1,2],
+   good:'Long raids that pull the enemy off balance', beat:'Swamps, and guns on high ground',
+   fact:'Grierson\'s raid rode through central Mississippi while Grant got ready to cross the river.'},
+  {id:'battery1863', set:'vicksburg', name:'Bluff batteries', era:'American Civil War, 1863', t:'art', side:'t', st:[1,5,4,5],
+   good:'Sinking ships from high above the river', beat:'Fast ships on a dark night',
+   fact:'Its guns earned Vicksburg the nickname "the Gibraltar of the Confederacy".'},
+  {id:'csinf1863', set:'vicksburg', name:'Confederate infantry', era:'American Civil War, 1863', t:'inf', side:'t', st:[3,3,3,3],
+   good:'Holding earthworks', beat:'Being caught between two armies',
+   fact:'About 29,000 of them marched out and surrendered at Vicksburg on 4 July 1863.'}
+];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();
