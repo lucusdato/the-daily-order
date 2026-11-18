@@ -76,7 +76,9 @@ function check(label,list,before,ctx){
 }
 window.sceneCheck=function(n){
   const sc=PGD.byN[n]; if(!sc||!sc.m) return {n,name:sc&&sc.name,findings:[{lvl:'error',where:'battle',msg:'No mystery data.'}]};
-  openDaily(n,true); const m=sc.m, out=[];
+  /* check the real battle and the top-level puzzle: a three-decision battle (stepsLive) would otherwise open in
+     decisions mode, where the puzzle fields come from the first decision instead */
+  openDaily(n,true); D.steps=false; const m=sc.m, out=[];
   out.push(...check('Real battle',mRevealList(),{i:0,ph:0}));
   m.toys.forEach(([u])=>m.zones.forEach(([z])=>{
     if(u===m.ans.u&&z===m.ans.z) return;
