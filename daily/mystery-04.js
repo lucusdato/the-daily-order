@@ -183,7 +183,7 @@ PGD.mystery(19,{
   q:'The Germans will attack both shoulders. Which toy, sent where, wins the battle?',
   qs:'Break Citadel: which toy goes where?',
   toys:[['so_steppe','Steppe Front tanks','the Steppe Front tanks'],['so_belts','Anti-tank guns','the anti-tank guns'],['so_vor','Voronezh Front','the Voronezh Front']],
-  zones:[['reserve','Hold them back, east of the bulge',360,200,24,'back to wait east of the bulge'],['attack','Strike first, at Orel',150,52,22,'forward to strike first at Orel'],['north','Into the northern face',200,96,22,'into the northern face'],['south','Into the southern face',215,300,22,'into the southern face']],
+  zones:[['reserve','Hold them back, east of the bulge',360,200,24,'back to wait east of the bulge'],['attack','Strike first, at Orel',150,52,22,'forward to strike first at Orel'],['north','Into the northern face',200,96,22,'into the northern face'],['south','Into the southern face',232,328,22,'into the southern face']],
   ans:{u:'so_steppe',z:'reserve'},
   start:{so_cen:[200,110],so_vor:[200,290],so_belts:[170,200],so_steppe:[250,200],so_zhukov:[340,120],
          ge_model:[150,30],ge_hoth:[220,380],ge_kempf:[300,390],ge_cmd:[180,390]},
@@ -216,7 +216,7 @@ PGD.mystery(19,{
     'so_vor@north':{u:{ge_hoth:[215,300]},fire:[['ge_hoth','so_belts','tank']],ko:[],idle:['$'],
       b:'Sending the southern armies north leaves the southern face empty. The German tanks drive straight in.'},
     'so_vor@south':{ko:[],idle:['$'],
-      b:'The Voronezh Front is already dug in on the southern face. Nothing changes, and the big question, what to do with the reserve, is left unanswered.'}},
+      b:'The Voronezh Front climbs out of its own trenches and moves up to the front edge of the southern face. It wins nothing there, and the big question, what to do with the reserve, is left unanswered.'}},
   /* Three decisions (see tools/FORMAT.md). Decision 2 is the puzzle above.
      Every zone is a real move: none sits where a toy already stands. Texts stay inside what the scenes and sources say. */
   stepsLive:true,
