@@ -99,6 +99,18 @@
    "war": "American Civil War",
    "year": "1863",
    "place": "Mississippi, United States"
+  },
+  {
+   "day": 17,
+   "war": "Roman-Germanic Wars",
+   "year": "AD 9",
+   "place": "Northwest Germany"
+  },
+  {
+   "day": 18,
+   "war": "Anglo-Zulu War",
+   "year": "1879",
+   "place": "Zululand, southern Africa"
   }
  ]
 }

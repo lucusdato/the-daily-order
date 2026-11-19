@@ -266,8 +266,41 @@ const CARDS = [
    fact:'Its guns earned Vicksburg the nickname "the Gibraltar of the Confederacy".'},
   {id:'csinf1863', set:'vicksburg', name:'Confederate infantry', era:'American Civil War, 1863', t:'inf', side:'t', st:[3,3,3,3],
    good:'Holding earthworks', beat:'Being caught between two armies',
-   fact:'About 29,000 of them marched out and surrendered at Vicksburg on 4 July 1863.'}
-];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12]};
+   fact:'About 29,000 of them marched out and surrendered at Vicksburg on 4 July 1863.'},
+  // Teutoburg Forest, AD 9
+  {id:'german9', set:'teutoburg', name:'Germanic warriors', era:'Roman-Germanic Wars, AD 9', t:'spr', side:'g', st:[4,3,1,2],
+   good:'Moving fast and unseen through forest and bog', beat:'A Roman battle line on open ground',
+   fact:'Warriors from several tribes fought together here, among them the Cherusci, the Bructeri and the Marsi.'},
+  {id:'legion9', set:'teutoburg', name:'Roman legionaries', era:'Roman-Germanic Wars, AD 9', t:'hvy', side:'t', st:[2,4,4,2],
+   good:'Fighting in formation on open ground', beat:'Being caught strung out on a narrow forest road',
+   fact:'Legions XVII, XVIII and XIX were destroyed here. Rome never used those numbers for a legion again.'},
+  {id:'romcav9', set:'teutoburg', name:'Roman cavalry', era:'Roman-Germanic Wars, AD 9', t:'cav', side:'t', st:[4,3,2,1],
+   good:'Scouting and chasing a beaten enemy', beat:'Thick woods and narrow tracks',
+   fact:'Numonius Vala fled with the horsemen and was caught and killed before he could reach the Rhine.'},
+  {id:'baggage9', set:'teutoburg', name:'Baggage train', era:'Roman-Germanic Wars, AD 9', t:'truck', side:'t', st:[1,1,1,1],
+   good:'Carrying everything an army needs for the winter', beat:'Mud, rain and ambushes',
+   fact:'After the first attacks, the Romans burned or left behind most of their wagons.'}
+,
+  // Isandlwana, 1879
+  {id:'zchest1879', set:'isandlwana', name:'Zulu regiments', era:'Anglo-Zulu War, 1879', t:'spr', side:'g', st:[4,4,1,1],
+   good:'Fast marches and fierce hand to hand fighting', beat:'Rifle volleys across open ground',
+   fact:'The Zulu army covered over 80 kilometres in five days to reach Isandlwana unseen.'},
+  {id:'zhorn1879', set:'isandlwana', name:'Zulu horns', era:'Anglo-Zulu War, 1879', t:'spr', side:'g', st:[5,3,1,1],
+   good:'Running round an enemy to cut off his escape', beat:'Being stopped before the circle closes',
+   fact:'In the horns of the buffalo, the young men ran in the horns, while older men waited in reserve in the loins.'},
+  {id:'b24i1879', set:'isandlwana', name:'British firing line', era:'Anglo-Zulu War, 1879', t:'inf', side:'t', st:[2,3,2,5],
+   good:'Volleys of rifle fire at long range', beat:'Being spread too thin, far from support',
+   fact:'Pulleine sent the companies of the 24th Regiment out into a long firing line, far in front of the tents.'},
+  {id:'rgun1879', set:'isandlwana', name:'British field guns', era:'Anglo-Zulu War, 1879', t:'art', side:'t', st:[1,4,2,5],
+   good:'Shooting into a crowded charge', beat:'Being outflanked with no infantry close by',
+   fact:'The camp had two 7-pounder guns. Both were lost in the battle.'},
+  {id:'nmh1879', set:'isandlwana', name:'Durnford\'s horsemen', era:'Anglo-Zulu War, 1879', t:'cav', side:'t', st:[4,2,2,4],
+   good:'Scouting fast and shooting from the saddle', beat:'Running out of ammunition far from camp',
+   fact:'A troop of these horsemen, under Lieutenant Raw, found the Zulu army in its hiding place.'},
+  {id:'nnci1879', set:'isandlwana', name:'Natal Native Contingent', era:'Anglo-Zulu War, 1879', t:'spr', side:'t', st:[3,2,1,1],
+   good:'Scouting and filling out a line', beat:'Facing a big Zulu army with few guns',
+   fact:'Only about one man in ten carried a firearm. Many left the field as the Zulus came on.'}
+];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();
