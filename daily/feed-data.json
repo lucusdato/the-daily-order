@@ -87,6 +87,42 @@
    "war": "American Revolution",
    "year": "1781",
    "place": "Virginia, United States"
+  },
+  {
+   "day": 15,
+   "war": "Anglo-Zulu War",
+   "year": "1879",
+   "place": "Natal, South Africa"
+  },
+  {
+   "day": 16,
+   "war": "American Civil War",
+   "year": "1863",
+   "place": "Mississippi, United States"
+  },
+  {
+   "day": 17,
+   "war": "Roman-Germanic Wars",
+   "year": "AD 9",
+   "place": "Northwest Germany"
+  },
+  {
+   "day": 18,
+   "war": "Anglo-Zulu War",
+   "year": "1879",
+   "place": "Zululand, southern Africa"
+  },
+  {
+   "day": 19,
+   "war": "War of the Spanish Succession",
+   "year": "1704",
+   "place": "Bavaria, Germany"
+  },
+  {
+   "day": 20,
+   "war": "First War of Scottish Independence",
+   "year": "1314",
+   "place": "Near Stirling, Scotland"
   }
  ]
 }
