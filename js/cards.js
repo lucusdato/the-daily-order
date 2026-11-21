@@ -300,7 +300,44 @@ const CARDS = [
   {id:'nnci1879', set:'isandlwana', name:'Natal Native Contingent', era:'Anglo-Zulu War, 1879', t:'spr', side:'t', st:[3,2,1,1],
    good:'Scouting and filling out a line', beat:'Facing a big Zulu army with few guns',
    fact:'Only about one man in ten carried a firearm. Many left the field as the Zulus came on.'}
-];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21]};
+,
+  // Blenheim, 1704
+  {id:'redcoat1704', set:'blenheim', name:'British foot', era:'War of the Spanish Succession, 1704', t:'inf', side:'g', st:[2,3,2,3],
+   good:'Steady volleys by platoons', beat:'Storming a village packed with defenders',
+   fact:'About a third of the first British brigade to attack Blenheim village was killed or wounded.'},
+  {id:'allyhorse1704', set:'blenheim', name:'Allied cavalry', era:'War of the Spanish Succession, 1704', t:'cav', side:'g', st:[4,4,2,1],
+   good:'Charging in tight squadrons, with infantry close behind', beat:'Musket fire from behind walls',
+   fact:'By 5 pm Marlborough had 81 squadrons in the center, nine of them taken from Cutts.'},
+  {id:'cuirassier1704', set:'blenheim', name:'Imperial cuirassiers', era:'War of the Spanish Succession, 1704', t:'cav', side:'g', st:[3,5,3,1],
+   good:'Heavy charges by armored horsemen', beat:'Infantry squares that stand firm',
+   fact:'Count Fugger\'s brigade hit Marsin\'s squadrons from the side and threw them back in disorder.'},
+  {id:'gendarme1704', set:'blenheim', name:'French cavalry', era:'War of the Spanish Succession, 1704', t:'cav', side:'t', st:[4,4,2,1],
+   good:'Charging an enemy still struggling over a stream', beat:'Fighting with no infantry beside them',
+   fact:'Many of the French horsemen who fled the center drowned in the Danube.'},
+  {id:'frenchfoot1704', set:'blenheim', name:'French infantry', era:'War of the Spanish Succession, 1704', t:'inf', side:'t', st:[2,3,3,3],
+   good:'Holding villages behind barricades', beat:'Being packed too tight to move',
+   fact:'About 10,000 French infantry surrendered in Blenheim village at the end of the day.'},
+  {id:'irish1704', set:'blenheim', name:'Irish Brigade', era:'War of the Spanish Succession, 1704', t:'inf', side:'t', st:[3,4,2,3],
+   good:'Fierce counterattacks out of a village', beat:'Fresh battalions pushing back',
+   fact:'These Irish soldiers in French service, known as the Wild Geese, cut down Holstein-Beck\'s brigades at Oberglau.'}
+,
+  // Bannockburn, 1314
+  {id:'schiltron1314', set:'bannockburn', name:'Scottish schiltron', era:'Scottish Wars of Independence, 1314', t:'spr', side:'g', st:[2,3,3,1],
+   good:'Stopping knights with a wall of long spears', beat:'Archers shooting into the packed block',
+   fact:'On the first day, Moray\'s schiltron stopped about 300 English horsemen on open ground.'},
+  {id:'keith1314', set:'bannockburn', name:'Keith\'s horsemen', era:'Scottish Wars of Independence, 1314', t:'cav', side:'g', st:[5,3,2,1],
+   good:'Speed and surprise against men on foot', beat:'Charging armored knights head on',
+   fact:'About 500 of them, under Sir Robert Keith, were the only Scottish cavalry at Bannockburn.'},
+  {id:'knight1314', set:'bannockburn', name:'English knights', era:'Scottish Wars of Independence, 1314', t:'cav', side:'t', st:[4,5,4,1],
+   good:'A full charge on open, firm ground', beat:'Soft, cramped ground with no room to charge',
+   fact:'The Earl of Gloucester was killed leading the first English charge of the second day.'},
+  {id:'longbow1314', set:'bannockburn', name:'English archers', era:'Scottish Wars of Independence, 1314', t:'arch', side:'t', st:[2,2,1,5],
+   good:'Shooting into packed formations', beat:'Horsemen falling on them from the side',
+   fact:'The poet Barbour wrote that if their shooting had gone on, it would have gone hard for the Scots.'},
+  {id:'footman1314', set:'bannockburn', name:'English foot soldiers', era:'Scottish Wars of Independence, 1314', t:'inf', side:'t', st:[2,2,2,1],
+   good:'Weight of numbers', beat:'Being stuck behind their own cavalry',
+   fact:'On the cramped Carse, most of them never reached the fight.'}
+];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21], blenheim:['Blenheim, 1704',20], bannockburn:['Bannockburn, 1314',15]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();
