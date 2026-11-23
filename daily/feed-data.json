@@ -123,6 +123,18 @@
    "war": "First War of Scottish Independence",
    "year": "1314",
    "place": "Near Stirling, Scotland"
+  },
+  {
+   "day": 21,
+   "war": "First World War",
+   "year": "1914",
+   "place": "East Prussia"
+  },
+  {
+   "day": 22,
+   "war": "First Indochina War",
+   "year": "1954",
+   "place": "Northwest Vietnam"
   }
  ]
 }

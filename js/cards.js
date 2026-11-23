@@ -337,7 +337,43 @@ const CARDS = [
   {id:'footman1314', set:'bannockburn', name:'English foot soldiers', era:'Scottish Wars of Independence, 1314', t:'inf', side:'t', st:[2,2,2,1],
    good:'Weight of numbers', beat:'Being stuck behind their own cavalry',
    fact:'On the cramped Carse, most of them never reached the fight.'}
-];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21], blenheim:['Blenheim, 1704',20], bannockburn:['Bannockburn, 1314',15]};
+
+,
+  // Tannenberg, 1914
+  {id:'francois1914', set:'tannenberg', name:'François\'s I Corps', era:'First World War, 1914', t:'inf', side:'g', st:[3,4,3,4],
+   good:'Fast moves by train, then a hard blow on a flank', beat:'Attacking before its guns arrive',
+   fact:'Its commander, Hermann von François, ignored orders to wheel north and drove east to cut the Russian road home.'},
+  {id:'germcorps1914', set:'tannenberg', name:'German army corps', era:'First World War, 1914', t:'inf', side:'g', st:[2,4,3,4],
+   good:'Long forced marches and attacks on a flank', beat:'Being caught alone by a bigger army',
+   fact:'XVII Corps and I Reserve Corps marched south from facing one Russian army to strike the other.'},
+  {id:'germcav1914', set:'tannenberg', name:'German cavalry screen', era:'First World War, 1914', t:'cav', side:'g', st:[5,2,1,3],
+   good:'Watching and delaying a slow enemy', beat:'Holding off a whole army if it attacks',
+   fact:'One cavalry division and some older troops were all that was left to watch Rennenkampf.'},
+  {id:'russcorps1914', set:'tannenberg', name:'Russian army corps', era:'First World War, 1914', t:'inf', side:'t', st:[2,3,2,3],
+   good:'Sheer numbers', beat:'Poor supply, and orders sent by radio without code',
+   fact:'Samsonov had no codebook, so many of his orders went out in plain words that the Germans could read.'}
+
+,
+  // Dien Bien Phu, 1954
+  {id:'vmart1954', set:'dienbienphu', name:'Viet Minh field guns', era:'First Indochina War, 1954', t:'art', side:'g', st:[1,5,4,4],
+   good:'Firing straight at targets from hidden tunnels', beat:'Being caught in the open by planes',
+   fact:'Guns of up to two tons were hauled through the jungle by hand, about seven nights for each gun.'},
+  {id:'vmaa1954', set:'dienbienphu', name:'Anti-aircraft guns', era:'First Indochina War, 1954', t:'art', side:'g', st:[1,3,3,4],
+   good:'Making every supply flight dangerous', beat:'Breaking bunkers on the ground',
+   fact:'Most were of Soviet make, and they went after the runway and the planes that used it.'},
+  {id:'vminf1954', set:'dienbienphu', name:'Viet Minh infantry division', era:'First Indochina War, 1954', t:'inf', side:'g', st:[3,4,2,2],
+   good:'Night assaults from trenches dug up to the wire', beat:'Charging bunkers with no guns to help',
+   fact:'The 312th Division took Béatrice on the first night of the attack, 13 March 1954.'},
+  {id:'porter1954', set:'dienbienphu', name:'Porters', era:'First Indochina War, 1954', t:'truck', side:'g', st:[2,1,1,1],
+   good:'Carrying food and shells over mountain trails', beat:'Being caught on open ground',
+   fact:'Tens of thousands of them, with bicycles and carrying poles, kept the army supplied.'},
+  {id:'fug1954', set:'dienbienphu', name:'French Union strongpoint', era:'First Indochina War, 1954', t:'inf', side:'t', st:[1,3,4,3],
+   good:'Holding bunkers behind barbed wire', beat:'Hidden guns it cannot find',
+   fact:'The strongpoints had names like Béatrice, Gabrielle, Huguette and Isabelle.'},
+  {id:'dakota1954', set:'dienbienphu', name:'French air supply', era:'First Indochina War, 1954', t:'plane', side:'t', st:[4,1,1,5],
+   good:'Flying in everything the camp needs', beat:'A runway under shellfire',
+   fact:'After 14 March the airstrip was closed for good, and supplies had to come down by parachute.'}
+];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21], blenheim:['Blenheim, 1704',20], bannockburn:['Bannockburn, 1314',15], tannenberg:['Tannenberg, 1914',3], dienbienphu:['Dien Bien Phu, 1954',5]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();

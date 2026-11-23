@@ -655,3 +655,166 @@ PGD.mystery(15,{
   cards:{sc_moray:'schiltron1314',sc_edw:'schiltron1314',sc_doug:'schiltron1314',sc_king:'schiltron1314',sc_keith:'keith1314',
          en_cav:'knight1314',en_van:'knight1314',en_arch:'longbow1314',en_inf:'footman1314'}
 });
+
+PGD.mystery(3,{
+  war:'First World War',
+  general:'the German 8th Army',
+  pitch:'You are the <b>German 8th Army</b>, alone in East Prussia in August 1914. Two Russian armies are coming at you from two sides, and together they are far bigger than you. You can only fight one at a time. Beat them.',
+  H:600,
+  terrain(){
+    let s=felt('#8ca064',600);
+    [[250,210,26,21],[276,264,20,36],[240,309,30,18],[290,354,18,21],[226,375,14,13],[300,195,14,15],[316,300,12,22]].forEach(e=>s+=`<ellipse cx="${e[0]}" cy="${e[1]}" rx="${e[2]}" ry="${e[3]}" fill="#5d9bc0" stroke="#e6d6a2" stroke-width="1.5"/>`);
+    s+=trees(203,70,[110,330,400,540],()=>true,['#2f5a24','#3b6b2b']);
+    s+=trees(207,30,[200,340,150,380],(x,y)=>x<220||y<190,['#2f5a24','#3b6b2b']);
+    ['M55 60 L330 105','M55 60 L40 300 L85 405 L70 525','M85 405 L200 420 L262 393 L330 105'].forEach(d=>s+=`<path d="${d}" stroke="#4a3b2b" stroke-width="3" fill="none"/><path d="${d}" stroke="#d8c596" stroke-width="1.2" stroke-dasharray="3 4" fill="none"/>`);
+    s+=`<path d="M0 572 Q200 560 400 576" stroke="#8a3a2a" stroke-width="2" stroke-dasharray="7 5" fill="none"/>`;
+    [[55,60],[330,105],[200,420],[150,450],[125,472],[90,480],[70,525],[160,540],[270,548],[262,393],[85,405]].forEach(p=>s+=house(p[0],p[1]));
+    s+=label(55,44,'Königsberg',9)+label(330,89,'Gumbinnen',8)+label(200,438,'Allenstein',8)+label(150,442,'Hohenstein',7)+label(116,488,'Tannenberg',7)+label(88,470,'Usdau',7)+label(70,541,'Soldau',7)+label(160,556,'Neidenburg',8)+label(270,564,'Willenberg',8)+label(270,385,'Bischofsburg',7)+label(85,421,'Deutsch-Eylau',7);
+    s+=label(290,236,'Masurian Lakes',9)+label(318,592,'Border with Russian Poland',7)+label(372,40,'From Russia',8)+label(190,92,'Railway',7);
+    s+=compass(26,576);
+    return s+end(600);
+  },
+  lead:'August 1914. Most of the German army has gone west against France. In East Prussia, one German army faces two Russian armies: Rennenkampf\'s from the east and Samsonov\'s from the south. A belt of lakes and forest keeps them apart.',
+  sit:'28 August. François\'s I Corps has broken the Russian left wing at Usdau. Samsonov\'s center is deep in the forests, pushing north against XX Corps, and Mackensen is coming down on its other side. Headquarters, still worried about Rennenkampf, has told François to wheel north.',
+  mett:{
+    m:'Destroy one Russian army before the other can help it.',
+    e:'Two Russian armies, each about as big as yours: Samsonov\'s 2nd Army from the south, Rennenkampf\'s 1st Army from the east.',
+    t:'Lakes and forests between the two Russian armies. Behind your lines, railways that can move a whole corps in a day or two.',
+    tr:'About 150,000 men in four corps and a cavalry division.',
+    ti:'Every day you wait, the two Russian armies come closer to joining up.'},
+  ground:[['Obstacle','The Masurian Lakes, splitting the two Russian armies.',[262,190,40]],
+          ['Key terrain','The railways, which can move a whole corps in a day or two.',[60,200,30]],
+          ['Avenue of approach','The road south through Neidenburg: the Russian way home.',[165,360,26]]],
+  q:'Samsonov\'s center is deep in the forests. Which toy, sent where, traps it?',
+  qs:'Close the trap: which toy goes where?',
+  toys:[['de_I','François\'s I Corps','François\'s I Corps'],['de_XVII','Mackensen\'s XVII Corps','Mackensen\'s XVII Corps'],['de_XX','Scholtz\'s XX Corps','Scholtz\'s XX Corps']],
+  zones:[['east','To Neidenburg',165,370,22,'east along the border road to Neidenburg'],['north','Wheel north',100,240,20,'north toward Hohenstein, to help XX Corps'],
+         ['rennen','To Rennenkampf',340,88,20,'north to face Rennenkampf'],['south','Into Poland',95,390,20,'south over the border after the beaten Russian left']],
+  ans:{u:'de_I',z:'east'},
+  start:{de_I:[95,308],de_XVII:[262,228],de_IR:[226,238],de_XX:[150,272],de_cav:[300,110],de_hq:[60,150],
+         ru_1:[318,56],ru_2c:[178,312],ru_2r:[290,300],ru_2l:[78,372],ru_sams:[195,348]},
+  fbU:{de_I:'Right toy. I Corps has just won its fight at Usdau, and it is the only one of your corps close to Neidenburg.',
+       de_XVII:'Not this toy. Mackensen is on the far side of the Russian army, already closing the ring from the north-east. Pull him away and that side opens.',
+       de_XX:'Not this toy. XX Corps is holding the Russian center head-on. Pull it out and the center walks through the gap.'},
+  fbZ:{east:'Right place. Neidenburg and the border road east to Willenberg are the Russian center\'s only way home. Hold them, and the whole army is trapped.',
+       north:'This is what headquarters ordered. It pushes the Russians back, but it leaves the road south open behind them.',
+       rennen:'The intercepts say Rennenkampf is still marching slowly west. The danger is not up there.',
+       south:'The Russian left is already beaten and going home. Chasing it lets the main Russian army slip away behind you.'},
+  fail:{
+    'de_I@north':{fire:[['$','ru_2c','rifle']],ko:[],
+      b:'François wheels north as headquarters ordered and hits the Russian flank near Hohenstein. The Russians are pushed back, but nobody holds the road south through Neidenburg, and much of Samsonov\'s army can still get home.'},
+    'de_I@rennen':{ko:[],idle:['$'],
+      b:'I Corps marches away north to face Rennenkampf, who is not coming. Nobody holds the road south, and Samsonov\'s army falls back over the border.'},
+    'de_I@south':{fire:[['$','ru_2l','rifle']],ko:[],
+      b:'I Corps chases the beaten Russian left wing over the border. Behind it, the road through Neidenburg stays open, and Samsonov\'s center slips away.'},
+    'de_XVII@east':{ko:[],idle:['$'],
+      b:'Mackensen sets off on the long march round to Neidenburg, on the far side of the Russian army. The side of the ring he was closing is left open, and the Russians get out that way.'},
+    'de_XVII@north':{ko:[],idle:['$'],
+      b:'Mackensen marches right across behind the battle to Hohenstein. The east side of the ring is left open.'},
+    'de_XVII@rennen':{ko:[],idle:['$'],
+      b:'Mackensen turns back north to face Rennenkampf, who never comes. The east side of the ring is left open, and the Russian center gets out that way.'},
+    'de_XVII@south':{fire:[['$','ru_2l','rifle']],ko:[],
+      b:'Mackensen marches all the way round to chase the Russian left over the border. The ring he was closing stays open.'},
+    'de_XX@east':{u:{ru_2c:[176,290]},fire:[['ru_2c','de_IR','rifle']],ko:[],idle:['$'],
+      b:'XX Corps pulls out of the line to go south. Samsonov\'s center walks into the gap it leaves and pushes on toward Allenstein.'},
+    'de_XX@north':{u:{ru_2c:[160,280]},fire:[['ru_2c','$','rifle']],ko:[],
+      b:'XX Corps steps back north. Samsonov\'s center follows it, and the trap has nothing in the middle to hold the Russians in place.'},
+    'de_XX@rennen':{u:{ru_2c:[176,290]},fire:[['ru_2c','de_IR','rifle']],ko:[],idle:['$'],
+      b:'XX Corps marches off north to face Rennenkampf. The Russian center pours through the gap it leaves.'},
+    'de_XX@south':{u:{ru_2c:[176,290]},fire:[['$','ru_2l','rifle'],['ru_2c','de_IR','rifle']],ko:[],
+      b:'XX Corps leaves the center to chase the beaten Russian left. Samsonov\'s main body walks through the gap it leaves.'}},
+  /* Three decisions (see tools/FORMAT.md). Decision 3 is the puzzle above.
+     Every zone is a real move: none sits where a toy already stands. Texts stay inside what the scenes and sources say. */
+  stepsLive:true,
+  steps:[
+    {start:{de_I:[300,96],de_XVII:[262,70],de_IR:[222,82],de_XX:[160,292],de_cav:[312,120],de_hq:[60,150],
+            ru_1:[352,60],ru_2c:[180,370],ru_2r:[255,375],ru_2l:[110,375],ru_sams:[185,395]},
+     after:[0,1],
+     qs:'Two armies coming: which toy goes where?',
+     sit:'Late August 1914. Your army has just fought Rennenkampf\'s army at Gumbinnen, in the east. Now Samsonov\'s army is crossing the border from the south, behind you, and only XX Corps stands in its way. Your last commander wanted to retreat and has been sacked.',
+     q:'Which toy, sent where, gives you a chance against Samsonov?',
+     intel:[['Rennenkampf','After Gumbinnen his army has stopped. When it moves, it moves slowly.'],
+            ['Your railways','Trains can carry a whole corps right round the province in a day or two.'],
+            ['Samsonov','His army is about as big as yours. XX Corps cannot hold it alone for long.']],
+     toys:[['de_I','François\'s I Corps','François\'s I Corps'],['de_cav','The cavalry division','the cavalry division'],['de_XX','Scholtz\'s XX Corps','Scholtz\'s XX Corps']],
+     zones:[['rail','Rail southwest',75,272,22,'by train round to the south-west, beside XX Corps'],['vistula','Behind Vistula',22,200,20,'west, back behind the Vistula River'],
+            ['gumb','Into Rennenkampf',352,96,20,'east, back into Rennenkampf\'s army'],['kbg','Into Königsberg',60,45,20,'into the fortress of Königsberg']],
+     ans:{u:'de_I',z:'rail'},
+     hint:{u:'Send a corps that is not already facing Samsonov, and keep something light to watch Rennenkampf.',z:'One Russian army has stopped and one is still coming. Use the railways.'},
+     fbU:{de_I:'Right toy. I Corps is a full corps of infantry, and it is not needed in the east while Rennenkampf sits still.',
+          de_cav:'Not this toy. Horsemen alone cannot stop an army corps. The cavalry is what you leave behind to watch Rennenkampf.',
+          de_XX:'Not this toy. XX Corps is already in the south, the only thing standing in Samsonov\'s way.'},
+     fbZ:{rail:'Right place. By train, a whole corps can be beside XX Corps in a day or two, on Samsonov\'s flank.',
+          vistula:'That is what your last commander wanted. It gives up East Prussia and lets the two Russian armies join up.',
+          gumb:'Rennenkampf has stopped. Hitting him head-on is slow, and Samsonov keeps marching into your back.',
+          kbg:'Shutting a corps up in the fortress keeps it safe, but leaves XX Corps alone against a whole army.'},
+     fail:{rail:{ko:[],idle:['$']},vistula:{ko:[],idle:['$']},kbg:{ko:[],idle:['$']},
+           gumb:{ko:[],fire:[['$','ru_1','rifle'],['ru_1','$','rifle']]}}},
+    {from:1, after:[2,3,4],
+     qs:'Rennenkampf or Samsonov: where do they go?',
+     sit:'25 August. Your listeners are reading Russian orders sent by radio without code. Two of your corps are still in the north, between the two Russian armies. Samsonov\'s right wing has come north on its own, toward Bischofsburg.',
+     q:'Where do you send your two northern corps?',
+     intel:[['The intercepts','Rennenkampf has been ordered west, toward Königsberg, not south to help Samsonov.'],
+            ['Samsonov\'s right','His VI Corps is near Bischofsburg, far from the rest of his army.'],
+            ['Your two corps','Mackensen\'s XVII Corps and von Below\'s I Reserve Corps have rested a day and are ready to march.']],
+     toys:[['de_XVII','Mackensen\'s XVII Corps','Mackensen\'s XVII Corps'],['de_IR','Von Below\'s I Reserve Corps','von Below\'s I Reserve Corps'],['de_cav','The cavalry division','the cavalry division']],
+     zones:[['right','To Bischofsburg',258,222,22,'south onto the Russian right wing near Bischofsburg'],['rennen','At Rennenkampf',345,95,20,'east against Rennenkampf'],
+            ['kbg','Into Königsberg',60,45,20,'back into the fortress of Königsberg'],['xx','Beside XX Corps',112,250,20,'west, to stand beside XX Corps']],
+     ans:{u:['de_XVII','de_IR'],z:'right'},
+     hint:{u:'You need every man you can spare, and something must still watch Rennenkampf.',z:'The intercepts tell you which Russian army you can ignore for now. Which part of the other one is on its own?'},
+     fbU:{de_XVII:'Right toy. Both northern corps go together. Against an army this size you need every man you can spare.',
+          de_IR:'Right toy. Both northern corps go together. Against an army this size you need every man you can spare.',
+          de_cav:'Not this toy. The cavalry is the only thing watching Rennenkampf, and horsemen alone cannot fight an army corps.'},
+     fbZ:{right:'Right place. The Russian right wing has come north on its own. Hit it now, and the whole side of Samsonov\'s army lies open.',
+          rennen:'The intercepts say Rennenkampf is not coming. Turning on him gives Samsonov time.',
+          kbg:'Königsberg is safe behind its walls. Marching there wastes the days you have.',
+          xx:'Lining up beside XX Corps meets Samsonov head-on. You would push him back instead of trapping him.'},
+     fail:{right:{ko:[],idle:['$']},kbg:{ko:[],idle:['$']},xx:{ko:[],idle:['$']},
+           rennen:{ko:[],fire:[['$','ru_1','rifle'],['ru_1','$','rifle']]}}},
+    {after:[5,6,7,8],
+     hint:{u:'Which corps has just won its fight, and stands nearest the Russian way home?',z:'Ask where Samsonov\'s army must go if it loses. Get there first.'},
+     intel:[['Usdau','I Corps has broken the Russian left wing. The beaten Russians are falling back over the border.'],
+            ['The way home','Samsonov\'s center is deep in the forests. Its road back to Russia runs south through Neidenburg and east to Willenberg.'],
+            ['Headquarters','Still afraid Rennenkampf might come south, it has ordered François to wheel north.']]}],
+  clues:[
+    {cat:'m',t:'The way home',b:'If Samsonov\'s army breaks, it must go back the way it came: south through Neidenburg and along the border road east to Willenberg.'},
+    {cat:'e',card:'russcorps1914'},
+    {cat:'e',t:'Already beaten',b:'The Russian left wing is falling back over the border after Usdau. It is no longer a danger.'},
+    {cat:'tr',card:'francois1914'},
+    {cat:'m',t:'Nearest the road',b:'Only one of your corps is close to that road, and it has just won its fight. Send it east, not north.'}],
+  deduce:[['Samsonov\'s only way home runs through Neidenburg.','Hold that road and his army is trapped.'],
+          ['I Corps has just won at Usdau, right beside that road.','It is the corps to send.'],
+          ['Rennenkampf is not coming.','Go east, not north.']],
+  /* The real battle. North is up. Rennenkampf is in the north-east; Samsonov comes up from Russian Poland in the south. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={de_I:[300,96],de_XVII:[262,70],de_IR:[222,82],de_XX:[160,292],de_cav:[312,120],de_hq:[60,150],
+           ru_1:[352,60],ru_2c:[180,370],ru_2r:[255,375],ru_2l:[110,375],ru_sams:[185,395]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(1,{de_I:[78,282],de_XX:[158,285],ru_2c:[180,340],ru_2l:[110,352],ru_2r:[255,345],ru_sams:[185,385],ru_1:[345,62]},{a:[['g',300,96,170,110,52,190,76,276]],t:'Trains south',b:'Hindenburg and Ludendorff take command and keep the plan the staff has already begun. Only the 1st Cavalry Division and some older troops stay to watch Rennenkampf. François\'s I Corps goes by train, more than 150 km, with a train every 30 minutes, round to the south-west beside XX Corps.'});
+    add(1,{de_XX:[160,282],ru_2c:[178,322],ru_2r:[262,262],ru_2l:[105,345],ru_sams:[185,370],ru_1:[338,60]},{a:[['t',255,345,262,266]],t:'Reading their mail',b:'Russian orders go out by radio without code, and your listeners read them. Rennenkampf has been ordered west, toward Königsberg, not south to help Samsonov. In the south, XX Corps falls back fighting before Samsonov\'s center, while his right wing heads north on its own.',
+      fire:[['de_XX','ru_2c','rifle'],['ru_2c','de_XX','rifle']]});
+    add(1,{de_XVII:[262,228],de_IR:[226,238],ru_2r:[290,300],ru_1:[330,58],de_cav:[305,112]},{a:[['g',262,70,262,224],['g',222,82,226,234]],t:'The right wing breaks',b:'Mackensen and von Below march south. On 26 and 27 August they fall on Samsonov\'s right wing near Bischofsburg. Its divisions, split up and caught from the side, break and stream back south.',
+      fire:[['de_XVII','ru_2r','rifle'],['de_IR','ru_2r','rifle'],['ru_2r','de_XVII','rifle']]});
+    add(1,{de_I:[95,308],ru_2l:[78,372]},{a:[['g',78,282,94,304]],t:'Usdau',b:'Ludendorff wanted François to attack a day earlier, but François waited for his guns to come off the trains. At 4 in the morning on 27 August they open a heavy bombardment, and I Corps takes Usdau. Samsonov\'s left wing falls back toward the border.',
+      fire:[['de_I','ru_2l','cannon'],['de_I','ru_2l','rifle']]});
+    add(2,{de_XX:[150,272],ru_2c:[178,312],ru_sams:[195,348],de_cav:[300,110],ru_1:[318,56]},{t:'Into the trap',b:'In the center, Samsonov\'s main body keeps pushing north into the forests. One of Scholtz\'s divisions is badly mauled, but XX Corps holds. Headquarters, still afraid Rennenkampf might come south, orders François to wheel north.',
+      fire:[['ru_2c','de_XX','rifle'],['de_XX','ru_2c','rifle']]});
+    add(2,{de_I:[165,362],de_XX:[155,285],ru_2c:[185,318],ru_sams:[200,328],ru_2l:[60,398,'exit']},{a:[['g',95,308,130,350,162,360]],t:'East to Neidenburg',b:'François ignores the order. On 28 August I Corps takes Soldau and swings east to Neidenburg, across the road Samsonov\'s army needs to get home. In the center, XX Corps reaches Hohenstein. That evening Samsonov orders a retreat, toward Neidenburg.',
+      fire:[['de_XX','ru_2c','rifle'],['ru_2c','de_XX','rifle']]});
+    add(2,{de_I:[230,372],de_XVII:[262,318],de_IR:[220,280],de_XX:[152,288],ru_2r:[320,398,'exit'],ru_sams:[200,330]},{a:[['g',165,362,226,370],['g',262,228,262,314]],t:'The ring closes',b:'On 29 August François\'s horsemen reach Willenberg, and his infantry holds the road from Neidenburg. His patrols meet Mackensen\'s corps coming down from the north. The ring is closed round Samsonov\'s center, in the forests.',
+      fire:[['de_XX','ru_2c','rifle'],['de_IR','ru_2c','rifle'],['ru_2c','de_XX','rifle']]});
+    add(2,{ru_2c:[188,322,'ko'],ru_sams:[200,330,'exit']},{t:'No way out',b:'Trapped in the forests, the Russian center breaks up. Columns trying to get out run into German lines and are shot down or captured. Soon after, Samsonov walks off into the woods and shoots himself rather than report the loss of his army.',
+      fire:[['de_I','ru_2c','rifle'],['de_XVII','ru_2c','rifle'],['de_IR','ru_2c','rifle'],['de_XX','ru_2c','rifle']]});
+    add(2,{de_XVII:[300,150],de_IR:[260,150],ru_1:[365,45]},{a:[['g',262,318,298,154],['g',220,280,258,154]],t:'After Tannenberg',b:'Hindenburg claimed 92,000 prisoners. German losses were about 12,000. Rennenkampf\'s army is still in East Prussia, and the German corps now turn north-east to face it. Hindenburg named the victory after Tannenberg, a village nearby where the Teutonic Knights had been beaten in 1410.'});
+    return S;
+  })(),
+  video:{id:'vvx0HMFBF-c',t:'How Russia was Annihilated at Tannenberg | Animated History',ch:'The Armchair Historian',v:1300000},
+  sources:[['Wikipedia: Battle of Tannenberg','https://en.wikipedia.org/wiki/Battle_of_Tannenberg'],
+           ['EBSCO Research Starters: Battle of Tannenberg (1914)','https://www.ebsco.com/research-starters/military-history-and-science/battle-tannenberg-1914'],
+           ['Mental Floss: WWI Centennial, Annihilation at Tannenberg','https://www.mentalfloss.com/history/world-war-i/wwi-centennial-annihilation-tannenberg'],
+           ['History Hit: how the German army won its greatest victory of the First World War at Tannenberg','https://www.historyhit.com/how-the-german-army-won-its-greatest-victory-of-the-first-world-war-at-the-battle-of-tannenberg/'],
+           ['Wikipedia: Max Hoffmann','https://en.wikipedia.org/wiki/Max_Hoffmann']],
+  cards:{de_I:'francois1914',de_XVII:'germcorps1914',de_IR:'germcorps1914',de_XX:'germcorps1914',de_cav:'germcav1914',
+         ru_1:'russcorps1914',ru_2c:'russcorps1914',ru_2r:'russcorps1914',ru_2l:'russcorps1914'}
+});
