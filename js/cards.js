@@ -373,7 +373,35 @@ const CARDS = [
   {id:'dakota1954', set:'dienbienphu', name:'French air supply', era:'First Indochina War, 1954', t:'plane', side:'t', st:[4,1,1,5],
    good:'Flying in everything the camp needs', beat:'A runway under shellfire',
    fact:'After 14 March the airstrip was closed for good, and supplies had to come down by parachute.'}
-];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21], blenheim:['Blenheim, 1704',20], bannockburn:['Bannockburn, 1314',15], tannenberg:['Tannenberg, 1914',3], dienbienphu:['Dien Bien Phu, 1954',5]};
+,
+  // Leuthen, 1757
+  {id:'prinf1757', set:'leuthen', name:'Prussian infantry', era:'Seven Years\' War, 1757', t:'inf', side:'g', st:[3,4,3,3],
+   good:'Fast marches and quick changes of formation', beat:'Attacking a much bigger army head on',
+   fact:'At Leuthen ammunition wagons followed the lines, so the attack never stopped for want of cartridges.'},
+  {id:'prcav1757', set:'leuthen', name:'Prussian cavalry', era:'Seven Years\' War, 1757', t:'cav', side:'g', st:[5,4,2,1],
+   good:'Charging into the side of an enemy that has not seen it', beat:'Earthworks full of grenadiers',
+   fact:'Driesen\'s squadrons waited behind the Sophienberg until the Austrian cavalry turned its side to them.'},
+  {id:'prart1757', set:'leuthen', name:'Heavy guns', era:'Seven Years\' War, 1757', t:'art', side:'g', st:[1,5,2,4],
+   good:'Battering a line from a hilltop', beat:'Being caught alone on the move',
+   fact:'The soldiers called these 12-pounders Brummers. From the Butterberg they pounded the new Austrian line at Leuthen.'},
+  {id:'austinf1757', set:'leuthen', name:'Austrian line infantry', era:'Seven Years\' War, 1757', t:'inf', side:'t', st:[2,3,3,3],
+   good:'Holding villages, walls and earthworks', beat:'A surprise attack on the end of a long line',
+   fact:'At Leuthen the Austrian line stretched about 8 km, and its reserves were marched to the wrong end.'},
+  {id:'austcav1757', set:'leuthen', name:'Austrian cavalry', era:'Seven Years\' War, 1757', t:'cav', side:'t', st:[4,4,2,1],
+   good:'Big, fresh charges', beat:'Hidden horsemen striking its side',
+   fact:'Its commander Lucchesi was killed by a cannonball early in his last charge.'}
+,
+  // Ain Jalut, 1260
+  {id:'mamluk1260', set:'ainjalut', name:'Mamluk horsemen', era:'Mongol invasions, 1260', t:'cav', side:'g', st:[4,4,3,4],
+   good:'Shooting and charging from horseback', beat:'Being caught out on open ground',
+   fact:'At Ain Jalut they handed a Mongol army its first true defeat.'},
+  {id:'mongol1260', set:'ainjalut', name:'Mongol horse archers', era:'Mongol invasions, 1260', t:'cav', side:'t', st:[5,3,2,5],
+   good:'Speed, arrows and the fake retreat', beat:'An enemy that knows their tricks',
+   fact:'A Persian chronicle has Kitbuqa refuse to flee: better to die with a good name than to run in disgrace.'},
+  {id:'mongolally1260', set:'ainjalut', name:'Mongol allies', era:'Mongol invasions, 1260', t:'spr', side:'t', st:[3,2,2,2],
+   good:'Adding numbers to a Mongol army', beat:'Staying loyal when the battle turns',
+   fact:'Georgian, Armenian and Syrian troops rode with Kitbuqa. Some of the Syrians are said to have left him during the battle.'}
+];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21], blenheim:['Blenheim, 1704',20], bannockburn:['Bannockburn, 1314',15], tannenberg:['Tannenberg, 1914',3], dienbienphu:['Dien Bien Phu, 1954',5], leuthen:['Leuthen, 1757',6], ainjalut:['Ain Jalut, 1260',7]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();

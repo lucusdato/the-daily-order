@@ -163,3 +163,323 @@ PGD.mystery(5,{
   cards:{v_art:'vmart1954',v_aa:'vmaa1954',v_308:'vminf1954',v_312:'vminf1954',v_316:'vminf1954',v_supply:'porter1954',
          f_bea:'fug1954',f_gab:'fug1954',f_dom:'fug1954',f_hug:'fug1954',f_isa:'fug1954',f_air:'dakota1954'}
 });
+
+/* ===== Leuthen, day 23 ===== */
+PGD.mystery(6,{
+  war:'Seven Years\' War',
+  general:'Frederick the Great',
+  pitch:'You are <b>Frederick the Great</b>, King of Prussia. An Austrian army about twice the size of yours stands between you and Silesia, and winter is coming. Win the province back in one short December day.',
+  H:600,
+  terrain(){
+    let s=felt('#9ba478',600)+`<rect width="400" height="600" fill="url(#snow)"/>`;
+    s+=road('M0 230 Q60 226 100 228 Q180 236 250 306 Q300 330 400 320');
+    [[150,330,24,42],[156,440,26,50],[170,530,24,40],[122,282,18,24],[188,372,18,22]].forEach(h=>s+=hill(h[0],h[1],h[2],h[3],2));
+    s+=house(92,224)+house(104,230,'#8a3a2a')+house(262,72)+house(272,78,'#8a3a2a')+house(248,150)+house(246,302)+house(258,310,'#8a3a2a')+house(252,294)+house(166,268)+house(282,494)+house(292,500,'#8a3a2a')+house(204,556);
+    s+=trees(17,14,[320,395,0,600],()=>true,['#3b5f2d','#2f5a24']);
+    s+=label(96,212,'Borne',9)+label(266,58,'Nippern',9)+label(248,136,'Frobelwitz',8)+label(262,286,'Leuthen',10)+label(164,256,'Radaxdorf',8)+label(292,520,'Sagschütz',9)+label(206,576,'Lobetinz',8);
+    s+=label(150,388,'Low hills',8)+label(118,312,'Sophienberg',7)+label(190,402,'Butterberg',7);
+    s+=compass(382,576);
+    return s+end(600);
+  },
+  lead:'December 1757, the Seven Years\' War. Austria has taken back most of Silesia from Prussia, and its army stands in a long line near the village of Leuthen. You have marched to meet it with an army about half its size. "I must conquer or die," you have told your officers.',
+  sit:'Late morning, 5 December 1757. Your cavalry is showing itself in front of the Austrian right wing, and it has worked: the Austrian reserves are marching north to help. Your main army is still near Borne. Now you must decide where the real blow falls.',
+  mett:{
+    m:'Defeat the Austrian army and win Silesia back before winter.',
+    e:'About 65,000 Austrians and their German allies, in a line about 8 km long facing west, with about 210 guns.',
+    t:'Rolling farmland in winter. A line of low hills runs south from Borne, between the two armies.',
+    tr:'About 33,000 well drilled Prussians with about 167 guns, among them heavy 12-pounders the soldiers call Brummers.',
+    ti:'One short December day. Austria holds Silesia, so time is on its side.'},
+  ground:[['Key terrain','The low hills south of Borne, which hide a march from the Austrian line.',[150,300,30]],
+          ['Key terrain','The south end of the Austrian line, at Sagschütz.',[272,322,26]],
+          ['Obstacle','Open ground in front of the Austrian center, in full view of their line.',[200,190,28]]],
+  q:'The Austrian reserves have gone north. Which toy, sent where, delivers the real blow?',
+  qs:'The real blow: which toy goes where?',
+  toys:[['p_inf1','Infantry columns','your infantry columns'],['p_adv','Advance guard','the advance guard cavalry'],['p_art','Heavy guns','the heavy guns']],
+  zones:[['south','South end',212,345,22,'south behind the hills, onto the far end of their line'],['center','At Leuthen',190,200,22,'straight at Leuthen, the middle of their line'],
+         ['north','At Nippern',200,70,22,'north, onto their right wing at Nippern'],['dig','Dig in',30,280,20,'back to dig in west of Borne']],
+  ans:{u:'p_inf1',z:'south'},
+  start:{p_adv:[160,95],p_inf1:[80,180],p_inf2:[60,200],p_art:[70,222],p_cav:[50,160],p_fred:[100,165],
+         a_right:[262,60],a_center:[262,170],a_left:[272,320],a_res:[300,90],a_cav:[300,112],a_charles:[305,200]},
+  fbU:{p_inf1:'Right toy. Only the infantry can break their line and take the ground. The guns can follow it.',
+       p_adv:'Not this toy. The advance guard is the feint. If it rides away, the Austrians stop looking north.',
+       p_art:'Not this toy. The heavy guns can batter a line, but they cannot take it. Send the infantry and let the guns follow.'},
+  fbZ:{south:'Right place. Behind the hills nobody sees you coming, and their reserves have just marched the other way.',
+       center:'The middle of their line is in plain view, and they have about twice your numbers.',
+       north:'Their reserves have just marched north. That is now the strongest part of their line.',
+       dig:'Austria holds Silesia and winter is coming. If you wait, they win without a fight.'},
+  fail:{
+    'p_inf1@center':{fire:[['a_center','$','musket']],ko:['$'],
+      b:'Your infantry marches straight at Leuthen across open ground, in full view of the whole Austrian line. Twice your number are waiting for it, and its attack is shot to pieces.'},
+    'p_inf1@north':{fire:[['a_right','$','musket'],['a_res','$','musket']],ko:['$'],
+      b:'Your infantry attacks the Austrian right just as their reserves arrive there. It runs into earthworks, grenadiers and fresh troops, and is thrown back.'},
+    'p_inf1@dig':{ko:[],idle:['$'],
+      b:'Your infantry digs in west of Borne. The Austrians hold Silesia and have no reason to attack. The day ends, and the chance is gone.'},
+    'p_adv@south':{fire:[['a_left','$','musket']],ko:['$'],
+      b:'The advance guard leaves the feint and rides south. It is far too small to break a line alone, and with nobody threatening them any more, the Austrians on the right relax.'},
+    'p_adv@center':{fire:[['a_center','$','musket']],ko:['$'],
+      b:'The advance guard rides at the Austrian center. A few squadrons of horsemen cannot break a line of infantry, and the feint in the north is over.'},
+    'p_adv@north':{fire:[['a_right','$','musket']],ko:['$'],
+      b:'The advance guard charges the earthworks it was only meant to threaten. Grenadiers behind them shoot it down, and the main army is still at Borne.'},
+    'p_adv@dig':{ko:[],idle:['$'],
+      b:'The feint stops. The Austrians on the right stop worrying, and their reserves are free to go wherever they are needed.'},
+    'p_art@south':{fire:[['$','a_left','cannon'],['a_left','$','musket']],ko:['$'],
+      b:'The heavy guns are dragged south behind the hills and open up on the far end of the line. With no infantry beside them, Austrian troops come forward and take them.'},
+    'p_art@center':{fire:[['$','a_center','cannon'],['a_center','$','musket']],ko:['$'],
+      b:'The heavy guns pound the Austrian center for a while. Nobody follows up, the line stays where it is, and the Austrians move up guns of their own.'},
+    'p_art@north':{fire:[['a_right','$','musket']],ko:['$'],
+      b:'The heavy guns roll north, straight toward the Austrian reserves. Slow and alone, they are overrun.'},
+    'p_art@dig':{ko:[],idle:['$'],
+      b:'The guns are dug in west of Borne, too far from the Austrian line to matter, and nobody attacks.'}},
+  /* Three decisions (see tools/FORMAT.md). Decision 2 is the puzzle above.
+     Every zone is a real move: none sits where a toy already stands. Texts stay inside what the scenes and sources say. */
+  stepsLive:true,
+  steps:[
+    {start:{p_adv:[110,140],p_inf1:[80,180],p_inf2:[60,200],p_art:[70,222],p_cav:[50,160],p_fred:[100,165],
+            a_right:[262,60],a_center:[262,170],a_left:[272,320],a_res:[310,230],a_cav:[300,112],a_charles:[305,200]},
+     after:[0],
+     qs:'Fool the Austrians: which toy goes where?',
+     sit:'Dawn, 5 December 1757. Your hussars have swept the Austrian outposts out of Borne in the fog. From the heights beyond the village you can see the whole Austrian line: long, and only three ranks deep. You mean to march most of your army round one end of it and strike there. First, the Austrians must be made to look somewhere else.',
+     q:'Which toy, sent where, keeps the Austrians from watching your real march?',
+     intel:[['The ground','North of Borne the ground is open, and the Austrian right can see everything that moves there. South of Borne, a line of low hills can hide an army on the march.'],
+            ['The Austrian right','The strongest part of their line, round Nippern, with grenadiers, cavalry and earthworks.'],
+            ['Your army','The infantry and the heavy guns will be needed for the real attack. The advance guard cavalry is fast, and can show itself and pull back.']],
+     toys:[['p_adv','Advance guard','the advance guard cavalry'],['p_inf1','Infantry columns','your infantry columns'],['p_art','Heavy guns','the heavy guns']],
+     zones:[['show','Face their right',160,95,22,'out into the open, in front of the Austrian right'],['center','At Leuthen',190,200,22,'straight at Leuthen, the middle of their line'],
+            ['hills','Behind the hills',150,300,22,'south, behind the low hills'],['back','Back west',25,280,20,'back west, away from the Austrians']],
+     ans:{u:'p_adv',z:'show'},
+     hint:{u:'Send the troops you can spare from the real attack, and that can get away fast.',z:'A feint only works if the enemy can see it.'},
+     fbU:{p_adv:'Right toy. The advance guard is fast and you can spare it. The infantry and guns are kept for the real blow.',
+          p_inf1:'Not this toy. The infantry is your real attack. Spend it on a show, and nothing is left for the blow.',
+          p_art:'Not this toy. The heavy guns are slow, and they are needed for the real attack.'},
+     fbZ:{show:'Right place. The Austrian right can see every move out there, and it will think the whole army is coming.',
+          center:'Riding at the middle of their line starts a real fight there, not a show, and points their eyes at Leuthen.',
+          hills:'Behind the hills nobody sees you. A feint that nobody sees fools nobody.',
+          back:'Pulling back west shows the Austrians nothing they need to worry about.'},
+     fail:{show:{ko:[],idle:['$']},
+           center:{ko:[],fire:[['a_center','$','musket']]},
+           hills:{ko:[],idle:['$']},
+           back:{ko:[],idle:['$']}}},
+    {after:[1,2,3],
+     hint:{u:'Ask which of these can take a line and hold the ground, not just hit it.',z:'Their reserves have just marched one way. Think about the other end, and how to get there unseen.'},
+     intel:[['The hills','A line of low hills runs south from Borne. Troops marching behind them cannot be seen from the Austrian line.'],
+            ['The south end','The far left of the Austrian line, at Sagschütz, is held by Württemberg and Bavarian troops.'],
+            ['The reserves','They have marched north to help the Austrian right, where your cavalry is showing itself.']]},
+    {from:3, start:{a_cav:[222,140],p_cav:[130,190,'hide']}, after:[4,5],
+     qs:'Their cavalry charges: which toy goes where?',
+     sit:'About 4.30 in the afternoon. Your infantry has fought its way into Leuthen, and your heavy guns stand on the Butterberg. Now Lucchesi leads the Austrian cavalry of the right wing south, against the open side of your infantry and the guns.',
+     q:'Which toy, sent where, stops the Austrian charge?',
+     intel:[['Lucchesi','His squadrons are fresh. To hit your infantry, they have to swing across your front.'],
+            ['Your left','Driesen\'s cavalry of the left wing is waiting out of sight behind the Sophienberg.'],
+            ['Your infantry','It is locked in the fight round Leuthen and cannot turn without letting go of the village.']],
+     toys:[['p_cav','Driesen\'s cavalry','Driesen\'s cavalry'],['p_inf2','Second line','the second line of infantry'],['p_art','Heavy guns','the heavy guns']],
+     zones:[['flank','Their side',170,135,20,'out of cover into the side of the Austrian cavalry'],['meet','Head on',215,195,18,'head on into the front of the charge'],
+            ['east','East of Leuthen',305,240,20,'round the east end of Leuthen'],['back','Back west',60,265,20,'back west, out of the way']],
+     ans:{u:'p_cav',z:'flank'},
+     hint:{u:'Horsemen are best stopped by horsemen.',z:'They do not know Driesen is there, and to reach your infantry they must turn their side to him.'},
+     fbU:{p_cav:'Right toy. Fresh cavalry, hidden and close, is the one force fast enough to catch a charge.',
+          p_inf2:'Not this toy. Infantry on the move in the open is just what cavalry hopes to catch.',
+          p_art:'Not this toy. Guns being dragged about under a cavalry charge are taken before they can fire.'},
+     fbZ:{flank:'Right place. A cavalry charge is weakest from the side, and they never saw Driesen waiting.',
+          meet:'Meeting a fresh charge head on is an even fight, and it wastes the surprise.',
+          east:'East of Leuthen is the far end of the fight. The charge would hit your infantry while you are away.',
+          back:'Pulling away leaves your infantry and guns open to the charge.'},
+     fail:{flank:{ko:[],fire:[['a_cav','$','clash']]},
+           meet:{ko:[],fire:[['a_cav','$','clash']]},
+           east:{ko:[],fire:[['a_res','$','musket']]},
+           back:{ko:[],idle:['$']}}}],
+  clues:[
+    {cat:'m',t:'Two to one',b:'The Austrians have about twice your numbers. You cannot win by fighting their whole line at once.'},
+    {cat:'e',card:'austinf1757'},
+    {cat:'e',t:'Looking north',b:'Your feint has worked. The Austrian reserves have marched north to help their right wing.'},
+    {cat:'tr',card:'prinf1757'},
+    {cat:'m',t:'Out of sight',b:'Send the infantry south behind the low hills, round the far end of their line, and hit it where the reserves have just left.'}],
+  deduce:[['You are outnumbered about two to one.','Do not fight their whole line.'],
+          ['Their reserves have marched north.','Strike the south end.'],
+          ['The low hills hide a march.','Send the infantry behind them.']],
+  /* The real battle. North is up. The Austrians stand in a line facing west, their right at Nippern, their left at Sagschütz. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={p_adv:[110,140],p_inf1:[80,180],p_inf2:[60,200],p_art:[70,222],p_cav:[50,160],p_fred:[100,165],
+           a_right:[262,60],a_center:[262,170],a_left:[272,320],a_res:[310,230],a_cav:[300,112],a_charles:[305,200]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{p_adv:[160,95],a_res:[300,90]},{a:[['g',110,140,158,97],['t',310,230,320,150,302,94]],t:'The feint',b:'Prussian cavalry forms up in front of the Austrian right, as if to attack, while columns march noisily to and fro. Lucchesi, commanding the cavalry there, is sure the whole Prussian army is coming at him and begs for help. At midday Charles of Lorraine and Daun send the reserves north.'});
+    add(1,{p_inf1:[170,330],p_inf2:[150,348],p_art:[150,310],p_fred:[150,290],p_cav:[115,215]},{a:[['g',80,180,120,280,168,328],['g',60,200,110,300,148,346],['g',70,222,150,308]],t:'Behind the hills',b:'The Prussian army marches south in columns behind the low hills, out of sight. Charles sees them leave Borne and says, "Our friends are leaving, let them go in peace." Nádasdy, on the Austrian left, sees them turning toward him and asks for help. None comes.'});
+    add(1,{p_inf1:[250,330],p_inf2:[230,348],p_art:[205,322],p_fred:[200,340],a_left:[272,320,'ko']},{a:[['g',170,330,246,330]],t:'Sagschütz',b:'At about 1 in the afternoon the Prussians attack the far left of the Austrian line. The Württemberg troops there trade a few volleys and drift away, and the Bavarians beside them give way too. In about 15 minutes the Austrian left has collapsed.',
+      fire:[['p_inf1','a_left','musket'],['p_art','a_left','cannon'],['a_left','p_inf1','musket']]});
+    add(2,{p_inf1:[255,226],p_inf2:[232,245],p_art:[190,248],p_fred:[200,262],p_cav:[130,190,'hide'],a_center:[255,200],a_res:[278,194]},{a:[['g',250,330,255,230],['g',205,322,192,252],['t',300,90,280,190]],t:'Leuthen',b:'The Austrians turn to make a new line facing south at Leuthen. Their infantry fights from houses, fences and walls, and holds the walled churchyard until Prussian grenadiers break in. From the Butterberg, the heavy Prussian guns pound the new Austrian line.',
+      fire:[['p_inf1','a_center','clash'],['a_center','p_inf1','musket'],['a_res','p_inf1','musket'],['p_art','a_res','cannon']]});
+    add(2,{a_cav:[210,152,'ko'],p_cav:[190,150]},{a:[['t',300,112,214,150],['g',130,190,188,152]],t:'Driesen\'s charge',b:'Lucchesi\'s squadrons swing toward the Prussian infantry and show their own side. Driesen\'s cavalry charges out from behind the Sophienberg and catches them by surprise. Lucchesi is killed early, by a cannonball. More Prussian squadrons join in, and the Austrian cavalry breaks.',
+      fire:[['p_cav','a_cav','clash'],['p_art','a_cav','cannon'],['p_inf1','a_center','musket'],['a_res','p_inf1','musket']]});
+    add(2,{p_cav:[240,180],p_inf1:[262,212],a_center:[255,200,'ko'],a_res:[395,230,'exit'],a_right:[395,80,'exit'],a_charles:[395,210,'exit']},{a:[['g',190,150,236,178]],t:'Night',b:'The Prussian cavalry rides into the open side of the Austrian infantry, and the whole Austrian army breaks and streams east toward Breslau as darkness falls. Austria has lost about 22,000 men, 12,000 of them taken prisoner, against about 6,000 Prussians. Two weeks later Breslau surrenders, and Silesia is Prussian again.',
+      fire:[['p_cav','a_center','clash'],['p_inf1','a_center','musket']]});
+    return S;
+  })(),
+  video:{id:'pNx_uD5-x5s',t:'Battle of Leuthen: How 35,000 Prussians CRUSHED a 65,000-strong Austrian army',ch:'Zweitausend Jahre Deutschland',v:316000},
+  sources:[['Wikipedia: Battle of Leuthen','https://en.wikipedia.org/wiki/Battle_of_Leuthen'],
+           ['Warfare History Network: Covered in Glory at Leuthen','https://warfarehistorynetwork.com/article/covered-in-glory-at-leuthen/'],
+           ['EBSCO Research Starters: Battle of Leuthen','https://www.ebsco.com/research-starters/military-history-and-science/battle-leuthen']],
+  cards:{p_adv:'prcav1757',p_inf1:'prinf1757',p_inf2:'prinf1757',p_art:'prart1757',p_cav:'prcav1757',
+         a_right:'austinf1757',a_center:'austinf1757',a_left:'austinf1757',a_res:'austinf1757',a_cav:'austcav1757'}
+});
+
+/* ===== Ain Jalut, day 24 ===== */
+PGD.mystery(7,{
+  war:'Mongol invasions of the Levant',
+  general:'Qutuz',
+  pitch:'You are <b>Qutuz</b>, Sultan of Egypt. The Mongols have taken Baghdad and Damascus, and they have told you to surrender. Instead you have marched out to meet their army in the valley of Ain Jalut. Stop it there.',
+  H:600,
+  terrain(){
+    let s=felt('#b2aa6c',600);
+    s+=`<path d="M0 0 H400 V120 Q300 160 200 150 Q100 140 0 175 Z" fill="#9b9064"/><path d="M0 600 H400 V450 Q300 420 200 440 Q100 460 0 420 Z" fill="#9b9064"/>`;
+    [[60,80,20],[150,64,22],[260,56,20],[350,84,18],[70,540,22],[190,566,20],[300,520,24],[370,500,20]].forEach(p=>s+=mtn(p[0],p[1],p[2],'#d8cfa8'));
+    s+=trees(31,30,[0,135,140,470],()=>true,['#4b6b30','#3b5f2d']);
+    s+=`<circle cx="300" cy="480" r="7" fill="#5d9bc0" stroke="#e6d6a2"/>`;
+    s+=label(300,504,'Spring of Ain Jalut',8)+label(300,580,'Mount Gilboa',9)+label(64,128,'Wooded hills',8)+label(220,316,'Open valley floor',10)+label(384,300,'From the east',8,90);
+    s+=compass(26,576);
+    return s+end(600);
+  },
+  lead:'1260. The Mongols have destroyed Baghdad and taken Damascus. Their envoys came to Cairo to demand your surrender, and you had them put to death. Their leader Hulagu has since taken most of his army back east, leaving his general Kitbuqa in Syria with a smaller force. You have marched out of Egypt to meet it.',
+  sit:'3 September 1260, by the spring of Ain Jalut. Your main army waits out of sight among the trees in the hills. Out on the valley floor, Baybars and the vanguard have been fighting the Mongols for hours.',
+  mett:{
+    m:'Defeat Kitbuqa\'s army and stop the Mongols before they reach Egypt.',
+    e:'One Mongol tumen, in name 10,000 horsemen, with Georgian, Armenian and Syrian allies. Mounted archers and lancers.',
+    t:'A broad valley by the spring of Ain Jalut, at the foot of Mount Gilboa, with wooded hills where an army can hide.',
+    tr:'Perhaps 15,000 to 20,000 Mamluk horsemen and allies. Baybars commands the vanguard.',
+    ti:'One day. For now, the main Mongol army has gone east.'},
+  ground:[['Key terrain','The wooded hills at the west end of the valley, where an army can hide.',[65,200,30]],
+          ['Avenue of approach','The open valley floor, good ground for horse archers.',[210,200,30]],
+          ['Key terrain','The spring of Ain Jalut, at the foot of Mount Gilboa.',[300,320,20]]],
+  q:'The Mongols are pressing Baybars. Which toy, sent where, brings them to your hidden army?',
+  qs:'Bait the trap: which toy goes where?',
+  toys:[['m_van','Baybars\'s vanguard','Baybars and the vanguard'],['m_main','Main army','the main army'],['m_right','Right wing','the right wing']],
+  zones:[['lure','Run to the hills',122,205,22,'back toward the hills, as if beaten'],['charge','At their center',242,200,18,'straight into the Mongol center'],
+         ['round','Round the north',255,95,20,'round the north end of the Mongol army'],['spring','To the spring',292,318,20,'south to the spring of Ain Jalut']],
+  ans:{u:'m_van',z:'lure'},
+  start:{m_van:[215,205],m_main:[65,200,'hide'],m_left:[85,120,'hide'],m_right:[85,285,'hide'],m_qutuz:[42,215],
+         mo_main:[265,200],mo_r:[300,140],mo_l:[300,265],mo_allies:[345,212],mo_kit:[335,190]},
+  fbU:{m_van:'Right toy. The Mongols are already fighting Baybars. Only he can lead them somewhere without showing them the rest of your army.',
+       m_main:'Not this toy. Once the Mongols see your main army, the trap is gone.',
+       m_right:'Not this toy. The right wing is part of the trap. If it shows itself, the Mongols know what waits in the trees.'},
+  fbZ:{lure:'Right place. Run for the hills as if beaten, and let the Mongols chase you onto your hidden army.',
+       charge:'Charging the whole Mongol army with a small force throws that force away.',
+       round:'Riding round the Mongols on the open floor only shows them more of you. It does not bring them to the trap.',
+       spring:'The spring is behind the Mongols, away from the hills. Nothing there leads them to your hidden army.'},
+  fail:{
+    'm_van@charge':{fire:[['mo_main','$','arrows'],['mo_kit','$','arrows']],ko:['$'],
+      b:'Baybars throws his tired vanguard straight at the whole Mongol army. It is swallowed up, and the Mongols are left in the open valley, nowhere near your trap.'},
+    'm_van@round':{fire:[['mo_r','$','arrows']],ko:['$'],
+      b:'Baybars rides round the north end of the Mongol army. Their right wing turns on him and shoots his men down, and nobody leads them toward the hills.'},
+    'm_van@spring':{fire:[['mo_l','$','arrows']],ko:['$'],
+      b:'Baybars rides south to the spring, away from the hills. The Mongols follow him there, the wrong way, and your hidden army waits for nothing.'},
+    'm_main@lure':{fire:[['mo_main','$','arrows']],ko:[],
+      b:'The main army rides out of the trees to help Baybars. Now the Mongols can see your whole army, the trap is gone, and the battle becomes the open fight they wanted.'},
+    'm_main@charge':{fire:[['mo_main','$','arrows'],['$','mo_main','clash']],ko:[],
+      b:'Your main army leaves the trees and charges across the open floor. Mongol arrows meet it all the way, and instead of a trap you have a head-on fight.'},
+    'm_main@round':{fire:[['mo_r','$','arrows']],ko:[],
+      b:'Your main army comes out of hiding and rides round the north end of the Mongols, in full view. Their right wing turns to face it, and the surprise is wasted.'},
+    'm_main@spring':{fire:[['mo_l','$','arrows']],ko:[],
+      b:'Your main army leaves the hills and crosses the open valley to the spring. The Mongols see it go, and the hills behind Baybars are empty.'},
+    'm_right@lure':{fire:[['mo_main','$','arrows']],ko:[],
+      b:'The right wing rides out of the trees beside Baybars. The Mongols see it, guess that more troops wait in the hills, and do not follow.'},
+    'm_right@charge':{fire:[['mo_main','$','arrows'],['mo_l','$','arrows']],ko:['$'],
+      b:'The right wing charges the Mongol center alone and is shot to pieces. Its side of the trap is now open.'},
+    'm_right@round':{fire:[['mo_r','$','arrows']],ko:[],
+      b:'The right wing crosses the whole valley to get round the Mongols, in plain sight. The Mongols now know the hills were hiding troops.'},
+    'm_right@spring':{fire:[['mo_l','$','arrows']],ko:[],
+      b:'The right wing rides out to the spring, behind the Mongols. It shows them part of your army and leaves a gap in the trap.'}},
+  /* Three decisions (see tools/FORMAT.md). Decision 2 is the puzzle above.
+     Every zone is a real move: none sits where a toy already stands. Texts stay inside what the scenes and sources say.
+     Some historians doubt that the retreat was planned; the scenes follow the account the listed sources give most often. */
+  stepsLive:true,
+  steps:[
+    {start:{m_van:[112,205],m_main:[15,200],m_left:[15,150],m_right:[15,250],m_qutuz:[35,225],
+            mo_main:[350,200],mo_r:[350,145],mo_l:[350,255],mo_allies:[382,215],mo_kit:[375,190]},
+     after:[0,1],
+     qs:'The Mongols are near: where do you wait?',
+     sit:'Early on 3 September 1260. Your army has reached the west end of the valley of Ain Jalut. Kitbuqa\'s Mongols got there first and are camped by the spring. Baybars will ride out with a smaller force to meet them. The rest of your army must be somewhere when the Mongols come.',
+     q:'Where does the rest of your army wait while Baybars rides out?',
+     intel:[['The Mongols','Fast horse archers who like open ground. A fake retreat is one of their best tricks: run, then turn on whoever chases.'],
+            ['The ground','The valley floor is open and flat. At its west end, wooded hills can hide a large army.'],
+            ['Baybars','He will ride out with a smaller force and keep the Mongols busy for as long as it takes.']],
+     toys:[['m_main','Main army','the main army'],['m_left','Left wing','the left wing'],['m_right','Right wing','the right wing']],
+     zones:[['hills','In the trees',72,205,22,'into the trees in the hills, out of sight'],['valley','Valley floor',205,205,22,'out onto the open valley floor beside Baybars'],
+            ['spring','To the spring',292,318,20,'round to the spring, behind the Mongols'],['camp','Fortified camp',40,345,20,'back into a fortified camp']],
+     ans:{u:['m_main','m_left','m_right'],z:'hills'},
+     hint:{z:'Baybars can only lead the Mongols into a trap if they cannot see it.'},
+     fbU:{m_main:'Right toy. The whole army gets the same order. The question is where it waits.',
+          m_left:'Right toy. The whole army gets the same order. The question is where it waits.',
+          m_right:'Right toy. The whole army gets the same order. The question is where it waits.'},
+     fbZ:{hills:'Right place. Among the trees the Mongols cannot see you, so whatever Baybars does, they never know what waits behind him.',
+          valley:'Out on the open floor, the Mongols see your whole army and fight it on the ground they like best.',
+          spring:'Riding round to the spring takes your army across the open valley in full view of the Mongols.',
+          camp:'Shut in a camp, your army cannot strike, and the Mongols can see where it is.'},
+     fail:{hills:{ko:[],idle:['$']},
+           valley:{ko:[],fire:[['mo_main','$','arrows']]},
+           spring:{ko:[],fire:[['mo_l','$','arrows']]},
+           camp:{ko:[],idle:['$']}}},
+    {after:[2,3,4],
+     hint:{u:'Only one of these is already in front of the Mongols, and only one can move without giving the trap away.',z:'The trap is in the hills. Bring the Mongols to it.'},
+     intel:[['Baybars','His men have fought for hours with hit-and-run attacks, and are still in one piece.'],
+            ['What they see','The Mongols can see Baybars on the valley floor. They cannot see your army in the trees.'],
+            ['Kitbuqa','He has the whole Mongol force with him, ready to chase.']]},
+    {from:4, after:[5,6],
+     qs:'The left is breaking: which toy goes where?',
+     sit:'The trap has closed, but the Mongols are fighting hard to break out. Their charge has nearly destroyed your left wing, and your men there are giving way. If the left goes, the whole army could come apart.',
+     q:'Which toy, sent where, saves your left wing?',
+     intel:[['The left wing','The Mongol charge has almost broken it. Its men are wavering.'],
+            ['The rest','The main army and the right wing are locked in their own fights, holding the ring shut.'],
+            ['Your guard','Your own unit is fresh, and still at your side.']],
+     toys:[['m_qutuz','Qutuz and his guard','your own guard, led by you,'],['m_main','Main army','the main army'],['m_right','Right wing','the right wing']],
+     zones:[['left','To the left wing',125,160,20,'into the fight on the breaking left wing'],['kit','At Kitbuqa',205,180,18,'straight through the Mongols at Kitbuqa'],
+            ['back','Back west',22,330,20,'back west, out of the battle']],
+     ans:{u:'m_qutuz',z:'left'},
+     hint:{u:'Everyone else is already holding part of the ring. Who is still free?',z:'Go where the battle is being lost.'},
+     fbU:{m_qutuz:'Right toy. Everyone else is holding the ring. Your own guard is the only fresh force, and your men need to see you.',
+          m_main:'Not this toy. The main army is holding the Mongol center. Pull it out, and the ring opens.',
+          m_right:'Not this toy. The right wing holds the other side of the ring. Pull it out, and the Mongols ride out that way.'},
+     fbZ:{left:'Right place. That is where the battle is being lost.',
+          kit:'Kitbuqa is in the middle of his army. Reaching him means cutting through it while your left wing falls apart.',
+          back:'Turning back now starts a rout, with Mongol horsemen chasing you all the way.'},
+     fail:{left:{ko:[],fire:[['mo_r','$','clash']]},
+           kit:{ko:[],fire:[['mo_main','$','arrows']]},
+           back:{ko:[],idle:['$']}}}],
+  clues:[
+    {cat:'m',t:'Hours of it',b:'Baybars has kept the Mongols busy for hours with hit-and-run attacks, and his force is still in one piece.'},
+    {cat:'e',card:'mongol1260'},
+    {cat:'e',t:'What they see',b:'The Mongols can see Baybars on the valley floor. They cannot see your main army in the trees.'},
+    {cat:'tr',card:'mamluk1260'},
+    {cat:'m',t:'Their own trick',b:'Have Baybars turn and run for the hills as if beaten. When the Mongols chase him, your hidden army is waiting.'}],
+  deduce:[['Only Baybars is in front of the Mongols.','Use Baybars.'],
+          ['The army in the trees cannot be seen.','Bring the Mongols to it.'],
+          ['A Mongol army chases a beaten enemy.','Have Baybars run for the hills.']],
+  /* The real battle. North is up. The Mamluks come from the west, the Mongols hold the spring to the east.
+     Both armies face each other, so the Mamluk left wing is on the north side and meets the Mongol right. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={m_van:[112,205],m_main:[15,200],m_left:[15,150],m_right:[15,250],m_qutuz:[35,225],
+           mo_main:[350,200],mo_r:[350,145],mo_l:[350,255],mo_allies:[382,215],mo_kit:[375,190]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{m_main:[65,200,'hide'],m_left:[85,120,'hide'],m_right:[85,285,'hide'],m_qutuz:[42,215],m_van:[200,205],
+           mo_main:[300,200],mo_r:[300,140],mo_l:[300,265],mo_allies:[345,212],mo_kit:[335,190]},
+      {a:[['g',15,200,62,200],['g',15,150,82,122],['g',15,250,82,282],['g',112,205,196,205],['t',350,200,304,200]],t:'Out of sight',b:'Qutuz hides most of his army among the trees in the hills and sends Baybars forward with a smaller force. The Mongols ride out to meet it.'});
+    add(0,{m_van:[215,205],mo_main:[265,200]},{t:'Hit and run',b:'For hours Baybars\'s horsemen dash in, loose their arrows and pull away, drawing the Mongols on while keeping their own men in one piece.',
+      fire:[['mo_main','m_van','arrows'],['m_van','mo_main','arrows']]});
+    add(1,{m_van:[110,205],mo_main:[165,200],mo_r:[170,140],mo_l:[170,265],mo_kit:[205,192],mo_allies:[240,214]},{a:[['gd',215,205,114,205],['t',265,200,170,200],['t',300,140,172,142],['t',300,265,172,264]],t:'The fake retreat',b:'Then Baybars turns and runs, as if beaten. Kitbuqa sends his whole army after him, toward the hills.'});
+    add(1,{m_main:[125,200],m_left:[135,135],m_right:[135,268]},{a:[['g',65,200,121,200],['g',85,120,131,133],['g',85,285,131,270]],t:'The trap',b:'Out of the trees burst the hidden Mamluks, shooting arrows and charging. The Mongols are caught with enemies on three sides.',
+      fire:[['m_main','mo_main','clash'],['m_left','mo_r','arrows'],['m_right','mo_l','arrows'],['m_van','mo_main','arrows'],['mo_main','m_main','arrows']]});
+    add(1,{m_left:[95,122],mo_r:[118,132]},{a:[['t',170,140,122,133]],t:'The left wing',b:'The Mongols fight hard to break out. Their charge crashes into the Mamluk left wing and very nearly destroys it.',
+      fire:[['mo_r','m_left','clash'],['m_left','mo_r','arrows'],['m_right','mo_l','arrows']]});
+    add(2,{m_qutuz:[112,150],m_left:[125,135],mo_r:[150,138]},{a:[['g',42,215,108,154]],t:'"O Islam!"',b:'Qutuz pulls off his helmet so his men can see his face, and shouts "O Islam!" Then he charges at the wavering wing with his own guard. The left wing rallies, and the Mongols are pushed back.',
+      fire:[['m_qutuz','mo_r','clash'],['m_left','mo_r','clash'],['m_right','mo_l','arrows']]});
+    add(2,{mo_r:[150,138,'ko'],mo_main:[165,200,'ko'],mo_kit:[205,192,'ko'],mo_l:[170,265,'ko'],mo_allies:[395,230,'exit'],m_main:[150,200],m_right:[150,262]},{t:'Kitbuqa falls',b:'The Mongols fall back, gather and charge again, but the battle has turned. Kitbuqa is killed, with most of his army. Five days later the Mamluks ride into Damascus, and within a month they hold Aleppo too.',
+      fire:[['m_left','mo_r','clash'],['m_main','mo_main','clash'],['m_van','mo_kit','arrows'],['m_right','mo_l','clash'],['m_qutuz','mo_kit','arrows']]});
+    return S;
+  })(),
+  video:{id:'bwhWnRhcMQo',t:'The Epic Battle That Stopped the Mongols and Changed History: Ain Jalut',ch:'Aditu Laudis',v:5260000},
+  sources:[['Wikipedia: Battle of Ain Jalut','https://en.wikipedia.org/wiki/Battle_of_Ain_Jalut'],
+           ['HistoryNet: Ain Jalut, 1260','https://historynet.com/mongols-met-march/'],
+           ['De Re Militari: The Battle of Ayn Jalut, from Rashid al-Din\'s Compendium of Chronicles','https://deremilitari.org/RESOURCES/SOURCES/aynjalut.htm'],
+           ['TheCollector: How the Mamluks Beat the Unstoppable Mongols at Ain Jalut','https://www.thecollector.com/battle-ain-jalut/']],
+  cards:{m_van:'mamluk1260',m_main:'mamluk1260',m_left:'mamluk1260',m_right:'mamluk1260',
+         mo_main:'mongol1260',mo_r:'mongol1260',mo_l:'mongol1260',mo_allies:'mongolally1260'}
+});
