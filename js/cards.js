@@ -400,8 +400,44 @@ const CARDS = [
    fact:'A Persian chronicle has Kitbuqa refuse to flee: better to die with a good name than to run in disgrace.'},
   {id:'mongolally1260', set:'ainjalut', name:'Mongol allies', era:'Mongol invasions, 1260', t:'spr', side:'t', st:[3,2,2,2],
    good:'Adding numbers to a Mongol army', beat:'Staying loyal when the battle turns',
-   fact:'Georgian, Armenian and Syrian troops rode with Kitbuqa. Some of the Syrians are said to have left him during the battle.'}
-];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21], blenheim:['Blenheim, 1704',20], bannockburn:['Bannockburn, 1314',15], tannenberg:['Tannenberg, 1914',3], dienbienphu:['Dien Bien Phu, 1954',5], leuthen:['Leuthen, 1757',6], ainjalut:['Ain Jalut, 1260',7]};
+   fact:'Georgian, Armenian and Syrian troops rode with Kitbuqa. Some of the Syrians are said to have left him during the battle.'},
+  // Sekigahara, 1600
+  {id:'ashigaru1600', set:'sekigahara', name:'Arquebus gunners', era:'Sekigahara, 1600', t:'inf', side:'g', st:[2,4,1,4],
+   good:'Volleys from behind fences and lines', beat:'Rain that soaks the powder',
+   fact:'Before the campaign, Ieyasu bought large numbers of Tanegashima matchlock guns.'},
+  {id:'akazonae1600', set:'sekigahara', name:'Ii Naomasa\'s red cavalry', era:'Sekigahara, 1600', t:'cav', side:'g', st:[4,4,3,1],
+   good:'Being first into the fight', beat:'Gunfire while chasing a beaten enemy',
+   fact:'Ii Naomasa\'s men wore red armour. He opened the battle with a charge into Ukita\'s line, and was later wounded by a Shimazu bullet.'},
+  {id:'eastsam1600', set:'sekigahara', name:'Eastern samurai', era:'Sekigahara, 1600', t:'inf', side:'g', st:[3,4,3,2],
+   good:'Long, hard pushing fights', beat:'An enemy above them on a hill',
+   fact:'Fukushima Masanori\'s well-drilled men wore down Ukita\'s, many of whom were newly hired masterless samurai.'},
+  {id:'westsam1600', set:'sekigahara', name:'Western samurai', era:'Sekigahara, 1600', t:'inf', side:'t', st:[3,4,3,2],
+   good:'Holding a line behind fences', beat:'Allies who change sides',
+   fact:'Ukita Hideie brought about 17,000 men, the biggest Western force in the valley.'},
+  {id:'koba1600', set:'sekigahara', name:'Kobayakawa\'s army', era:'Sekigahara, 1600', t:'inf', side:'t', st:[3,4,3,2],
+   good:'Deciding a battle from a hilltop', beat:'Being made to choose',
+   fact:'About 15,600 men under an 18-year-old lord who had secretly offered to change sides.'},
+  {id:'mori1600', set:'sekigahara', name:'The Mori army', era:'Sekigahara, 1600', t:'inf', side:'t', st:[2,4,3,2],
+   good:'Threatening an enemy from behind', beat:'A commander who will not move',
+   fact:'Asked three times to attack, the Mori\'s front commander said they were not ready: they were having lunch.'}
+,
+  // Operation Focus, 1967
+  {id:'mirage1967', set:'focus', name:'Israeli strike jets', era:'Six-Day War, 1967', t:'jet', side:'g', st:[5,4,2,3],
+   good:'Fast, low attacks on airfields', beat:'Being caught on its own runway',
+   fact:'All but 12 of Israel\'s nearly 200 jets flew in the opening strike.'},
+  {id:'crews1967', set:'focus', name:'IAF ground crews', era:'Six-Day War, 1967', t:'crate', side:'g', st:[1,1,2,1],
+   good:'Turning jets round in minutes', beat:'Nothing, as long as the jets come back',
+   fact:'They refuelled and rearmed a returning jet in about seven and a half minutes.'},
+  {id:'mig1967', set:'focus', name:'Egyptian MiG-21s', era:'Six-Day War, 1967', t:'jet', side:'t', st:[5,3,1,3],
+   good:'Climbing fast to meet raiders', beat:'Being caught parked in the open',
+   fact:'At 7:40 on 5 June nearly all Egyptian pilots were at breakfast. By mid-morning about 90 of some 120 MiG-21s were destroyed or badly damaged.'},
+  {id:'tu16_1967', set:'focus', name:'Egyptian Tu-16 bombers', era:'Six-Day War, 1967', t:'bomber', side:'t', st:[2,4,2,5],
+   good:'Long-range bombing', beat:'A raid on its own airfield',
+   fact:'All 30 of them were lost on the first morning.'},
+  {id:'radar1967', set:'focus', name:'Egyptian radar', era:'Six-Day War, 1967', t:'bunker', side:'t', st:[1,1,3,5],
+   good:'Seeing high jets from far away', beat:'Jets flying very low, from the sea',
+   fact:'It watched mainly east, toward Israel. Jets coming in very low from the sea stayed under it.'}
+];const CARD_SETS = {cowpens:['Cowpens, 1781',1], sedan:['Sedan, 1940',14], nile:['The Nile, 1798',17], waterloo:['Waterloo, 1815',28], hastings:['Hastings, 1066',4], britain:['Battle of Britain, 1940',8], gaugamela:['Gaugamela, 331 BC',9], marathon:['Marathon, 490 BC',13], bighorn:['Little Bighorn, 1876',29], alamein:['El Alamein, 1942',23], salamis:['Salamis, 480 BC',2], alesia:['Alesia, 52 BC',24], kursk:['Kursk, 1943',19], yorktown:['Yorktown, 1781',27], rorke:['Rorke\'s Drift, 1879',10], vicksburg:['Vicksburg, 1863',12], teutoburg:['Teutoburg Forest, AD 9',18], isandlwana:['Isandlwana, 1879',21], blenheim:['Blenheim, 1704',20], bannockburn:['Bannockburn, 1314',15], tannenberg:['Tannenberg, 1914',3], dienbienphu:['Dien Bien Phu, 1954',5], leuthen:['Leuthen, 1757',6], ainjalut:['Ain Jalut, 1260',7], sekigahara:['Sekigahara, 1600',11], focus:['Operation Focus, 1967',16]};
 const CARD_KEY='pg-cards-v1';
 const CARDBY = Object.fromEntries(CARDS.map(c=>[c.id,c]));
 let OWNED = (()=>{ try{ return new Set(JSON.parse(localStorage.getItem(CARD_KEY)||'[]')); }catch(e){ return new Set(); } })();

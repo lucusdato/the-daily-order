@@ -147,6 +147,18 @@
    "war": "Mongol invasions of the Levant",
    "year": "1260",
    "place": "Jezreel Valley, Galilee"
+  },
+  {
+   "day": 25,
+   "war": "Sekigahara campaign",
+   "year": "1600",
+   "place": "Central Japan"
+  },
+  {
+   "day": 26,
+   "war": "Six-Day War",
+   "year": "1967",
+   "place": "Sinai and Egypt"
   }
  ]
 }

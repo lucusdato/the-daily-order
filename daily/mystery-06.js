@@ -483,3 +483,330 @@ PGD.mystery(7,{
   cards:{m_van:'mamluk1260',m_main:'mamluk1260',m_left:'mamluk1260',m_right:'mamluk1260',
          mo_main:'mongol1260',mo_r:'mongol1260',mo_l:'mongol1260',mo_allies:'mongolally1260'}
 });
+
+PGD.mystery(11,{
+  war:'Sekigahara campaign',
+  general:'Tokugawa Ieyasu',
+  pitch:'You are <b>Tokugawa Ieyasu</b>. Japan\'s ruler has died, and its great lords have split into two armies. You lead the Eastern Army. Ishida Mitsunari leads the Western Army, and some of his lords have secretly promised to change sides. Win Japan in one campaign.',
+  H:600,
+  terrain(){
+    let s=felt('#8fa064',600);
+    s+=hill(90,138,40,39,3)+hill(110,285,30,33,2)+hill(170,525,50,54,4)+hill(340,375,50,60,4)+hill(300,252,24,24,2)+hill(368,150,26,22,2);
+    s+=trees(61,24,[130,220,480,592],()=>true,['#2f5a24','#3b6b2b'])+trees(62,20,[300,385,322,442],()=>true,['#2f5a24','#3b6b2b']);
+    s+=road('M0 300 L400 285')+road('M200 0 L200 600')+road('M372 168 Q384 320 362 476');
+    s+=`<rect x="340" y="480" width="44" height="34" rx="3" fill="#8a7a5c" stroke="#3a3024" stroke-width="1.4"/>`+house(354,500)+house(368,506,'#8a3a2a');
+    s+=label(90,87,'Sasao hill (Ishida)',9)+label(170,456,'Mt. Matsuo (Kobayakawa)',9)+label(340,296,'Mt. Nangu (Mori)',9)+label(300,222,'Momokubari',8)
+      +label(368,118,'Akasaka',9)+label(362,536,'Ogaki Castle',9)+label(64,318,'Nakasendo road',8)+label(200,590,'Valley of Sekigahara',9);
+    s+=compass(24,24);
+    return s+end(600);
+  },
+  lead:'October 1600. Toyotomi Hideyoshi, who united Japan, has died and left a young son. You are the most powerful of the lords meant to rule for the boy, and you have made enemies. Ishida Mitsunari has gathered a coalition against you, the Western Army. Some of its lords have secretly promised to come over to you. None of them has done it yet.',
+  sit:'Around noon, 21 October 1600, in the valley of Sekigahara. Your army has fought the Western line for hours, and neither side has given way. Up on Mount Matsuo, Kobayakawa Hideaki\'s 15,000 men, who promised to join you, still sit and watch.',
+  mett:{
+    m:'Destroy Ishida\'s coalition in one battle.',
+    e:'About 80,000 men of the Western Army, on the hills around the valley. Several of their lords are wavering.',
+    t:'A narrow valley where the Nakasendo road meets another, ringed by hills: Sasao to the north-west, Mount Matsuo to the south, Mount Nangu to the south-east, behind you.',
+    tr:'About 75,000 to 90,000 men of the Eastern Army, with many arquebus gunners.',
+    ti:'One day. A long war gives lords time to change sides, either way.'},
+  ground:[['Key terrain','Mount Matsuo, where Kobayakawa\'s army sits above the Western flank.',[170,340,30]],
+          ['Key terrain','Mount Nangu, where the Mori army sits behind your army.',[340,250,30]],
+          ['Avenue of approach','The Nakasendo road, running west through the valley toward Sawayama and Osaka.',[250,195,24]]],
+  q:'Kobayakawa will not move. Which toy, sent where, gets him off his mountain and into the fight?',
+  qs:'Kobayakawa waits: which toy goes where?',
+  toys:[['e_guns','Arquebusiers','your arquebus gunners'],['e_todo','Todo Takatora','Todo Takatora\'s men'],['e_fuku','Fukushima Masanori','Fukushima Masanori\'s men']],
+  zones:[['volley','Fire at Matsuo',225,292,18,'to the foot of Mount Matsuo, to fire a volley up at Kobayakawa'],
+         ['storm','Storm Mt Matsuo',196,328,18,'up the slopes of Mount Matsuo, to attack Kobayakawa'],
+         ['nangu','Fire at Nangu',304,266,18,'to the foot of Mount Nangu, to fire on the Mori army']],
+  ans:{u:'e_guns',z:'volley'},
+  start:{e_fuku:[152,204],e_kuroda:[128,108],e_ii:[142,178],e_todo:[168,268],e_guns:[270,230],e_ieyasu:[235,186],
+         w_ishida:[90,92],w_ukita:[110,190],w_otani:[130,280],w_koba:[170,340],w_mori:[340,250],w_cmd:[60,110]},
+  fbU:{e_guns:'Right toy. Your gunners are not holding a stretch of the line. They can make a loud point without opening a gap.',
+       e_todo:'Not this toy. Todo\'s men are locked in their fight with Otani. Pull them out and Otani walks into the gap.',
+       e_fuku:'Not this toy. Fukushima is holding Ukita, the biggest Western force. Pull him out and your center breaks.'},
+  fbZ:{volley:'Right place. A volley toward his hill tells Kobayakawa the waiting is over: pick a side, now.',
+       storm:'Attacking him on his own mountain pushes him to Ishida, with 15,000 men above your flank.',
+       nangu:'The Mori promised to sit still, and they are doing it. Shooting at them gives them a reason to fight.'},
+  fail:{
+    'e_guns@storm':{fire:[['w_koba','$','clash'],['$','w_koba','musket']],ko:['$'],
+      b:'Your gunners climb Mount Matsuo to attack. Now Kobayakawa has nothing to gain from you, and his 15,000 men fight for Ishida after all. Your gunners are cut down on the slope.'},
+    'e_guns@nangu':{fire:[['$','w_mori','musket'],['w_mori','$','musket']],ko:[],
+      b:'Your gunners fire on the Mori. Their commanders promised not to fight, but now they are being shot at, and there are about 25,000 of them behind your army. Kobayakawa keeps on watching.'},
+    'e_todo@volley':{fire:[['$','w_koba','musket'],['w_otani','e_fuku','musket']],ko:[],
+      b:'Todo\'s men pull out of their fight with Otani to fire up at Mount Matsuo. Otani\'s men push into the gap they leave, and the side of your line starts to bend.'},
+    'e_todo@storm':{fire:[['w_koba','$','clash'],['$','w_koba','clash']],ko:['$'],
+      b:'Todo\'s men leave Otani and charge up Mount Matsuo. Under attack, Kobayakawa fights for Ishida, and his 15,000 men pour down the slope onto Todo.'},
+    'e_todo@nangu':{fire:[['$','w_mori','musket'],['w_mori','$','musket'],['w_otani','e_fuku','musket']],ko:[],
+      b:'Todo marches off to the far side of the valley to fire on the Mori. Now the Mori have a reason to fight, and behind Todo, Otani\'s men push into the gap he left.'},
+    'e_fuku@volley':{fire:[['$','w_koba','musket'],['w_ukita','e_ii','musket']],ko:[],
+      b:'Fukushima pulls out of his fight with Ukita to fire up at Mount Matsuo. Ukita\'s 17,000 men press forward into the hole in your center.'},
+    'e_fuku@storm':{fire:[['w_koba','$','clash'],['$','w_koba','clash'],['w_ukita','e_ii','musket']],ko:['$'],
+      b:'Fukushima takes his men off the valley floor and up Mount Matsuo. Ukita pours into your center, and on the mountain Kobayakawa, under attack, fights for Ishida.'},
+    'e_fuku@nangu':{fire:[['$','w_mori','musket'],['w_mori','$','musket'],['w_ukita','e_ii','musket']],ko:[],
+      b:'Fukushima marches away from Ukita to fire on the Mori. Your center opens, and the Mori, who had promised to sit still, now have a reason to fight.'}},
+  /* Three decisions (see tools/FORMAT.md). Decision 3 is the puzzle above.
+     Every zone is a real move: none sits where one of your toys already stands. Texts stay inside the scenes and sources.
+     The gunfire at Kobayakawa is the traditional story; Wikipedia gives the historians who doubt it, and the scene says so.
+     Kobayakawa stays a Western unit in the engine, so his charge on Otani is shown by his move, with Todo's men doing the shooting. */
+  stepsLive:true,
+  steps:[
+    {start:{e_fuku:[350,125],e_kuroda:[372,95],e_ii:[385,135],e_todo:[360,155],e_guns:[338,142],e_ieyasu:[388,110],
+            w_ishida:[352,330],w_ukita:[378,345],w_cmd:[362,368],w_otani:[130,280],w_koba:[170,340],w_mori:[340,250]},
+     after:[0,1],
+     qs:'Ishida holds a castle: where do you march?',
+     sit:'20 October 1600. Your army has reached the hill at Akasaka. Ishida and the Western Army hold Ogaki Castle, close by. Your real targets lie further west: Ishida\'s own castle at Sawayama, and the city of Osaka.',
+     q:'Where does your army march?',
+     intel:[['Ogaki','A strong castle, full of Western troops.'],
+            ['The road west','The Nakasendo road runs west through the valley of Sekigahara toward Sawayama and Osaka. You hold forts on the main roads.'],
+            ['The lords','Both sides are shaky alliances. The longer the war lasts, the more lords may change sides, either way.']],
+     toys:[['e_fuku','Fukushima Masanori','Fukushima Masanori\'s men'],['e_kuroda','Kuroda and Hosokawa','Kuroda and Hosokawa\'s men'],['e_ii','Ii Naomasa','Ii Naomasa\'s red cavalry']],
+     zones:[['west','West on the road',250,193,22,'west along the Nakasendo road, past Ogaki toward Sawayama'],
+            ['storm','Storm Ogaki',326,318,20,'south to storm Ogaki Castle'],
+            ['gifu','Back to Gifu',322,40,18,'back east to Gifu Castle, to wait']],
+     ans:{u:['e_fuku','e_kuroda','e_ii'],z:'west'},
+     hint:{z:'Which suits you better: a siege of his strong walls, or a fight out in the open?'},
+     fbU:{e_fuku:'Right toy. The whole army gets the same order. The question is where it goes.',
+          e_kuroda:'Right toy. The whole army gets the same order. The question is where it goes.',
+          e_ii:'Right toy. The whole army gets the same order. The question is where it goes.'},
+     fbZ:{west:'Right place. Ishida cannot let you march past him to Sawayama and Osaka. To stop you, he has to leave his walls and fight in the open.',
+          storm:'Storming a strong castle costs weeks and thousands of men, and every week gives wavering lords time to think again.',
+          gifu:'Going back gives Ishida time, and shows the waverers a general who will not fight.'},
+     fail:{west:{ko:[],idle:['$']},
+           storm:{ko:[],fire:[['w_ishida','$','musket']]},
+           gifu:{ko:[],idle:['$']}}},
+    {from:1, after:[2,3],
+     qs:'The fog lifts: where do you strike?',
+     sit:'Dawn, 21 October. In the night Ishida left Ogaki and lined the hills around Sekigahara, across your road, and you followed him. Now the fog is lifting. You look surrounded: Western troops on the hills ahead, Kobayakawa on Mount Matsuo, the Mori on Mount Nangu behind you.',
+     q:'Where do your front divisions attack?',
+     intel:[['The promises','Kobayakawa has secretly promised to join you. Kikkawa, at the front of the Mori army, has promised it will not fight. Neither has moved.'],
+            ['Waverers','Lords who are not sure back whoever looks like winning.'],
+            ['Ahead','Ukita Hideie\'s 17,000 men hold the center of the Western line.']],
+     toys:[['e_fuku','Fukushima Masanori','Fukushima Masanori\'s men'],['e_kuroda','Kuroda and Hosokawa','Kuroda and Hosokawa\'s men'],['e_ii','Ii Naomasa','Ii Naomasa\'s red cavalry']],
+     zones:[['center','At Ukita',150,196,20,'straight at Ukita\'s army in the center'],
+            ['matsuo','Up Mt Matsuo',200,318,18,'up Mount Matsuo, at Kobayakawa'],
+            ['nangu','Up Mt Nangu',305,268,18,'up Mount Nangu, at the Mori behind you']],
+     ans:{u:['e_fuku','e_kuroda','e_ii'],z:'center'},
+     hint:{z:'The waverers are watching you. Show them a winner, and do not give them a reason to fight you.'},
+     fbU:{e_fuku:'Right toy. Your whole front line gets the same order. The question is where it attacks.',
+          e_kuroda:'Right toy. Your whole front line gets the same order. The question is where it attacks.',
+          e_ii:'Right toy. Your whole front line gets the same order. The question is where it attacks.'},
+     fbZ:{center:'Right place. Hitting Ishida\'s main line at once shows every waverer on the hills that you mean to win.',
+          matsuo:'Attacking Kobayakawa pushes him onto Ishida\'s side, with 15,000 men above your flank.',
+          nangu:'The Mori promised to sit still. Attacking them gives about 25,000 men behind you a reason to fight.'},
+     fail:{center:{ko:[],fire:[['$','w_ukita','musket'],['w_ukita','$','musket']]},
+           matsuo:{ko:[],fire:[['w_koba','$','musket']]},
+           nangu:{ko:[],fire:[['w_mori','$','musket']]}}},
+    {after:[4,5,6],
+     hint:{u:'Which of these is not holding a piece of your line?',z:'An attack would push him to Ishida. What tells him to choose, without attacking him?'},
+     intel:[['Kobayakawa','About 15,600 men on Mount Matsuo, above Otani\'s flank. Flares and messengers from Ishida\'s side have not moved him either.'],
+            ['Your line','Every division in the valley is locked in its own fight.'],
+            ['Your gunners','A body of arquebus men near your command post.']]}],
+  clues:[
+    {cat:'m',t:'The promise',b:'About a week ago Kobayakawa sent word that he would join you when the time came. Since dawn his men have only watched.'},
+    {cat:'e',card:'koba1600'},
+    {cat:'e',t:'Messengers',b:'Otani and Konishi have sent flares and messengers up Mount Matsuo too. Kobayakawa has not moved for them either.'},
+    {cat:'tr',card:'ashigaru1600'},
+    {cat:'m',t:'Make him choose',b:'Do not attack him, and do not pull anyone out of the line. Send something loud his way, so he knows the waiting is over.'}],
+  deduce:[['Kobayakawa is waiting to see who wins.','Every hour of waiting helps Ishida.'],
+          ['Every division in the valley holds part of the line.','Use the gunners.'],
+          ['Attacking him would push him to Ishida.','Fire toward his hill, as a warning.']],
+  /* The real battle. North is up, as on the scenario's own board. Ogaki and Akasaka lie east of the valley, drawn at the right edge.
+     The Western Army faces east, so its left is Ishida on Sasao in the north and its right is Kobayakawa on Mount Matsuo. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={e_fuku:[350,125],e_kuroda:[372,95],e_ii:[385,135],e_todo:[360,155],e_guns:[338,142],e_ieyasu:[388,110],
+           w_ishida:[352,330],w_ukita:[378,345],w_cmd:[362,368],w_otani:[130,280],w_koba:[170,340],w_mori:[340,250]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    const line=[['e_ii','w_ukita','clash'],['e_fuku','w_ukita','musket'],['w_ukita','e_fuku','musket'],['e_kuroda','w_ishida','musket'],
+                ['w_ishida','e_kuroda','musket'],['e_todo','w_otani','musket'],['w_otani','e_todo','musket']];
+    add(0,{w_ishida:[90,92],w_ukita:[110,190],w_cmd:[60,110]},
+      {a:[['t',352,330,94,96],['t',378,345,114,192],['t',362,368,64,112]],t:'Out of Ogaki',
+       b:'Ishida cannot let you march past him to Sawayama and Osaka. On the evening of 20 October he empties Ogaki Castle, and his army marches through the dark and the rain to the hills around Sekigahara, across your road.'});
+    add(0,{e_fuku:[230,200],e_kuroda:[230,130],e_ii:[260,170],e_todo:[230,260],e_guns:[270,230],e_ieyasu:[300,160]},
+      {a:[['g',350,125,234,198],['g',372,95,234,130],['g',385,135,264,170],['g',360,155,234,258],['g',338,142,272,226]],t:'The chase',
+       b:'By about 2 a.m. you are following him. You set up your command post on Momokubari, a small hill beside Mount Nangu, and your front divisions take up their places facing Ishida\'s line.'});
+    add(1,{e_ii:[142,178],e_fuku:[152,204],e_kuroda:[128,108],e_todo:[168,268]},
+      {a:[['g',260,170,146,178],['g',230,200,156,204],['g',230,130,132,110],['g',230,260,172,268]],t:'Into the fog',
+       b:'At about 8 o\'clock, as the fog lifts, Ii Naomasa charges into Ukita\'s line and Fukushima\'s men open fire behind him. To the north, Kuroda attacks the troops in front of Ishida\'s hill, and Todo takes on Otani.',
+       fire:line});
+    add(1,{e_ieyasu:[235,186]},
+      {a:[['g',300,160,238,184]],t:'Deadlock',
+       b:'For hours the two lines push at each other, and gunsmoke hides the sun. Shima Sakon, one of Ishida\'s best commanders, is shot. You move your command post forward, close behind the fighting. On the hills, Kobayakawa and the Mori still do not move.',
+       fire:line});
+    add(2,{e_guns:[225,292]},
+      {a:[['g',270,230,227,288]],t:'A warning volley',
+       b:'Around noon you run out of patience. The old story says you had your gunners fire toward Kobayakawa\'s hill, so he would know the waiting was over. Some historians doubt it, because the hill was a long way off.',
+       fire:[['e_guns','w_koba','musket']].concat(line)});
+    add(2,{w_koba:[115,312],w_otani:[130,280,'ko']},
+      {a:[['t',170,340,118,312]],t:'Kobayakawa turns',
+       b:'Kobayakawa\'s 15,000 men charge down Mount Matsuo into the side of Otani\'s line. Otani expected it and had turned to face him, but with Todo in front of him too he is overwhelmed, and he takes his own life. Other Western lords change sides as well.',
+       fire:[['e_todo','w_otani','clash'],['e_guns','w_otani','musket'],['e_ii','w_ukita','clash'],['e_fuku','w_ukita','musket'],['e_kuroda','w_ishida','musket']]});
+    add(2,{w_ukita:[0,200,'exit'],w_ishida:[0,80,'exit'],w_cmd:[0,95,'exit'],w_mori:[400,300,'exit'],e_fuku:[112,196],e_ii:[118,170],e_kuroda:[92,106]},
+      {t:'The Western Army breaks',
+       b:'Hit from two sides, the Western line falls apart. Ukita flees at about 1 p.m., and Ishida soon after. The Mori march away without ever fighting. Ishida is caught and put to death two weeks later, and you go on to become shogun. Your family will rule Japan until 1868.',
+       fire:[['e_fuku','w_ukita','musket'],['e_kuroda','w_ishida','musket']]});
+    return S;
+  })(),
+  video:{id:'5vscOHPFUf0',t:'Warring States Japan: Sengoku Jidai - The Campaign of Sekigahara - Extra History - Part 6',ch:'Extra History',v:2394375},
+  sources:[['Wikipedia: Battle of Sekigahara','https://en.wikipedia.org/wiki/Battle_of_Sekigahara'],
+           ['Wikipedia: Sekigahara campaign','https://en.wikipedia.org/wiki/Sekigahara_Campaign'],
+           ['National Park Service: Battle of Sekigahara','https://www.nps.gov/articles/000/battle-of-sekigahara.htm'],
+           ['National Park Service: Sekigahara Campaign','https://www.nps.gov/articles/000/sekigahara-campaign.htm'],
+           ['EBSCO Research Starters: Battle of Sekigahara','https://www.ebsco.com/research-starters/military-history-and-science/battle-sekigahara']],
+  cards:{e_fuku:'eastsam1600',e_kuroda:'eastsam1600',e_ii:'akazonae1600',e_todo:'eastsam1600',e_guns:'ashigaru1600',
+         w_ishida:'westsam1600',w_ukita:'westsam1600',w_otani:'westsam1600',w_koba:'koba1600',w_mori:'mori1600'}
+});
+
+PGD.mystery(16,{
+  war:'Six-Day War',
+  general:'Mordechai Hod',
+  pitch:'You are <b>Mordechai Hod</b>, commander of the Israeli Air Force. It is June 1967, and Israel has decided to strike Egypt first. Egypt\'s air force is bigger than yours. Your job is to wreck it before it can fight.',
+  H:600,
+  terrain(){
+    let s=seaBg(600);
+    s+=land('M0 210 Q60 195 120 225 Q180 240 240 225 Q300 210 360 195 Q380 192 400 180 V600 H0 Z','#c8b88a');
+    s+=land('M320 195 Q350 188 400 165 V600 H340 Q330 450 340 330 Q330 255 320 195 Z','#a9a86e');
+    s+=river('M60 210 Q70 330 60 450 Q50 540 60 600',6)+river('M200 225 Q205 375 190 600',4);
+    [[60,270],[110,300],[150,375],[220,300],[250,420],[180,495],[90,480]].forEach(p=>s+=`<rect x="${p[0]-10}" y="${p[1]-2}" width="20" height="4" fill="#6f6448"/>`);
+    s+=label(200,90,'Mediterranean Sea',12)+label(60,186,'Nile Delta',9)+label(212,250,'Suez Canal',8,80)+label(270,510,'Sinai',11)
+      +label(372,330,'Israel',10,90)+label(130,270,'Airfields',8)+label(378,150,'To Jordan, Syria',7);
+    s+=compass(26,26);
+    return s+end(600);
+  },
+  lead:'June 1967. After weeks of rising tension, with Egyptian troops massed in Sinai, Israel has decided to strike first. Your air force has nearly 200 jets. Egypt\'s is bigger, spread over airfields from Sinai to the Nile, with radar watching the sky.',
+  sit:'Early on 5 June 1967. Nearly every jet you have is fuelled and armed. Egypt\'s dawn patrols have flown since 4 a.m. and are now landing, and its pilots are heading to breakfast. Strike time is 7:45.',
+  mett:{
+    m:'Destroy as much of the Egyptian Air Force as you can on the ground, in the first hours.',
+    e:'Several hundred combat aircraft, many of them modern Soviet-built jets, on airfields across Sinai, along the Suez Canal and in the Nile Delta.',
+    t:'The Mediterranean to the north. Egyptian radar looks mainly east, toward Israel.',
+    tr:'Nearly 200 jets, and ground crews who can refuel and rearm one in minutes.',
+    ti:'Hours. Once Egypt\'s jets are in the air, the surprise is gone.'},
+  ground:[['Avenue of approach','The Mediterranean, where jets flying very low stay under the radar.',[220,95,30]],
+          ['Key terrain','Egyptian airfields, with jets parked in the open.',[130,225,30]],
+          ['Key terrain','Israel\'s own airfields, close enough for fast turnarounds.',[360,280,24]]],
+  q:'Which toy, sent which way, opens the strike?',
+  qs:'Strike time: which toy goes which way?',
+  toys:[['ia_w1','First wave','the first wave'],['ia_w2','Following waves','the following waves'],['ia_home','Fighters held back','the twelve home-guard fighters']],
+  zones:[['sea','Low over the sea',230,95,22,'out low over the sea, then south into Egypt'],
+         ['direct','Straight over Sinai',300,290,20,'straight west over Sinai, high up'],
+         ['radar','At the radar',318,225,16,'straight at the radar stations near the border']],
+  ans:{u:'ia_w1',z:'sea'},
+  start:{ia_w1:[360,250],ia_w2:[352,312],ia_home:[372,190],ia_crews:[365,350],ia_hod:[382,385],
+         ea_sinai:[255,245],ea_delta:[110,205],ea_patrol:[138,236],ea_radar:[292,205]},
+  fbU:{ia_w1:'Right toy. The first wave has to land its blow before anyone in Egypt knows a war has started.',
+       ia_w2:'Not this toy. The following waves go in ten minutes apart, after the first. Someone has to open the strike.',
+       ia_home:'Not this toy. Only twelve fighters stay home to guard Israel\'s own sky. Send them and there are none.'},
+  fbZ:{sea:'Right place. Very low over the sea, the jets stay under the radar and come in from a side nobody is watching.',
+       direct:'Flying high and straight across Sinai, you show up on every radar screen long before you arrive.',
+       radar:'Hitting the radar first tells every airfield in Egypt to get its jets up. The airfields are what matter.'},
+  fail:{
+    'ia_w1@direct':{fire:[['ea_patrol','$','cannon'],['ea_sinai','$','cannon']],ko:[],
+      b:'The first wave climbs high and heads straight across Sinai. Egyptian radar picks it up long before it arrives, the airfields are warned, and MiGs rise to meet it.'},
+    'ia_w1@radar':{fire:[['$','ea_radar','bomb'],['ea_patrol','$','cannon']],ko:['ea_radar'],
+      b:'The first wave goes for the radar stations near the border. They are hit, but the airfields behind them get the warning, and their jets start to take off.'},
+    'ia_w2@sea':{fire:[['ea_patrol','$','cannon']],ko:[],
+      b:'The following waves fly the sea route, but no first wave has gone in ahead of them. The strike arrives late and thin, and meets an air force that is starting to wake up.'},
+    'ia_w2@direct':{fire:[['ea_patrol','$','cannon'],['ea_sinai','$','cannon']],ko:[],
+      b:'The following waves climb and fly straight across Sinai. Radar sees them coming, and Egyptian jets are in the air before the first bomb falls.'},
+    'ia_w2@radar':{fire:[['$','ea_radar','bomb'],['ea_patrol','$','cannon']],ko:['ea_radar'],
+      b:'The following waves hit a radar station near the border and nothing else. Every Egyptian airfield is now on alert, and the jets parked there are being started up.'},
+    'ia_home@sea':{fire:[],ko:[],idle:['$'],
+      b:'The twelve guard fighters fly off over the sea. Twelve jets cannot wreck an air force, and Israel\'s own sky is left with no guard at all.'},
+    'ia_home@direct':{fire:[['ea_patrol','$','cannon']],ko:[],
+      b:'The twelve guard fighters cross Sinai high up. Radar spots them, MiGs come up to meet them, and back home Israel has no fighters left to guard it.'},
+    'ia_home@radar':{fire:[['$','ea_radar','bomb'],['ea_radar','$','cannon']],ko:['ea_radar'],
+      b:'The twelve guard fighters attack a radar station. They knock it out, but they have told Egypt that a war has begun, and left Israel with nothing to guard its sky.'}},
+  /* Three decisions (see tools/FORMAT.md). Decision 1 is the puzzle above.
+     Every zone is a real move: none sits where one of your toys already stands. Texts stay inside the scenes and sources.
+     The scenario's square board (used on wide screens) stops at Israel's eastern edge, so the zone for the Jordanian and
+     Syrian air bases sits at the right edge, with the label pointing on east. */
+  stepsLive:true,
+  steps:[
+    {after:[0],
+     hint:{u:'Who opens the strike?',z:'Radar sees high jets from far away, and it is watching the east.'},
+     intel:[['Radar','Egyptian radar watches mainly east, toward Israel. High-flying jets show up on it from far away.'],
+            ['The sea','Every morning your jets fly a routine route west over the sea. Egyptian radar men stopped paying attention to it long ago.'],
+            ['Your force','All but twelve of your nearly 200 jets will fly. The twelve stay home to guard Israel.']]},
+    {from:0, after:[1,2],
+     qs:'Over the airfields: what is hit first?',
+     sit:'7:45, 5 June. The first wave climbs over the Egyptian airfields at almost the same moment, from the sea. Below, jets sit in rows in the open. You have a few minutes over each target before the next wave arrives.',
+     q:'Where do the first bombs fall?',
+     intel:[['The jets','Parked in the open, with no shelters to protect them.'],
+            ['The runways','Concrete strips. You have a special bomb, pushed down by a rocket, that blasts a deep hole in a runway.'],
+            ['The radar','Radar and missile sites near the airfields.']],
+     toys:[['ia_w1','First wave','the first wave'],['ia_w2','Following waves','the following waves']],
+     zones:[['runways','The runways',152,252,18,'onto the runways'],
+            ['jets','The parked jets',96,226,18,'onto the rows of parked jets'],
+            ['radar','The radar',300,232,16,'onto the radar and missile sites']],
+     ans:{u:'ia_w1',z:'runways'},
+     hint:{u:'Which of these is already over Egypt?',z:'A jet on a broken runway cannot take off. A jet on a whole one can.'},
+     fbU:{ia_w1:'Right toy. The first wave is already over the airfields. The question is what it hits first.',
+          ia_w2:'Not this toy. The following waves are still on the way, ten minutes behind.'},
+     fbZ:{runways:'Right place. With its runway full of holes, every jet on the field is trapped, and the following waves can deal with them one by one.',
+          jets:'Going for the parked jets first leaves the runways whole. Any jet you miss can take off and fight.',
+          radar:'Knocking out the radar now does not stop a single jet from taking off.'},
+     fail:{runways:{ko:[],fire:[['$','ea_delta','bomb']]},
+           jets:{ko:[],fire:[['$','ea_delta','bomb'],['ea_sinai','$','cannon']]},
+           radar:{ko:[],fire:[['$','ea_radar','bomb'],['ea_delta','$','cannon']]}}},
+    {from:2, after:[3,4],
+     qs:'Raids from the east: where do jets go?',
+     sit:'Around noon. Most of the Egyptian Air Force is wrecked on the ground. Now Jordanian, Syrian and Iraqi jets raid Israel: an airfield, a factory in Netanya, villages in Galilee. Your rearmed jets were meant for a third strike on Egypt.',
+     q:'Where do the jets readied for Egypt go now?',
+     intel:[['Egypt','Most of its air force is destroyed, and its runways are full of holes.'],
+            ['The raiders','Their jets fly from a small number of air bases, in Jordan, Syria and western Iraq.'],
+            ['The raids','So far they have done little damage. Your fighters shot down three of the Syrian jets.']],
+     toys:[['ia_w1','Jets for Egypt','the jets readied for Egypt'],['ia_home','Fighters held back','the twelve home-guard fighters']],
+     zones:[['east','To their bases',392,128,18,'east, onto the Jordanian and Syrian air bases'],
+            ['egypt','Egypt again',165,240,18,'back over Egypt for a third strike'],
+            ['guard','Over the coast',332,140,18,'up over the coast, to wait for the next raid']],
+     ans:{u:'ia_w1',z:'east'},
+     hint:{u:'Which of these is meant to be striking, not guarding?',z:'This morning showed you the best place to beat an air force.'},
+     fbU:{ia_w1:'Right toy. These jets are armed and ready, and Egypt no longer needs them.',
+          ia_home:'Not this toy. The twelve guard fighters keep Israel\'s sky covered while everyone else is away.'},
+     fbZ:{east:'Right place. Catch their jets on the ground, as you did in Egypt this morning, and the raids stop for good.',
+          egypt:'Egypt\'s air force is already in pieces. Another strike there leaves the new enemies free to raid.',
+          guard:'Waiting over the coast only meets the raiders after they come, and they can come again and again.'},
+     fail:{east:{ko:[],idle:['$']},
+           egypt:{ko:[],idle:['$']},
+           guard:{ko:[],idle:['$']}}}],
+  clues:[
+    {cat:'m',t:'Their routine',b:'Years of watching have shown you the Egyptian day: when the patrols fly, when they land, when the officers get to work.'},
+    {cat:'e',card:'radar1967'},
+    {cat:'e',t:'The morning flight',b:'Every morning Israeli jets fly a routine route west over the Mediterranean. Egyptian radar men stopped paying attention to it long ago.'},
+    {cat:'tr',card:'mirage1967'},
+    {cat:'m',t:'Under the beam',b:'Send the first wave out over the sea, so low the radar cannot see it, and turn it south into Egypt at the last moment.'}],
+  deduce:[['Radar is watching for jets from the east.','Do not come from the east.'],
+          ['Very low jets stay under the radar.','Fly low, over the sea.'],
+          ['The first blow decides the rest.','Use the first wave.']],
+  /* The real day. North is up: the Mediterranean along the top, Egypt to the west, Israel on the right edge. */
+  scenes:(()=>{
+    const S=[], at=(prev,ch)=>Object.assign({},prev,ch);
+    let p={ia_w1:[360,250],ia_w2:[352,312],ia_home:[372,190],ia_crews:[365,350],ia_hod:[382,385],
+           ea_sinai:[255,245],ea_delta:[110,205],ea_patrol:[138,236],ea_radar:[292,205]};
+    const add=(s,ch,o)=>{ p=at(p,ch); S.push(Object.assign({s,u:at(p,{})},o)); };
+    add(0,{ia_w1:[190,105]},
+      {a:[['g',360,250,300,110,194,104]],t:'Under the radar',
+       b:'The first wave heads west over the Mediterranean, in radio silence and so low that Egyptian radar cannot see it. Then it turns south, toward Egypt.'});
+    add(1,{ia_w1:[150,236],ea_patrol:[138,236,'ko'],ea_radar:[292,205,'ko']},
+      {a:[['g',190,105,152,232]],t:'7:45',
+       b:'At 7:45 Israeli time the jets climb, then dive on eleven airfields at almost the same moment. The runways go first, holed by the rocket-pushed bombs. Then the jets come round again with their cannon, against planes trapped on the ground.',
+       fire:[['ia_w1','ea_delta','bomb'],['ia_w1','ea_sinai','bomb'],['ia_w1','ea_patrol','bomb'],['ia_w1','ea_radar','bomb']]});
+    add(1,{ia_w1:[360,250],ia_w2:[118,215],ea_delta:[110,205,'ko'],ea_sinai:[255,245,'ko']},
+      {a:[['g',150,236,356,250],['g',352,312,122,218]],t:'Wave after wave',
+       b:'Back home, ground crews refuel and rearm each jet in about seven and a half minutes. A second wave at 9:30 destroys 107 more Egyptian aircraft. By mid-morning most of the Egyptian Air Force is wrecked on the ground.',
+       fire:[['ia_w2','ea_delta','bomb'],['ia_w2','ea_sinai','bomb']]});
+    add(2,{ia_w1:[392,128],ia_w2:[352,312]},
+      {a:[['g',360,250,390,132],['g',118,215,348,310]],t:'East',
+       b:'Shortly before 12:30 the jets meant for Egypt turn east instead. They hole the runways of Jordan\'s two air bases, then destroy all 21 of its Hunter jets. Syrian air bases and Iraq\'s H-3 airfield are hit as well.'});
+    add(2,{ia_w1:[360,250]},
+      {a:[['g',392,128,362,246]],t:'By nightfall',
+       b:'By the end of the first day about 450 Arab aircraft have been destroyed, most of them on the ground, for 19 Israeli aircraft lost. For the rest of the war, Israel\'s army fights under a sky its enemies cannot use.'});
+    return S;
+  })(),
+  video:{id:'sB8aLlVz_8k',t:'Israel\'s \'Operation Focus\': Inside One of the Most Successful Air Campaigns in Military History',ch:'CBN News',v:3721962},
+  sources:[['Wikipedia: Operation Focus','https://en.wikipedia.org/wiki/Operation_Focus'],
+           ['Wikipedia: Six-Day War','https://en.wikipedia.org/wiki/Six-Day_War'],
+           ['Warfare History Network: The Sinai Air Strike, June 5, 1967 (Eric Hammel)','https://warfarehistorynetwork.com/article/the-sinai-air-strike-june-5-1967/'],
+           ['MigFlug: Three Hours That Won a War, Operation Focus 1967','https://migflug.com/afterburner/?p=4644603']],
+  cards:{ia_w1:'mirage1967',ia_w2:'mirage1967',ia_home:'mirage1967',ia_crews:'crews1967',
+         ea_sinai:'mig1967',ea_delta:'tu16_1967',ea_patrol:'mig1967',ea_radar:'radar1967'}
+});
